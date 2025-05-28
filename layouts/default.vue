@@ -15,10 +15,14 @@
     </main>
 
     <footer class="site-footer">
-      <p>© 2025 Mon site Nuxt</p>
+      <p>© {{ currentYear }} DriveIn Production</p>
     </footer>
   </div>
 </template>
+
+<script setup>
+const currentYear = new Date().getFullYear();
+</script>
 
 <style scoped>
 .site-header {
