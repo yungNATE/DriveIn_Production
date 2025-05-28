@@ -5,6 +5,6 @@ export default defineNuxtConfig({
   modules: ["@nuxt/content"],
   ssr: true,
   nitro: {
-    preset: "netlify",
+    preset: "static",
   },
 });
