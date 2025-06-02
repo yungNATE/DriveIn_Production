@@ -3,12 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxi build",
     "dev": "nuxi dev",
-    "generate": "nuxi generate",
+    "build": "nuxi generate",
     "preview": "nuxi preview",
     "postinstall": "nuxi prepare",
-    "deploy": "netlify deploy --prod --dir=.output/public"
+    "deploy": "nuxi generate && netlify deploy --prod --dir=.output/public"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.11.0",
