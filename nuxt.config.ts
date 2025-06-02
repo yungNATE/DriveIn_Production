@@ -6,12 +6,5 @@ export default defineNuxtConfig({
   ssr: true,
   nitro: {
     preset: "static",
-    prerender: {
-      crawlLinks: true,
-      routes: ["/"],
-    },
-  },
-  routeRules: {
-    "/projets/**": { prerender: true },
   },
 });
