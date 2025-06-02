@@ -29,6 +29,8 @@
     </div>
 
     <div v-else class="no-projects">Aucun projet trouvé.</div>
+
+    <NuxtLink to="/projets/axa-france">Voir le projet Axa France</NuxtLink>
   </div>
 </template>
 
