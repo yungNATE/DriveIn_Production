@@ -40,7 +40,9 @@ router.beforeEach((to, from, next) => {
       nextCallback();
       nextCallback = null;
     }
-  }, 3500);
+  }, 2050);
+  // }, 1210); // Durée vidéo 1
+  // }, 2050); // Durée vidéo 2
 });
 
 // Après navigation réussie, on cache le loader
@@ -79,7 +81,7 @@ router.afterEach(() => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: black;
+  background-color: white;
   z-index: 9999;
 
   display: flex;
@@ -91,7 +93,7 @@ router.afterEach(() => {
 
 /* Vidéo avec fade-in différé */
 .loader-video {
-  width: 300px;
+  width: 500px;
   height: auto;
   max-width: 60vw;
 
@@ -109,7 +111,7 @@ router.afterEach(() => {
 /* Titre sous la vidéo */
 .loader-title {
   margin-top: 1rem;
-  color: white;
+  color: black;
   font-size: 1.2rem;
   font-weight: 600;
   text-align: center;
