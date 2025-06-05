@@ -4,9 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "nuxi dev",
-    "build": "nuxi generate",
-    "preview": "nuxi generate && nuxi preview",
-    "deploy_test": "nuxi generate && netlify deploy --dir=.output/public",
+    "clean": "rimraf .nuxt node_modules package-lock.json && npm install",
+    "build": "npm run clean && nuxi generate",
+    "preview": "npm run build && nuxi preview",
     "deploy": "nuxi generate && netlify deploy --prod --dir=.output/public"
   },
   "dependencies": {
@@ -23,6 +23,7 @@
     "@nuxt/image": "^1.10.0",
     "@nuxtjs/i18n": "^9.5.4",
     "netlify-cli": "^21.5.0",
-    "nuxt": "^3.17.4"
+    "nuxt": "^3.17.4",
+    "rimraf": "^6.0.1"
   }
 }
