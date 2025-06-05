@@ -72,6 +72,10 @@ useSeoMeta({
   title: "Nos Projets - DriveIn Production",
   description: "Découvrez tous nos projets de production audiovisuelle",
 });
+
+definePageMeta({
+  title: "Nos projets",
+});
 </script>
 
 <style scoped>

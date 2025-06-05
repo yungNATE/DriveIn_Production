@@ -1,9 +1,9 @@
 <template>
-  <h1>Page d'accueil - DriveIn Production !</h1>
+  <h1>À propos - DriveIn Production !</h1>
 </template>
 
 <script setup>
 definePageMeta({
-  title: "Accueil",
+  title: "À propos",
 });
 </script>
