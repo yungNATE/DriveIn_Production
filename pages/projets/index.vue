@@ -1,3 +1,16 @@
+<script lang="ts" setup>
+const contentType = "projets";
+const {
+  data: projets,
+  pending,
+  error,
+} = await useAsyncData(contentType, () =>
+  queryCollection("content").where("path", "LIKE", `/${contentType}%`).all()
+);
+
+console.log("Projets data:", projets.value[0]);
+</script>
+
 <template>
   <div class="projets-page">
     <h1>Nos Projets</h1>
@@ -8,7 +21,7 @@
       Erreur lors du chargement des projets
     </div>
 
-    <div v-else-if="projets && projets.length > 0" class="projets-grid">
+    <div v-else-if="projets" class="projets-grid">
       <article v-for="projet in projets" :key="projet._id" class="projet-card">
         <h2>{{ projet.title || "Projet sans titre" }}</h2>
         <p v-if="projet.description" class="description">
@@ -22,61 +35,15 @@
             {{ projet.category }}
           </span>
         </div>
-        <NuxtLink :to="projet._path" class="read-more">
-          Voir le projet →
+        <NuxtLink :to="projet.path" class="read-more">
+          Lire la suite →
         </NuxtLink>
       </article>
     </div>
 
     <div v-else class="no-projects">Aucun projet trouvé.</div>
-
-    <NuxtLink to="/projets/axa-france">Voir le projet Axa France</NuxtLink>
   </div>
 </template>
-
-<script setup>
-// Récupération des projets avec queryCollection
-const { data: projets, pending, error } = await queryCollection("projets");
-// .sort({ date: -1 }) // Tri par date décroissante
-// .find();
-
-/*
- *
- *
- * QUE PASA ??????? ^^^^^
- * Pourquoi je ne peux pas utiliser .sort() ici ?
- * Parce que queryCollection retourne un objet avec des méthodes chainables,
- * mais pas un tableau direct.
- * Donc, on ne peut pas utiliser .sort() directement.
- * On doit trier les projets après récupération.
- * On peut utiliser computed pour trier les projets après récupération.
- * * Exemple :
- * * const sortedProjets = computed(() => {
- * *   return projets.value ? [...projets.value].sort((a, b) => new Date(b.date) - new Date(a.date)) : [];
- * * });
- * * Mais pour l'instant, on va juste récupérer les projets sans tri.
- */
-
-// Fonction pour formater la date
-const formatDate = (dateString) => {
-  if (!dateString) return "";
-  return new Date(dateString).toLocaleDateString("fr-FR", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-};
-
-// Meta tags pour SEO
-useSeoMeta({
-  title: "Nos Projets - DriveIn Production",
-  description: "Découvrez tous nos projets de production audiovisuelle",
-});
-
-definePageMeta({
-  title: "Nos projets",
-});
-</script>
 
 <style scoped>
 .projets-page {
