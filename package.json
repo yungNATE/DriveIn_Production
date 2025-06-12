@@ -4,14 +4,15 @@
   "type": "module",
   "scripts": {
     "dev": "nuxi dev",
-    "clean": "rimraf .nuxt node_modules package-lock.json && npm install",
+    "clean": "rimraf .nuxt .output",
     "build": "npm run clean && nuxi generate",
     "preview": "npm run build && nuxi preview",
-    "deploy_test": "nuxi generate && netlify deploy --prod --dir=.output/public",
+    "deploy_test": "nuxi generate && netlify deploy --alias=test --dir=.output/public",
     "deploy": "nuxi generate && netlify deploy --prod --dir=.output/public"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.11.0",
+    "better-sqlite3": "^11.10.0",
     "entities": "^6.0.0",
     "normalize.css": "^8.0.1",
     "nuxi": "^3.25.1",
