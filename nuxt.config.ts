@@ -12,6 +12,15 @@ export default defineNuxtConfig({
     // "@assets/scss/variables.scss",
     // "@assets/scss/typography.css",
   ],
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: '@use "@/assets/scss/_variables.scss" as *;',
+        },
+      },
+    },
+  },
   fonts: {
     families: [
       // Sanchez-Niu

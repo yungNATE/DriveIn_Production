@@ -1,37 +1,27 @@
 <template>
-  <header class="site-header">
+  <header>
     <nav>
       <ul>
-        <li><NuxtLink to="/">Accueil</NuxtLink></li>
-        <li><NuxtLink to="/about">À propos</NuxtLink></li>
-        <li><NuxtLink to="/contact">Contact</NuxtLink></li>
-        <li><NuxtLink to="/projets">Projets</NuxtLink></li>
+        <li><SpecialLink to="/">Accueil</SpecialLink></li>
+        <li><SpecialLink to="/about">À propos</SpecialLink></li>
+        <li><SpecialLink to="/contact">Contact</SpecialLink></li>
+        <li><SpecialLink to="/projets">Projets</SpecialLink></li>
       </ul>
     </nav>
   </header>
 </template>
 
-<style scoped>
-.site-header {
-  background-color: #007acc;
+<style lang="scss" scoped>
+header {
+  background-color: rgba(255, 255, 255, 0.1);
   padding: 1rem;
-  color: white;
-}
 
-.site-header ul {
-  list-style: none;
-  display: flex;
-  gap: 1rem;
-  margin: 0;
-  padding: 0;
-}
-
-.site-header a {
-  color: white;
-  text-decoration: none;
-}
-
-.site-header a:hover {
-  text-decoration: underline;
+  ul {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+  }
 }
 </style>
