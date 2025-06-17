@@ -1,9 +1,14 @@
+<script lang="ts" setup>
+const props = defineProps<{
+  to: string | Record<string, any>;
+}>();
+</script>
+
 <template>
   <NuxtLink :to="to" class="btn h3" v-bind="$attrs">
     <slot />
   </NuxtLink>
 </template>
-<script lang="ts" setup></script>
 
 <style lang="scss" scoped>
 .btn {
@@ -15,6 +20,8 @@
   border-radius: 7px;
   filter: drop-shadow(0 0 8px $primary-color-light);
   text-decoration: none;
+  align-self: center;
+  white-space: nowrap;
 
   &:hover {
     color: rgba(255, 255, 255, 1);
