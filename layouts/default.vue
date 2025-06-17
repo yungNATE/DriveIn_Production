@@ -1,11 +1,9 @@
 <template>
-  <div>
-    <SiteHeader />
+  <SiteHeader />
 
-    <main>
-      <NuxtPage />
-    </main>
+  <main>
+    <NuxtPage />
+  </main>
 
-    <SiteFooter />
-  </div>
+  <SiteFooter />
 </template>
