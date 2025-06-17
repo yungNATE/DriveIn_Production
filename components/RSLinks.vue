@@ -52,7 +52,7 @@ ul {
     }
   }
 
-  .icon :deep(svg) {
+  :deep.icon :deep(svg) {
     fill: currentColor;
     transition:
       opacity 0.2s ease,

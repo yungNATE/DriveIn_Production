@@ -33,7 +33,7 @@ onMounted(async () => {
     <span
       class="icon"
       v-html="iconSvg"
-      :style="{ width: `${size}`, height: `${size}` }"
+      :style="{ width: `${size}`, height: `auto` }"
     />
   </NuxtLink>
 </template>
