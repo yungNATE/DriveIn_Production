@@ -11,7 +11,7 @@
       </div>
       <div class="menu-links">
         <ul class="special-links">
-          <li><SpecialLink to="/">Accueil</SpecialLink></li>
+          <li><SpecialLink to="/about">L'agence</SpecialLink></li>
           <li><SpecialLink to="/projets">Réalisations</SpecialLink></li>
         </ul>
         <Button to="/contact">Nous contacter</Button>

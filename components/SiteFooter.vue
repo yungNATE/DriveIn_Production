@@ -1,9 +1,15 @@
 <template>
   <footer class="site-footer">
     <div class="header">
-      <span class="h1">Envie de sauter le pas ?</span>
+      <h2>Envie de sauter le pas ?</h2>
       <Button to="/contact">Nous contacter</Button>
     </div>
+    <IconLink
+      to="/"
+      icon="driveInProductionIcone"
+      alt="Lien vers l'accueil du site"
+      target="_self"
+    />
     <p>© {{ currentYear }} DriveIn Production</p>
   </footer>
 </template>
