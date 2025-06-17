@@ -5,7 +5,6 @@
         to="https://facebook.com"
         icon="facebookIcon"
         alt="Lien vers la page Facebook"
-        size="1rem"
       />
     </li>
     <li>
@@ -13,7 +12,6 @@
         to="https://twitter.com"
         icon="twitterIcon"
         alt="Lien vers la page Twitter"
-        size="1rem"
       />
     </li>
     <li>
@@ -21,7 +19,6 @@
         to="https://instagram.com"
         icon="instagramIcon"
         alt="Lien vers la page Instagram"
-        size="1rem"
       />
     </li>
     <li>
@@ -29,7 +26,6 @@
         to="https://youtube.com"
         icon="youtubeIcon"
         alt="Lien vers la page Youtube"
-        size="1rem"
       />
     </li>
   </ul>
