@@ -19,7 +19,7 @@
     "clsx": "^2.1.1",
     "entities": "^6.0.0",
     "lucide-vue-next": "^0.516.0",
-    "normalize.css": "^8.0.1",
+    "modern-normalize": "^3.0.1",
     "nuxi": "^3.25.1",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.10",
