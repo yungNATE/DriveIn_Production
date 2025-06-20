@@ -1,0 +1,26 @@
+<script lang="ts" setup>
+const props = defineProps<{
+  src: string;
+  alt: string;
+  customClass: string;
+}>();
+</script>
+
+<template>
+  <div>
+    <BlocImgText :src="src" :alt="alt" :customClass="customClass">
+      <slot />
+      <SpecialLink href="/about">Découvrir l’agence →</SpecialLink>
+    </BlocImgText>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+:deep(.bloc-img-text) {
+  max-width: 700px;
+
+  img {
+    max-height: 200px;
+  }
+}
+</style>
