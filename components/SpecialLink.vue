@@ -19,6 +19,8 @@ defineProps({
   position: relative;
   color: rgba(255, 255, 255, 0.75);
   transition: 0.3s;
+  display: block;
+  width: fit-content;
 
   &::before,
   &::after {

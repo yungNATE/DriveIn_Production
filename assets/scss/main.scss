@@ -1,24 +1,9 @@
 // styles/_base.scss
 
 @use "variables" as *;
+@import "node_modules/modern-normalize/modern-normalize.css";
 
 // Page{ min-height: 100vh }
-html,
-body {
-  height: 100%;
-  margin: 0; /* pour éviter les marges par défaut */
-  padding: 0; /* idem pour les paddings */
-  min-height: 100vh; /* optionnel, min-height viewport height */
-  font-size: 16px;
-}
-#__nuxt {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-main {
-  height: 100%;
-}
 
 body {
   font-family: $font-sanchez-niu;
@@ -60,6 +45,11 @@ a,
   font-weight: $font-weight-black;
   text-decoration: none;
   color: white;
+  margin: 0;
+}
+
+p {
+  color: rgba(255, 255, 255, 0.75);
 }
 
 // Optionnel : styles spécifiques aux liens survolés (hover)

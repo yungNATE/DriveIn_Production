@@ -20,7 +20,7 @@ const props = defineProps<{
   border-radius: 7px;
   filter: drop-shadow(0 0 8px $primary-color-light);
   text-decoration: none;
-  align-self: center;
+  height: fit-content;
   white-space: nowrap;
 
   &:hover {

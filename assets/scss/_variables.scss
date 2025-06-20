@@ -14,3 +14,39 @@ $primary-color-dark: #01152d;
 $secondary-color-dark: #2987c3;
 $primary-color-light: #ffda00;
 $secondary-color-light: #efb401;
+
+// Container mixin
+@mixin container($max-width: 1700px) {
+  max-width: $max-width;
+  margin-inline: auto;
+  padding-inline: 10px;
+}
+
+// Glow mixin
+@mixin glow-discret($color, $blur: 5px) {
+  filter: drop-shadow(0 0 $blur rgba($color, 0.5));
+}
+
+// Utils mixins
+@mixin mediaquery($breakpoint) {
+  @if $breakpoint == "mobile" {
+    @media (max-width: 767px) {
+      @content;
+    }
+  } @else if $breakpoint == "tablet" {
+    @media (min-width: 768px) and (max-width: 1023px) {
+      @content;
+    }
+  } @else if $breakpoint == "desktop" {
+    @media (min-width: 1024px) {
+      @content;
+    }
+  } @else if type-of($breakpoint) == "number" {
+    // Considère que c'est une dimension custom (ex: 600 (px))
+    @media (max-width: #{$breakpoint}px) {
+      @content;
+    }
+  } @else {
+    @warn "Breakpoint '#{$breakpoint}' not recognized.";
+  }
+}

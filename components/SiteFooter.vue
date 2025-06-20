@@ -19,15 +19,17 @@ const currentYear = new Date().getFullYear();
 </script>
 
 <style scoped>
-.header {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 1rem;
-}
-.site-footer {
+footer {
   margin-top: 2rem;
   text-align: center;
   color: #666;
   font-size: 0.9rem;
+  background: black;
+
+  .header {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1rem;
+  }
 }
 </style>
