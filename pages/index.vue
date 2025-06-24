@@ -29,7 +29,7 @@ definePageMeta({
   <section class="presentation">
     <div class="container content">
       <MembreEquipe
-        src="profilPics/sashaProfilPic.png"
+        src="images/profil_pics/sashaProfilPic.png"
         alt="DriveIn Production"
       >
         <h2>Par Sacha Stadtfeld</h2>
@@ -41,7 +41,7 @@ definePageMeta({
         </p>
       </MembreEquipe>
       <MembreEquipe
-        src="profilPics/arthurProfilPic.png"
+        src="images/profil_pics/arthurProfilPic.png"
         alt="DriveIn Production"
         customClass="blue"
       >
@@ -56,23 +56,26 @@ definePageMeta({
     </div>
   </section>
 
-  <section class="partenaires container">
+  <section class="partenaires">
     <h2>Ils nous font confiance</h2>
     <swiper-container
-      slides-per-view="2"
+      slides-per-view="auto"
+      loop="auto"
+      autoplay-delay="0"
+      freemode-enabled="true"
+      style="--swiper-wrapper-transition-timing-function: linear"
+      speed="1500"
       class="swiper-container"
-      style="background-color: blue; padding: 30px"
     >
       <swiper-slide
         v-for="partenaire in partenaires"
         :key="partenaire._id"
         class="swiper-slide"
-        style="background-color: red; margin: 30px"
       >
-        <p style="width: 200px">
+        <p>
           <img
             :src="partenaire.logo"
-            :alt="partenaire.name + ' logo'"
+            :alt="`Logo de ${partenaire.name}`"
             class="partenaire-logo"
           /></p
       ></swiper-slide>
@@ -114,7 +117,7 @@ section.presentation {
   div.content {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: space-between;
     gap: 30px;
   }
 }
@@ -122,6 +125,10 @@ section.presentation {
 section.partenaires {
   @include container;
   display: flex;
+  margin-top: 50px;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-start;
 
   h2 {
     flex: 0 0 auto;
@@ -130,6 +137,33 @@ section.partenaires {
   swiper-container {
     flex: 1 1 auto;
     min-width: 0;
+    width: 5000px;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 15px;
+      height: 100%;
+      opacity: 0.5;
+      z-index: -1;
+      left: 0;
+      background: radial-gradient(
+        ellipse at 0% 50%,
+        rgba($primary-color-light, 50%) 0%,
+        rgba(255, 255, 255, 0) 70%
+      );
+    }
+
+    swiper-slide {
+      width: 75px;
+      margin-inline: 30px;
+      img {
+        display: block;
+        width: 100%;
+      }
+    }
   }
 }
 </style>
