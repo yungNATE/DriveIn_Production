@@ -27,7 +27,7 @@ definePageMeta({
 
 <template>
   <section class="presentation">
-    <div class="content">
+    <div class="container content">
       <MembreEquipe
         src="profilPics/sashaProfilPic.png"
         alt="DriveIn Production"
@@ -83,6 +83,7 @@ definePageMeta({
 <style lang="scss" scoped>
 section.presentation {
   position: relative;
+
   &:before,
   &:after {
     content: "";
@@ -111,7 +112,6 @@ section.presentation {
     );
   }
   div.content {
-    @include container;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
