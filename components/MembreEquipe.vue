@@ -16,6 +16,9 @@ const props = defineProps<{
 </template>
 
 <style lang="scss" scoped>
+div {
+  margin: auto;
+}
 :deep(.bloc-img-text) {
   max-width: 700px;
 
