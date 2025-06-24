@@ -1,4 +1,25 @@
 <script setup>
+import { register } from "swiper/element/bundle";
+register();
+
+const contentType = "partenaires";
+const { data, pending, error } = await useAsyncData(contentType, () =>
+  queryCollection("content").where("path", "LIKE", `/${contentType}%`).all()
+);
+
+const partenaires = computed(() => {
+  if (!data.value) return {};
+
+  const content = data.value;
+
+  return content.map((item) => {
+    return {
+      ...item,
+      ...item.meta, // fusionne les données de meta avec les données principales
+    };
+  });
+});
+
 definePageMeta({
   title: "Accueil",
 });
@@ -33,6 +54,29 @@ definePageMeta({
         </p>
       </MembreEquipe>
     </div>
+  </section>
+
+  <section class="partenaires container">
+    <h2>Ils nous font confiance</h2>
+    <swiper-container
+      slides-per-view="2"
+      class="swiper-container"
+      style="background-color: blue; padding: 30px"
+    >
+      <swiper-slide
+        v-for="partenaire in partenaires"
+        :key="partenaire._id"
+        class="swiper-slide"
+        style="background-color: red; margin: 30px"
+      >
+        <p style="width: 200px">
+          <img
+            :src="partenaire.logo"
+            :alt="partenaire.name + ' logo'"
+            class="partenaire-logo"
+          /></p
+      ></swiper-slide>
+    </swiper-container>
   </section>
 </template>
 
@@ -72,6 +116,20 @@ section.presentation {
     flex-wrap: wrap;
     justify-content: center;
     gap: 30px;
+  }
+}
+
+section.partenaires {
+  @include container;
+  display: flex;
+
+  h2 {
+    flex: 0 0 auto;
+  }
+
+  swiper-container {
+    flex: 1 1 auto;
+    min-width: 0;
   }
 }
 </style>
