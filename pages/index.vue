@@ -1,6 +1,66 @@
 <script setup>
+import { ref, onMounted } from "vue";
 import { register } from "swiper/element/bundle";
 register();
+
+const swiperRef = ref(null);
+
+let duration = 0;
+let distanceRatio = 0;
+let startTimer;
+const isPlaying = ref(true);
+let clickable = true;
+
+const stopAutoplay = () => {
+  const swiper = swiperRef.value.swiper;
+  swiper.setTranslate(swiper.getTranslate());
+  distanceRatio = Math.abs(
+    (swiper.width * swiper.activeIndex + swiper.getTranslate()) / swiper.width
+  );
+  duration = swiper.params.speed * distanceRatio;
+  swiper.autoplay.stop();
+};
+
+const startAutoplay = (delay = duration) => {
+  if (startTimer) clearTimeout(startTimer);
+  startTimer = setTimeout(() => {
+    swiperRef.value.swiper.autoplay.start();
+  }, delay + 400);
+};
+
+const handleTogglePlay = () => {
+  if (!clickable) return;
+  clickable = false;
+
+  const swiper = swiperRef.value.swiper;
+  if (isPlaying.value) {
+    stopAutoplay();
+  } else {
+    const distance = swiper.width * swiper.activeIndex + swiper.getTranslate();
+    duration = distance !== 0 ? duration : 0;
+    swiper.slideTo(swiper.activeIndex, duration);
+    startAutoplay();
+  }
+  isPlaying.value = !isPlaying.value;
+  setTimeout(() => {
+    clickable = true;
+  }, 200);
+};
+
+onMounted(() => {
+  const swiperEl = swiperRef.value;
+  if (swiperEl) {
+    swiperEl.addEventListener("mouseenter", () => {
+      if (isPlaying.value) stopAutoplay();
+    });
+    swiperEl.addEventListener("mouseleave", () => {
+      if (!isPlaying.value) {
+        startAutoplay();
+        isPlaying.value = true;
+      }
+    });
+  }
+});
 
 const contentType = "partenaires";
 const { data, pending, error } = await useAsyncData(contentType, () =>
@@ -8,16 +68,12 @@ const { data, pending, error } = await useAsyncData(contentType, () =>
 );
 
 const partenaires = computed(() => {
-  if (!data.value) return {};
-
+  if (!data.value) return [];
   const content = data.value;
-
-  return content.map((item) => {
-    return {
-      ...item,
-      ...item.meta, // fusionne les données de meta avec les données principales
-    };
-  });
+  return content.map((item) => ({
+    ...item,
+    ...item.meta,
+  }));
 });
 
 definePageMeta({
@@ -59,6 +115,7 @@ definePageMeta({
   <section class="partenaires">
     <h2>Ils nous font confiance</h2>
     <swiper-container
+      ref="swiperRef"
       slides-per-view="auto"
       loop="auto"
       autoplay-delay="0"
@@ -66,6 +123,7 @@ definePageMeta({
       style="--swiper-wrapper-transition-timing-function: linear"
       speed="1500"
       class="swiper-container"
+      autoplay-pause-on-mouse-enter="false"
     >
       <swiper-slide
         v-for="partenaire in partenaires"
@@ -77,8 +135,9 @@ definePageMeta({
             :src="partenaire.logo"
             :alt="`Logo de ${partenaire.name}`"
             class="partenaire-logo"
-          /></p
-      ></swiper-slide>
+          />
+        </p>
+      </swiper-slide>
     </swiper-container>
   </section>
 </template>
@@ -123,7 +182,6 @@ section.presentation {
 }
 
 section.partenaires {
-  @include container;
   display: flex;
   margin-top: 50px;
   align-items: center;
