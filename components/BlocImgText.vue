@@ -2,7 +2,7 @@
 const props = defineProps<{
   src: string;
   alt: string;
-  customClass: string;
+  customClass: string | undefined;
 }>();
 </script>
 
