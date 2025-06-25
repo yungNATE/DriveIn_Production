@@ -2,7 +2,7 @@
 const props = defineProps<{
   src: string;
   alt: string;
-  customClass: string;
+  customClass: string | undefined;
 }>();
 </script>
 
@@ -10,7 +10,7 @@ const props = defineProps<{
   <div>
     <BlocImgText :src="src" :alt="alt" :customClass="customClass">
       <slot />
-      <SpecialLink href="/about">Découvrir l’agence →</SpecialLink>
+      <SpecialLink to="/about">Découvrir l’agence →</SpecialLink>
     </BlocImgText>
   </div>
 </template>
