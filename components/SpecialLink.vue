@@ -1,10 +1,3 @@
-<!-- components/SpecialLink.vue -->
-<template>
-  <NuxtLink :to="to" class="special_link" v-bind="$attrs">
-    <slot />
-  </NuxtLink>
-</template>
-
 <script setup>
 defineProps({
   to: {
@@ -13,6 +6,13 @@ defineProps({
   },
 });
 </script>
+
+<!-- components/SpecialLink.vue -->
+<template>
+  <NuxtLink :to="to" class="special_link" v-bind="$attrs">
+    <slot />
+  </NuxtLink>
+</template>
 
 <style lang="scss" scoped>
 .special_link {
