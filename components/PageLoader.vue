@@ -27,6 +27,11 @@ let nextCallback; // fonction next() qu'on retient
 let minDurationDone = false;
 
 router.beforeEach((to, from, next) => {
+  // Ignore navigation if only the hash changes (e.g., #presentation)
+  if (to.path === from.path && to.hash !== from.hash) {
+    next();
+    return;
+  }
   show.value = true;
   minDurationDone = false;
   targetTitle.value = to.meta.title || "Chargement...";
