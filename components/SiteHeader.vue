@@ -60,6 +60,10 @@ header {
     gap: 4rem;
     flex-wrap: wrap;
     padding: 1rem;
+    backdrop-filter: blur(5px);
+    position: fixed;
+    width: 100%;
+    z-index: 99;
   }
 
   .menu-links {
