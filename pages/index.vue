@@ -82,7 +82,31 @@ definePageMeta({
 </script>
 
 <template>
-  <section class="presentation">
+  <section class="hero">
+    <div class="text">
+      <h1 class="sr-only">DriveIn Production</h1>
+      <img
+        src="`~/assets/icones/driveInProductionIcone.svg`"
+        alt="Logo Drive-In Production"
+      />
+      <p class="h2">
+        Capturons <span class="gold">votre histoire</span>, <br />
+        Captons <span class="blue">vos émotions</span>.
+      </p>
+      <Button to="/contact">Prendre rendez-vous →</Button>
+      <ScrollDown to="presentation"
+        >Découvrir <span class="gold">Drive-In</span></ScrollDown
+      >
+    </div>
+    <ScriptYouTubePlayer
+      video-id="jDQtxlRUf54"
+      :width="500"
+      :height="550"
+      class="video-player"
+    ></ScriptYouTubePlayer>
+  </section>
+
+  <section class="presentation" id="presentation">
     <div class="container content">
       <MembreEquipe
         src="images/profil_pics/sashaProfilPic.png"
@@ -143,6 +167,40 @@ definePageMeta({
 </template>
 
 <style lang="scss" scoped>
+section.hero {
+  padding-inline: 50px;
+  padding-block: 50px;
+  display: flex;
+  justify-content: center;
+  gap: 100px 135px;
+
+  .text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
+
+    img {
+      max-width: 450px;
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  .video-player {
+    width: 550px !important;
+    height: fit-content;
+    filter: drop-shadow(0 0 25px rgba($primary-color-light, 0.5));
+    transition: 0.3s;
+    border-radius: 20px;
+    overflow: hidden;
+
+    &:hover {
+      filter: drop-shadow(0 0 25px $secondary-color-dark);
+    }
+  }
+}
+
 section.presentation {
   position: relative;
 
