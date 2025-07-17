@@ -37,24 +37,36 @@ console.log(props);
   text-decoration: none;
   width: fit-content;
 
+  @include mediaquery("tablet") {
+    display: none;
+  }
+  @include mediaquery("mobile") {
+    display: none;
+  }
+
+  &:hover .arrow-container::before {
+    opacity: 0.9;
+  }
+
   .arrow-container {
     position: relative;
 
     &::before {
       content: "";
       display: block;
-      width: 5rem;
-      height: 5rem;
+      width: 4rem;
+      aspect-ratio: 1/1;
       background-color: transparent;
       position: absolute;
       bottom: 20px;
       left: 50%;
-      transform: translate(-50%, 50%) scale(1.9);
+      transform: translate(-50%, 50%);
       border-radius: 50%;
       background-color: $secondary-color-light;
       filter: blur(25px);
-      opacity: 0.5;
       animation: pulse 3s infinite;
+      opacity: 0.75;
+      transition: opacity 0.3s;
     }
 
     @keyframes pulse {
@@ -72,7 +84,7 @@ console.log(props);
     }
 
     img {
-      width: 2rem;
+      width: 1.5rem;
       height: auto;
       transition: transform 0.3s ease-in-out;
       position: relative;
