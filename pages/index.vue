@@ -11,53 +11,17 @@ let startTimer;
 const isPlaying = ref(true);
 let clickable = true;
 
-const stopAutoplay = () => {
-  const swiper = swiperRef.value.swiper;
-  swiper.setTranslate(swiper.getTranslate());
-  distanceRatio = Math.abs(
-    (swiper.width * swiper.activeIndex + swiper.getTranslate()) / swiper.width
-  );
-  duration = swiper.params.speed * distanceRatio;
-  swiper.autoplay.stop();
-};
-
-const startAutoplay = (delay = duration) => {
-  if (startTimer) clearTimeout(startTimer);
-  startTimer = setTimeout(() => {
-    swiperRef.value.swiper.autoplay.start();
-  }, delay + 400);
-};
-
-const handleTogglePlay = () => {
-  if (!clickable) return;
-  clickable = false;
-
-  const swiper = swiperRef.value.swiper;
-  if (isPlaying.value) {
-    stopAutoplay();
-  } else {
-    const distance = swiper.width * swiper.activeIndex + swiper.getTranslate();
-    duration = distance !== 0 ? duration : 0;
-    swiper.slideTo(swiper.activeIndex, duration);
-    startAutoplay();
-  }
-  isPlaying.value = !isPlaying.value;
-  setTimeout(() => {
-    clickable = true;
-  }, 200);
-};
-
 onMounted(() => {
   const swiperEl = swiperRef.value;
   if (swiperEl) {
     swiperEl.addEventListener("mouseenter", () => {
-      if (isPlaying.value) stopAutoplay();
+      if (isPlaying.value) {
+        swiper.stop();
+        isPlaying.value = false;
+      }
     });
     swiperEl.addEventListener("mouseleave", () => {
-      if (!isPlaying.value) {
-        startAutoplay();
-        isPlaying.value = true;
-      }
+      swiper.start();
     });
   }
 });
@@ -86,10 +50,11 @@ definePageMeta({
     <div class="text">
       <h1 class="sr-only">DriveIn Production</h1>
       <img
+        class="site-logo"
         src="`~/assets/icones/driveInProductionIcone.svg`"
         alt="Logo Drive-In Production"
       />
-      <p class="h2">
+      <p class="h2 accroche">
         Capturons <span class="gold">votre histoire</span>, <br />
         Captons <span class="blue">vos émotions</span>.
       </p>
@@ -172,7 +137,10 @@ section.hero {
   padding-block: 50px;
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 100px 135px;
+  min-height: 100vh;
 
   .text {
     display: flex;
@@ -180,10 +148,14 @@ section.hero {
     align-items: center;
     gap: 50px;
 
-    img {
+    .site-logo {
       max-width: 450px;
       width: 100%;
       height: auto;
+    }
+
+    .accroche {
+      white-space: nowrap;
     }
   }
 
@@ -203,6 +175,7 @@ section.hero {
 
 section.presentation {
   position: relative;
+  margin-bottom: 200px;
 
   &:before,
   &:after {
@@ -245,6 +218,7 @@ section.partenaires {
   align-items: center;
   gap: 10px;
   justify-content: flex-start;
+  margin-inline: 15px;
 
   h2 {
     flex: 0 0 auto;
@@ -275,6 +249,11 @@ section.partenaires {
     swiper-slide {
       width: 75px;
       margin-inline: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: auto;
+
       img {
         display: block;
         width: 100%;
