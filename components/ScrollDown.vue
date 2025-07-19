@@ -8,7 +8,6 @@ const props = defineProps({
 
 // On click, smooth scroll to the anchor
 const anchor = computed(() => `#${props.to}`);
-console.log(props);
 </script>
 
 <template>
