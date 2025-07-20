@@ -1,0 +1,14 @@
+[
+  { "id": "video", "title": "Vidéo", "description": "Projets vidéo" },
+  { "id": "photo", "title": "Photographie", "description": "Projets photo" },
+  {
+    "id": "UX",
+    "title": "UX Design",
+    "description": "S'interesse à l'expérience utilisateur vécue"
+  },
+  {
+    "id": "communication",
+    "title": "Communication",
+    "description": "Tout ce qui touche à la communication visuelle"
+  }
+]
