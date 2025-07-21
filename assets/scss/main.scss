@@ -10,6 +10,11 @@ html {
   scroll-behavior: smooth !important;
 }
 
+::-moz-selection,
+::selection {
+  background: rgba($secondary-color-light, 0.5);
+}
+
 body {
   font-family: $font-sanchez-niu;
   font-weight: $font-weight-normal;

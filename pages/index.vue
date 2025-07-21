@@ -1,8 +1,10 @@
-<script setup>
+<script lang="ts" setup>
 import { ref, onMounted } from "vue";
 import { register } from "swiper/element/bundle";
 register();
+let contentType: string;
 
+// Swiper
 const swiperRef = ref(null);
 
 let duration = 0;
@@ -14,32 +16,56 @@ let clickable = true;
 onMounted(() => {
   const swiperEl = swiperRef.value;
   if (swiperEl) {
-    swiperEl.addEventListener("mouseenter", () => {
-      if (isPlaying.value) {
-        swiper.stop();
-        isPlaying.value = false;
-      }
-    });
-    swiperEl.addEventListener("mouseleave", () => {
-      swiper.start();
-    });
+    // swiperEl.addEventListener("mouseenter", () => {
+    //   if (isPlaying.value) {
+    //     // swiper.stop();
+    //     isPlaying.value = false;
+    //   }
+    // });
+    // swiperEl.addEventListener("mouseleave", () => {
+    //   // swiper.start();
+    // });
   }
 });
 
-const contentType = "partenaires";
-const { data, pending, error } = await useAsyncData(contentType, () =>
-  queryCollection("content").where("path", "LIKE", `/${contentType}%`).all()
+contentType = "partners";
+const {
+  data: partners,
+  pending,
+  error,
+} = await useAsyncData(contentType, () => queryCollectionFlat(contentType));
+
+// Getting tags from content/projects/tags.json
+const { data: tags } = await useAsyncData("tags", () =>
+  import("~/content/projects/tags.json").then((mod) => mod.default)
 );
 
-const partenaires = computed(() => {
-  if (!data.value) return [];
-  const content = data.value;
-  return content.map((item) => ({
-    ...item,
-    ...item.meta,
-  }));
+// Getting all highlighted projects
+contentType = "projects";
+const { data: highlightedProjects } = await useAsyncData(contentType, () =>
+  queryCollectionFlat(contentType, (query: any) =>
+    query.where("highlighted", "IS NOT NULL")
+  )
+);
+
+const currentHighlightedProject = computed(() => {
+  if (!selectedTagId.value || !highlightedProjects.value) return null;
+
+  let currentHighlightedProject = highlightedProjects.value.find(
+    (p) => p.highlighted === selectedTagId.value
+  );
+  // console.log("Current Highlighted Project:", currentHighlightedProject);
+
+  return currentHighlightedProject;
 });
 
+const selectedTagId = ref<string | null>(null);
+
+function handleTagSelect(tagId: string) {
+  selectedTagId.value = tagId;
+}
+
+// Meta
 definePageMeta({
   title: "Accueil",
 });
@@ -101,7 +127,7 @@ definePageMeta({
     </div>
   </section>
 
-  <section class="partenaires">
+  <section class="partners">
     <h2>Ils nous font confiance</h2>
     <swiper-container
       ref="swiperRef"
@@ -115,19 +141,47 @@ definePageMeta({
       autoplay-pause-on-mouse-enter="false"
     >
       <swiper-slide
-        v-for="partenaire in partenaires"
-        :key="partenaire._id"
+        v-for="partner in partners"
+        :key="partner._id"
         class="swiper-slide"
       >
         <p>
           <img
-            :src="partenaire.logo"
-            :alt="`Logo de ${partenaire.name}`"
-            class="partenaire-logo"
+            :src="partner.logo"
+            :alt="`Logo de ${partner.name}`"
+            class="partner-logo"
           />
         </p>
       </swiper-slide>
     </swiper-container>
+  </section>
+
+  <section class="container realisations">
+    <div class="controles">
+      <h3>Quelques réalisations</h3>
+      <p>
+        Un aperçu de ce que nos précédentes collaborations ont permis
+        d'accomplir.
+      </p>
+      <div class="tags">
+        <Tag
+          v-for="tag in tags"
+          :key="tag.id"
+          :tag="tag"
+          @select="handleTagSelect"
+        />
+      </div>
+      <p class="tagDescription">Lorem ipsum</p>
+      <NuxtLink to="/projets" class="button">
+        Voir toutes les réalisations →
+      </NuxtLink>
+    </div>
+    <div class="realisation">
+      <RealisationHome
+        v-if="currentHighlightedProject"
+        :project="currentHighlightedProject"
+      />
+    </div>
   </section>
 </template>
 
@@ -212,13 +266,14 @@ section.presentation {
   }
 }
 
-section.partenaires {
+section.partners {
   display: flex;
   margin-top: 50px;
   align-items: center;
   gap: 10px;
   justify-content: flex-start;
   margin-inline: 15px;
+  margin-bottom: 200px;
 
   h2 {
     flex: 0 0 auto;
@@ -259,6 +314,36 @@ section.partenaires {
         width: 100%;
       }
     }
+  }
+}
+
+section.realisations {
+  margin-top: 100px;
+  text-align: center;
+  display: flex;
+  justify-content: space-around;
+
+  .controles {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .tags {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .tagDescription {
+    margin-bottom: 20px;
+    color: #666;
+  }
+
+  .button {
+    margin-bottom: 30px;
   }
 }
 </style>
