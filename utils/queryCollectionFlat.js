@@ -1,4 +1,3 @@
-
 /**
  * Remonte les propriétés meta d'un niveau dans chaque item
  * @param {Array} items - Tableau d'items avec propriété meta
@@ -45,7 +44,7 @@ export async function queryCollectionFlat(contentType, queryBuilder = null) {
     // Auto-flatten des meta
     return flattenMeta(data);
   } catch (error) {
-    console.error(Erreur lors de la récupération de ${contentType}:, error);
+    console.error("Erreur lors de la récupération de ${contentType}:", error);
     throw error;
   }
 }
