@@ -8,9 +8,8 @@ partner:
 
 highlighted: "communication"
 
-tags:
+tagIDs:
   - communication
   - UX
-  - institutionnelle
   - interview
 ---

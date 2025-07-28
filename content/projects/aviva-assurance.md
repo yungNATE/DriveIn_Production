@@ -6,7 +6,8 @@ presentation: >
 video: "dQw4w9WgXcQ"
 partner:
   - Axa France
-tags:
+
+tagIDs:
   - communication
   - UX
   - institutionnelle

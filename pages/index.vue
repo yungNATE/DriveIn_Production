@@ -36,7 +36,7 @@ const {
 } = await useAsyncData(contentType, () => queryCollectionFlat(contentType));
 
 // Getting tags from content/projects/tags.json
-const { data: tags } = await useAsyncData("tags", () =>
+const { data: allTags } = await useAsyncData("allTags", () =>
   import("~/content/projects/tags.json").then((mod) => mod.default)
 );
 
@@ -52,7 +52,8 @@ const currentHighlightedProject = computed(() => {
   if (!selectedTagId.value || !highlightedProjects.value) return null;
 
   let currentHighlightedProject = highlightedProjects.value.find(
-    (p) => p.highlighted === selectedTagId.value
+    (highlightedProjects) =>
+      highlightedProjects.highlighted === selectedTagId.value
   );
   // console.log("Current Highlighted Project:", currentHighlightedProject);
 
@@ -64,6 +65,13 @@ const selectedTagId = ref<string | null>(null);
 function handleTagSelect(tagId: string) {
   selectedTagId.value = tagId;
 }
+
+// Etapes Projet
+const { data: etapesProjetAccueil } = await useAsyncData(
+  "etapesProjetAccueil",
+  () => queryCollectionFlat("etapesProjetAccueil")
+);
+console.log("Etapes Projet:", etapesProjetAccueil.value);
 
 // Meta
 definePageMeta({
@@ -156,7 +164,7 @@ definePageMeta({
     </swiper-container>
   </section>
 
-  <section class="container realisations">
+  <section class="realisations container">
     <div class="controles">
       <h3>Quelques réalisations</h3>
       <p>
@@ -164,23 +172,29 @@ definePageMeta({
         d'accomplir.
       </p>
       <div class="tags">
-        <Tag
-          v-for="tag in tags"
-          :key="tag.id"
-          :tag="tag"
-          @select="handleTagSelect"
-        />
+        <Tag v-for="tag in allTags" :tag="tag" @select="handleTagSelect" />
       </div>
       <p class="tagDescription">Lorem ipsum</p>
       <NuxtLink to="/projets" class="button">
         Voir toutes les réalisations →
       </NuxtLink>
     </div>
-    <div class="realisation">
-      <RealisationHome
-        v-if="currentHighlightedProject"
-        :project="currentHighlightedProject"
-      />
+    <RealisationHome
+      v-if="currentHighlightedProject"
+      :project="currentHighlightedProject"
+    />
+  </section>
+
+  <section class="etapesProjet">
+    <h2>Créons ensemble votre vidéo</h2>
+    <div class="etapes container">
+      <div v-for="etape in etapesProjetAccueil" class="etape">
+        <h3 class="h1">{{ etape.title }}</h3>
+        <div class="description">
+          <img :src="etape.img" alt="" />
+          <p class="h3">{{ etape.description }}</p>
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -319,14 +333,16 @@ section.partners {
 
 section.realisations {
   margin-top: 100px;
-  text-align: center;
   display: flex;
   justify-content: space-around;
+  align-items: flex-start;
+  gap: 100px;
 
   .controles {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
+    justify-content: flex-start;
     gap: 20px;
   }
 
@@ -344,6 +360,44 @@ section.realisations {
 
   .button {
     margin-bottom: 30px;
+  }
+}
+
+section.etapesProjet {
+  background: rgb(53, 0, 0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100vh;
+  padding-block: 100px;
+
+  &::after {
+    content: ""; // For centering element
+  }
+
+  .etapes {
+    padding-inline: 150px;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+
+    .etape {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+
+      .description {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        background-color: black;
+        @include glow-discret(white);
+        max-width: 400px;
+        padding: 15px;
+        border-radius: 12px;
+      }
+    }
   }
 }
 </style>

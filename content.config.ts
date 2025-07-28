@@ -21,5 +21,14 @@ export default defineContentConfig({
         description: z.string(),
       }),
     }),
+    etapesProjetAccueil: defineCollection({
+      source: "etapesProjetAccueil/*.md",
+      type: "data",
+      schema: z.object({
+        title: z.string(),
+        description: z.string(),
+        img: z.string(),
+      }),
+    }),
   },
 });

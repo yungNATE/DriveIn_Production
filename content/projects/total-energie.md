@@ -8,7 +8,7 @@ partner:
 
 highlighted: "UX"
 
-tags:
+tagIDs:
   - communication
   - UX
   - institutionnelle
