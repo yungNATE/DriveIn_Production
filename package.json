@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "nuxi dev",
+    "dev": "nuxt dev --inspect",
     "clean": "rimraf .nuxt .output",
     "build": "npm run clean && nuxi generate",
     "preview": "npm run build && nuxi preview",

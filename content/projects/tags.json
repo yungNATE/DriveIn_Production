@@ -10,5 +10,15 @@
     "id": "communication",
     "title": "Communication",
     "description": "Tout ce qui touche à la communication visuelle"
+  },
+  {
+    "id": "interview",
+    "title": "Interview",
+    "description": "Projets d'interviews et de témoignages"
+  },
+  {
+    "id": "institutionnelle",
+    "title": "Institutionnelle",
+    "description": "Projets institutionnels et corporatifs"
   }
 ]

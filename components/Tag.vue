@@ -3,7 +3,7 @@ const props = defineProps<{
   tag: {
     id: string;
     title: string;
-    isInactive: boolean;
+    isInactive?: boolean;
     hidden: boolean;
   };
 }>();
@@ -14,6 +14,7 @@ defineEmits(["select"]);
 <template>
   <span class="tag" @click="$emit('select', tag.id)">
     <span>#{{ tag.title }}</span>
+    <span v-if="tag.isInactive == true">isInative</span>
     <svg
       width="10"
       height="10"
@@ -36,6 +37,7 @@ defineEmits(["select"]);
   @include glow-discret($primary-color-light);
   background: black;
   padding: 3px 10px;
+  width: fit-content;
 
   display: flex;
   gap: 5px;

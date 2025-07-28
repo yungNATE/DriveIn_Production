@@ -1,4 +1,10 @@
 <script lang="ts" setup>
+type Tag = {
+  id: string;
+  title: string;
+  description: string;
+};
+
 const props = defineProps<{
   project: {
     slug: string;
@@ -7,10 +13,22 @@ const props = defineProps<{
     partner: string;
     path: string;
     video: string;
+    tagIDs: string[]; // ← important : ce sont des strings
   };
 }>();
 
-// get partners description from partners content
+// Tags here are only name, get tags from content/projects/tags.json and replace theme with the full tag object
+const { data: allTags } = await useAsyncData<Tag[]>("tags", () =>
+  import("~/content/projects/tags.json").then((mod) => mod.default)
+);
+const tags = computed(() => {
+  const tagIds = props.project.tagIDs;
+  const all = allTags.value ?? [];
+
+  return all.filter((tag) => tagIds.includes(tag.id));
+});
+
+// Get partners description from partners content
 const { data: partners } = await useAsyncData("partners-realisation", () =>
   queryCollectionFlat("partners", (query: any) =>
     query.where("name", "LIKE", props.project.partner[0])
@@ -32,7 +50,9 @@ const { data: partners } = await useAsyncData("partners-realisation", () =>
 
         <SpecialLink :to="project.path">Les coulisses du projet</SpecialLink>
       </div>
-      <div class="tags"></div>
+      <div class="tags">
+        <Tag v-for="tag in tags" :tag="tag" isInactive="true" />
+      </div>
     </div>
     <ScriptYouTubePlayer
       :video-id="project.video"
@@ -41,18 +61,43 @@ const { data: partners } = await useAsyncData("partners-realisation", () =>
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .realisationAccueil {
-  padding: 20px;
+  padding: 30px;
   border-radius: 8px;
   background: black;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-block: 100px;
-  margin-bottom: 20px;
   width: fit-content;
+  max-width: 1000px;
   @include glow-discret($primary-color-light);
   text-align: left;
+  // container-type: inline-size;
 
   display: flex;
+  flex-wrap: wrap;
+  gap: 50px;
+
+  .text {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 50px;
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  }
+
+  .video-player {
+    max-width: 500px;
+    width: 100%;
+  }
+
+  // container break at 500px width
+  @container (max-width: 1500px) {
+    background-color: red !important;
+  }
 }
 </style>
