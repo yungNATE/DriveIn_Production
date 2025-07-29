@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
 import { register } from "swiper/element/bundle";
+import { gsap } from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
+
 register();
 let contentType: string;
 
@@ -71,8 +74,74 @@ const { data: etapesProjetAccueil } = await useAsyncData(
   "etapesProjetAccueil",
   () => queryCollectionFlat("etapesProjetAccueil")
 );
-console.log("Etapes Projet:", etapesProjetAccueil.value);
 
+gsap.registerPlugin(ScrollTrigger);
+const sectionProjet = ref<HTMLElement | null>(null);
+
+onMounted(async () => {
+  await nextTick();
+  if (!sectionProjet.value) return;
+
+  const slides = sectionProjet.value.querySelectorAll(".etape");
+
+  const sectionTop = sectionProjet.value.offsetTop;
+  const sectionHeight = sectionProjet.value.offsetHeight;
+
+  // Section pinned sur la durée totale
+  let waitLongerBeforeEnd = 0;
+  let totalScrollLength = window.innerHeight * slides.length;
+  // event listener scroll console log totalScrollLength
+  // window.addEventListener("scroll", () => {
+  //   console.log(
+  //     "Total Scroll Length:",
+  //     totalScrollLength,
+  //     "scrollY:",
+  //     window.scrollY
+  //   );
+  // });
+
+  let pinTrigger = ScrollTrigger.create({
+    trigger: sectionProjet.value,
+    start: "top top",
+    end: () => `+=${totalScrollLength}`,
+    pin: true,
+    scrub: true,
+    onLeave: (self) => {
+      // L'utilisateur a scrollé vers le bas : on fige la section à son état final
+      gsap.set(sectionProjet.value, { autoAlpha: 1, y: 0 });
+      self.kill(); // ← Supprime le ScrollTrigger, donc il ne rejoue pas à la remontée
+    },
+  });
+
+  gsap.set(slides[0], { autoAlpha: 1, y: 0 });
+
+  // Animation slide par slide
+  slides.forEach((slide, i) => {
+    const trigger = ScrollTrigger.create({
+      trigger: slide,
+      start: () => `top+=${window.innerHeight * i} top`,
+      end: () => `top+=${window.innerHeight * (i + 1)} top`,
+      scrub: true,
+      onLeave: (self) => {
+        // L'utilisateur a scrollé vers le bas : on fige le slide à son état final
+        gsap.set(slide, { autoAlpha: 1, y: 0 });
+        self.kill(); // ← Supprime le ScrollTrigger, donc il ne rejoue pas à la remontée
+      },
+    });
+
+    gsap.fromTo(
+      slide,
+      { autoAlpha: 0, y: 100 },
+      {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.5,
+        ease: "power2.out",
+        scrollTrigger: trigger,
+      }
+    );
+  });
+});
 // Meta
 definePageMeta({
   title: "Accueil",
@@ -185,10 +254,15 @@ definePageMeta({
     />
   </section>
 
-  <section class="etapesProjet">
+  <section ref="sectionProjet" class="etapesProjet">
     <h2>Créons ensemble votre vidéo</h2>
     <div class="etapes container">
-      <div v-for="etape in etapesProjetAccueil" class="etape">
+      <div
+        v-for="(etape, i) in etapesProjetAccueil"
+        :key="i"
+        class="etape"
+        :class="`etape-${i}`"
+      >
         <h3 class="h1">{{ etape.title }}</h3>
         <div class="description">
           <img :src="etape.img" alt="" />
@@ -196,6 +270,45 @@ definePageMeta({
         </div>
       </div>
     </div>
+  </section>
+
+  <section class="dev container">
+    <p>
+      Dolore dolor qui qui deserunt sint deserunt aliquip incididunt cupidatat
+      in ex nulla. Anim occaecat voluptate reprehenderit id elit reprehenderit
+      officia ut aute do ut. Velit dolore tempor duis cillum elit. Adipisicing
+      deserunt amet sunt consequat dolor et reprehenderit. Culpa officia anim
+      aute laborum tempor. Eiusmod incididunt enim tempor voluptate mollit
+      commodo sit occaecat magna laboris. Labore ea excepteur esse officia ipsum
+      enim laborum proident sunt incididunt consequat pariatur.
+    </p>
+    <p>
+      Dolore dolor qui qui deserunt sint deserunt aliquip incididunt cupidatat
+      in ex nulla. Anim occaecat voluptate reprehenderit id elit reprehenderit
+      officia ut aute do ut. Velit dolore tempor duis cillum elit. Adipisicing
+      deserunt amet sunt consequat dolor et reprehenderit. Culpa officia anim
+      aute laborum tempor. Eiusmod incididunt enim tempor voluptate mollit
+      commodo sit occaecat magna laboris. Labore ea excepteur esse officia ipsum
+      enim laborum proident sunt incididunt consequat pariatur.
+    </p>
+    <p>
+      Dolore dolor qui qui deserunt sint deserunt aliquip incididunt cupidatat
+      in ex nulla. Anim occaecat voluptate reprehenderit id elit reprehenderit
+      officia ut aute do ut. Velit dolore tempor duis cillum elit. Adipisicing
+      deserunt amet sunt consequat dolor et reprehenderit. Culpa officia anim
+      aute laborum tempor. Eiusmod incididunt enim tempor voluptate mollit
+      commodo sit occaecat magna laboris. Labore ea excepteur esse officia ipsum
+      enim laborum proident sunt incididunt consequat pariatur.
+    </p>
+    <p>
+      Dolore dolor qui qui deserunt sint deserunt aliquip incididunt cupidatat
+      in ex nulla. Anim occaecat voluptate reprehenderit id elit reprehenderit
+      officia ut aute do ut. Velit dolore tempor duis cillum elit. Adipisicing
+      deserunt amet sunt consequat dolor et reprehenderit. Culpa officia anim
+      aute laborum tempor. Eiusmod incididunt enim tempor voluptate mollit
+      commodo sit occaecat magna laboris. Labore ea excepteur esse officia ipsum
+      enim laborum proident sunt incididunt consequat pariatur.
+    </p>
   </section>
 </template>
 
@@ -369,7 +482,7 @@ section.etapesProjet {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  height: 100vh;
+  min-height: 100vh;
   padding-block: 100px;
 
   &::after {
