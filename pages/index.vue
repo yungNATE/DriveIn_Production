@@ -58,7 +58,6 @@ const currentHighlightedProject = computed(() => {
     (highlightedProjects) =>
       highlightedProjects.highlighted === selectedTagId.value
   );
-  // console.log("Current Highlighted Project:", currentHighlightedProject);
 
   return currentHighlightedProject;
 });
@@ -142,6 +141,21 @@ onMounted(async () => {
     );
   });
 });
+
+// Conseils
+const { data: advices } = await useAsyncData("conseils", () =>
+  queryCollectionFlat("conseils")
+);
+
+const currentAdvice = ref(advices.value ? advices.value[0] : null); // defaults to first advice
+
+function handleAdviceSelect(advice: any) {
+  console.log(advice);
+
+  // change current advice to the selected advice
+  currentAdvice.value = advice;
+}
+
 // Meta
 definePageMeta({
   title: "Accueil",
@@ -248,10 +262,15 @@ definePageMeta({
         Voir toutes les réalisations →
       </NuxtLink>
     </div>
-    <RealisationHome
-      v-if="currentHighlightedProject"
-      :project="currentHighlightedProject"
-    />
+    <div class="realisationHomeWrapper">
+      <Transition name="fade" mode="out-in">
+        <RealisationHome
+          v-if="currentHighlightedProject"
+          :project="currentHighlightedProject"
+          :key="currentHighlightedProject.id"
+        />
+      </Transition>
+    </div>
   </section>
 
   <section ref="sectionProjet" class="etapesProjet">
@@ -272,43 +291,45 @@ definePageMeta({
     </div>
   </section>
 
-  <section class="dev container">
-    <p>
-      Dolore dolor qui qui deserunt sint deserunt aliquip incididunt cupidatat
-      in ex nulla. Anim occaecat voluptate reprehenderit id elit reprehenderit
-      officia ut aute do ut. Velit dolore tempor duis cillum elit. Adipisicing
-      deserunt amet sunt consequat dolor et reprehenderit. Culpa officia anim
-      aute laborum tempor. Eiusmod incididunt enim tempor voluptate mollit
-      commodo sit occaecat magna laboris. Labore ea excepteur esse officia ipsum
-      enim laborum proident sunt incididunt consequat pariatur.
-    </p>
-    <p>
-      Dolore dolor qui qui deserunt sint deserunt aliquip incididunt cupidatat
-      in ex nulla. Anim occaecat voluptate reprehenderit id elit reprehenderit
-      officia ut aute do ut. Velit dolore tempor duis cillum elit. Adipisicing
-      deserunt amet sunt consequat dolor et reprehenderit. Culpa officia anim
-      aute laborum tempor. Eiusmod incididunt enim tempor voluptate mollit
-      commodo sit occaecat magna laboris. Labore ea excepteur esse officia ipsum
-      enim laborum proident sunt incididunt consequat pariatur.
-    </p>
-    <p>
-      Dolore dolor qui qui deserunt sint deserunt aliquip incididunt cupidatat
-      in ex nulla. Anim occaecat voluptate reprehenderit id elit reprehenderit
-      officia ut aute do ut. Velit dolore tempor duis cillum elit. Adipisicing
-      deserunt amet sunt consequat dolor et reprehenderit. Culpa officia anim
-      aute laborum tempor. Eiusmod incididunt enim tempor voluptate mollit
-      commodo sit occaecat magna laboris. Labore ea excepteur esse officia ipsum
-      enim laborum proident sunt incididunt consequat pariatur.
-    </p>
-    <p>
-      Dolore dolor qui qui deserunt sint deserunt aliquip incididunt cupidatat
-      in ex nulla. Anim occaecat voluptate reprehenderit id elit reprehenderit
-      officia ut aute do ut. Velit dolore tempor duis cillum elit. Adipisicing
-      deserunt amet sunt consequat dolor et reprehenderit. Culpa officia anim
-      aute laborum tempor. Eiusmod incididunt enim tempor voluptate mollit
-      commodo sit occaecat magna laboris. Labore ea excepteur esse officia ipsum
-      enim laborum proident sunt incididunt consequat pariatur.
-    </p>
+  <section class="advices container">
+    <div class="header">
+      <h2>Nos conseils avant de lancer votre projet</h2>
+      <p>
+        Voici quelques points clés à connaître afin d’entamer vos démarches le
+        plus sereinement possible.
+      </p>
+    </div>
+    <div class="content">
+      <Transition name="fade" mode="out-in">
+        <BlocImgText :key="currentAdvice?.id" :src="currentAdvice?.img">
+          <h3>{{ currentAdvice?.question }}</h3>
+          <p>{{ currentAdvice?.description }}</p>
+        </BlocImgText>
+      </Transition>
+      <swiper-container
+        ref="swiperRef"
+        slides-per-view="3"
+        class="swiper-container"
+        navigation="true"
+        pagination="true"
+      >
+        <swiper-slide
+          v-for="advice in advices"
+          :key="advice._id"
+          class="swiper-slide"
+        >
+          <div class="question">
+            <button
+              class="h3 unstyled-button"
+              :id="advice.id"
+              @click="() => handleAdviceSelect(advice)"
+            >
+              {{ advice.question }}
+            </button>
+          </div>
+        </swiper-slide>
+      </swiper-container>
+    </div>
   </section>
 </template>
 
@@ -510,6 +531,31 @@ section.etapesProjet {
         padding: 15px;
         border-radius: 12px;
       }
+    }
+  }
+}
+
+section.advices {
+  margin-top: 100px;
+  display: flex;
+  gap: 50px;
+
+  .header {
+    h2 {
+      margin-bottom: 20px;
+    }
+    p {
+      max-width: 600px;
+      color: #666;
+    }
+  }
+
+  .content {
+    button {
+      color: white;
+    }
+    .swiper {
+      width: 100%;
     }
   }
 }
