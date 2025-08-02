@@ -8,7 +8,7 @@ register();
 let contentType: string;
 
 // Swiper
-const swiperRef = ref(null);
+const swiperRef = ref<HTMLElement | null>(null);
 
 let duration = 0;
 let distanceRatio = 0;
@@ -16,9 +16,15 @@ let startTimer;
 const isPlaying = ref(true);
 let clickable = true;
 
-onMounted(() => {
+onMounted(async () => {
   const swiperEl = swiperRef.value;
   if (swiperEl) {
+    if (swiperEl) {
+      const { injectSwiperPaginationCurrentStyle } = await import(
+        "~/utils/inject-swiper-style.js"
+      );
+      injectSwiperPaginationCurrentStyle(swiperEl);
+    }
     // swiperEl.addEventListener("mouseenter", () => {
     //   if (isPlaying.value) {
     //     // swiper.stop();
@@ -301,35 +307,60 @@ definePageMeta({
     </div>
     <div class="content">
       <Transition name="fade" mode="out-in">
-        <BlocImgText :key="currentAdvice?.id" :src="currentAdvice?.img">
+        <BlocImgText
+          :key="currentAdvice?.id"
+          :src="currentAdvice?.img"
+          :alt="currentAdvice?.question || ''"
+          :customClass="undefined"
+        >
           <h3>{{ currentAdvice?.question }}</h3>
           <p>{{ currentAdvice?.description }}</p>
         </BlocImgText>
       </Transition>
-      <swiper-container
-        ref="swiperRef"
-        class="swiper-container"
-        navigation="true"
-        pagination="true"
-        slides-per-view="4"
-        slides-per-group="2"
-      >
-        <swiper-slide
-          v-for="advice in advices"
-          :key="advice._id"
-          class="swiper-slide"
+      <div class="swiper">
+        <swiper-container
+          ref="swiperRef"
+          class="swiper-container"
+          navigation-next-el=".swiper-custom-next"
+          navigation-prev-el=".swiper-custom-prev"
+          pagination-type="fraction"
+          slides-per-view="4"
+          slides-per-group="4"
+          grid-rows="2"
+          grid-fill="row"
+          space-between="20"
         >
-          <div class="question">
-            <button
-              class="h3 unstyled-button"
-              :id="advice.id"
-              @click="() => handleAdviceSelect(advice)"
-            >
-              {{ advice.question }}
-            </button>
-          </div>
-        </swiper-slide>
-      </swiper-container>
+          <swiper-slide
+            v-for="advice in advices"
+            :key="advice._id"
+            class="swiper-slide"
+          >
+            <div class="question">
+              <button
+                class="h3 unstyled-button"
+                :id="advice.id"
+                @click="() => handleAdviceSelect(advice)"
+              >
+                {{ advice.question }}
+              </button>
+            </div>
+          </swiper-slide>
+        </swiper-container>
+        <div class="swiper-custom-nav">
+          <button
+            class="swiper-custom-prev unstyled-button rotate-left"
+            aria-label="Précédent"
+          >
+            <ArrowGlow orientation="left"></ArrowGlow>
+          </button>
+          <button
+            class="swiper-custom-next unstyled-button rotate-right"
+            aria-label="Suivant"
+          >
+            <ArrowGlow orientation="right"></ArrowGlow>
+          </button>
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -553,12 +584,50 @@ section.advices {
 
   .content {
     max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    gap: 100px;
+
+    .swiper {
+      swiper-container {
+        width: 100%;
+
+        swiper-slide button {
+          background: black;
+          @include glow-discret($primary-color-light);
+          padding: 20px;
+          margin: 5px;
+          border-radius: 12px;
+        }
+
+        &::part(container) {
+          padding-bottom: 10px;
+        }
+        &::part(pagination) {
+          position: absolute;
+          top: 100%;
+          right: 0;
+          width: -moz-fit-content;
+          width: fit-content;
+          left: unset;
+          height: fit-content;
+          transform: translateY(-100%);
+        }
+        &::part(pagination-current) {
+          color: $primary-color-light;
+        }
+      }
+
+      .swiper-custom-nav {
+        display: flex;
+        gap: 60px;
+        width: fit-content;
+        margin-left: 60px;
+      }
+    }
 
     button {
       color: white;
-    }
-    .swiper {
-      width: 100%;
     }
   }
 }

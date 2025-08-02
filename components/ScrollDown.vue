@@ -17,9 +17,8 @@ const anchor = computed(() => `#${props.to}`);
     aria-label="Scroll jusqu'au contenu de la page"
     :href="anchor"
   >
-    <div class="arrow-container">
-      <img src="~/assets/icones/arrow.svg" alt="" />
-    </div>
+    <ArrowGlow></ArrowGlow>
+
     <p class="h3">
       <slot></slot>
     </p>
@@ -43,56 +42,14 @@ const anchor = computed(() => `#${props.to}`);
     display: none;
   }
 
-  &:hover .arrow-container::before {
-    opacity: 0.9;
-  }
-
-  .arrow-container {
-    position: relative;
-
-    &::before {
-      content: "";
-      display: block;
-      width: 4rem;
-      aspect-ratio: 1/1;
-      background-color: transparent;
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translate(-50%, 50%);
-      border-radius: 50%;
-      background-color: $secondary-color-light;
-      filter: blur(25px);
-      animation: pulse 3s infinite;
-      opacity: 0.75;
-      transition: opacity 0.3s;
+  &:hover {
+    :deep(.arrow-container::before) {
+      opacity: 0.9;
     }
 
-    @keyframes pulse {
-      0% {
-        transform: translate(-50%, 50%);
-      }
-
-      50% {
-        transform: translate(-50%, 50%) scale(1.2);
-      }
-
-      100% {
-        transform: translate(-50%, 50%) scale(1);
-      }
+    :deep(img) {
+      transform: translateY(5px);
     }
-
-    img {
-      width: 1.5rem;
-      height: auto;
-      transition: transform 0.3s ease-in-out;
-      position: relative;
-      z-index: 1;
-    }
-  }
-
-  &:hover img {
-    transform: translateY(5px);
   }
 
   p {

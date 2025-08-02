@@ -19,7 +19,7 @@ body {
   font-family: $font-sanchez-niu;
   font-weight: $font-weight-normal;
   line-height: 1.5;
-  color: #222;
+  color: white;
   background-color: black;
   margin: 0;
 
@@ -111,9 +111,20 @@ a:focus {
   border: none;
   padding: 0;
   margin: 0;
-  font: inherit;
   color: inherit;
   cursor: pointer;
+}
+
+.rotate {
+  &-right {
+    transform: rotate(-90deg);
+  }
+  &-left {
+    transform: rotate(90deg);
+  }
+  &-up {
+    transform: rotate(180deg);
+  }
 }
 
 // Animations
