@@ -1,5 +1,5 @@
 ---
-title: "Etape 2"
-description: "Définissons ensemble l'étape 2 de votre projet"
+title: "Concept créatif"
+description: "Imaginons l’histoire et le style qui donneront vie à votre projet."
 img: "/images/icones/handshake.png"
 ---
