@@ -30,5 +30,14 @@ export default defineContentConfig({
         img: z.string(),
       }),
     }),
+    conseils: defineCollection({
+      source: "conseils/*.md",
+      type: "data",
+      schema: z.object({
+        title: z.string(),
+        description: z.string(),
+        img: z.string(),
+      }),
+    }),
   },
 });
