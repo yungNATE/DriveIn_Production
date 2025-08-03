@@ -11,11 +11,12 @@
   position: relative;
   width: fit-content;
   height: fit-content;
+  user-select: none;
 
   &::before {
     content: "";
     display: block;
-    width: 4rem;
+    width: 3rem;
     aspect-ratio: 1/1;
     background-color: transparent;
     position: absolute;

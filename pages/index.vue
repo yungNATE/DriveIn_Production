@@ -25,18 +25,10 @@ onMounted(async () => {
       );
       injectSwiperPaginationCurrentStyle(swiperEl);
     }
-    // swiperEl.addEventListener("mouseenter", () => {
-    //   if (isPlaying.value) {
-    //     // swiper.stop();
-    //     isPlaying.value = false;
-    //   }
-    // });
-    // swiperEl.addEventListener("mouseleave", () => {
-    //   // swiper.start();
-    // });
   }
 });
 
+// Partenaires
 contentType = "partners";
 const {
   data: partners,
@@ -95,57 +87,89 @@ onMounted(async () => {
   // Section pinned sur la durée totale
   let waitLongerBeforeEnd = 0;
   let totalScrollLength = window.innerHeight * slides.length;
-  // event listener scroll console log totalScrollLength
-  // window.addEventListener("scroll", () => {
-  //   console.log(
-  //     "Total Scroll Length:",
-  //     totalScrollLength,
-  //     "scrollY:",
-  //     window.scrollY
-  //   );
-  // });
+
+  let canScrollSwiper = false;
 
   let pinTrigger = ScrollTrigger.create({
     trigger: sectionProjet.value,
     start: "top top",
-    end: () => `+=${totalScrollLength}`,
+    end: () => `top+=${window.innerHeight * slides.length} top`,
     pin: true,
     scrub: true,
-    onLeave: (self) => {
-      // L'utilisateur a scrollé vers le bas : on fige la section à son état final
-      gsap.set(sectionProjet.value, { autoAlpha: 1, y: 0 });
-      self.kill(); // ← Supprime le ScrollTrigger, donc il ne rejoue pas à la remontée
+    markers: true,
+    onEnter: () => {
+      canScrollSwiper = false;
+      setTimeout(() => {
+        canScrollSwiper = true;
+      }, 1000);
+
+      // Cacher le <nav> pendant le pin
+      const nav = document.querySelector("nav");
+      if (nav) nav.classList.add("hidden");
+      if (sectionProjet.value) {
+        sectionProjet.value.addEventListener(
+          "wheel",
+          onWheel as EventListener,
+          { passive: false }
+        );
+      }
+    },
+    onLeave: () => {
+      // Réafficher le <nav> à la sortie du pin
+      const nav = document.querySelector("nav");
+      if (nav) nav.classList.remove("hidden");
+      if (sectionProjet.value) {
+        sectionProjet.value.removeEventListener(
+          "wheel",
+          onWheel as EventListener
+        );
+      }
     },
   });
 
-  gsap.set(slides[0], { autoAlpha: 1, y: 0 });
+  function onWheel(e: WheelEvent) {
+    if (!sectionProjet.value) return;
+    if (!canScrollSwiper) return;
 
-  // Animation slide par slide
-  slides.forEach((slide, i) => {
-    const trigger = ScrollTrigger.create({
-      trigger: slide,
-      start: () => `top+=${window.innerHeight * i} top`,
-      end: () => `top+=${window.innerHeight * (i + 1)} top`,
-      scrub: true,
-      onLeave: (self) => {
-        // L'utilisateur a scrollé vers le bas : on fige le slide à son état final
-        gsap.set(slide, { autoAlpha: 1, y: 0 });
-        self.kill(); // ← Supprime le ScrollTrigger, donc il ne rejoue pas à la remontée
-      },
-    });
+    const swiperEl = sectionProjet.value.querySelector(
+      "swiper-container"
+    ) as any;
 
-    gsap.fromTo(
-      slide,
-      { autoAlpha: 0, y: 100 },
-      {
-        autoAlpha: 1,
-        y: 0,
-        duration: 0.5,
-        ease: "power2.out",
-        scrollTrigger: trigger,
-      }
-    );
-  });
+    if (!swiperEl || !swiperEl.swiper) return;
+    e.preventDefault();
+
+    const swiperInstance = swiperEl.swiper;
+    const currentIndex = swiperInstance.activeIndex;
+    const totalSlides = swiperInstance.slides.length;
+    let isScrollingDown = e.deltaY > 0;
+    let isScrollingUp = e.deltaY < 0;
+    let isLastSlide = currentIndex >= totalSlides - 1;
+
+    if (isScrollingDown) {
+      swiperInstance.slideNext();
+    } else if (isScrollingUp) {
+      swiperInstance.slidePrev();
+    }
+
+    // Remove du pin à la dernière slide
+    if (isScrollingDown && isLastSlide) {
+      const sectionRect = sectionProjet.value.getBoundingClientRect();
+      const scrollY = window.scrollY || window.pageYOffset;
+      const sectionBottom = sectionRect.bottom + scrollY;
+      const targetScroll = sectionBottom - window.innerHeight;
+
+      window.scrollTo({ top: targetScroll, behavior: "auto" }); // Evite le jump en fin de section
+      pinTrigger.kill();
+      sectionProjet.value.removeEventListener(
+        "wheel",
+        onWheel as EventListener
+      );
+
+      sectionProjet.value.classList.add("vanillaScroll");
+
+      return;
+    }
+  }
 });
 
 // Conseils
@@ -156,8 +180,6 @@ const { data: advices } = await useAsyncData("conseils", () =>
 const currentAdvice = ref(advices.value ? advices.value[0] : null); // defaults to first advice
 
 function handleAdviceSelect(advice: any) {
-  console.log(advice);
-
   // change current advice to the selected advice
   currentAdvice.value = advice;
 }
@@ -279,20 +301,41 @@ definePageMeta({
     </div>
   </section>
 
-  <section ref="sectionProjet" class="etapesProjet">
+  <section class="etapesProjet" ref="sectionProjet">
     <h2>Créons ensemble votre vidéo</h2>
     <div class="etapes container">
-      <div
-        v-for="(etape, i) in etapesProjetAccueil"
-        :key="i"
-        class="etape"
-        :class="`etape-${i}`"
+      <swiper-container
+        direction="vertical"
+        navigation-next-el="section.etapesProjet .swiper-next"
+        navigation-prev-el="section.etapesProjet .swiper-prev"
+        style="height: 500px"
       >
-        <h3 class="h1">{{ etape.title }}</h3>
-        <div class="description">
-          <img :src="etape.img" alt="" />
-          <p class="h3">{{ etape.description }}</p>
-        </div>
+        <swiper-slide
+          v-for="(etape, i) in etapesProjetAccueil"
+          :key="i"
+          class="etape"
+          :class="`etape-${i}`"
+        >
+          <h3 class="h1">{{ etape.title }}</h3>
+          <div class="description">
+            <img :src="etape.img" alt="" />
+            <p class="h3">{{ etape.description }}</p>
+          </div>
+        </swiper-slide>
+      </swiper-container>
+      <div class="swiper-nav">
+        <button
+          class="swiper-prev unstyled-button rotate-left"
+          aria-label="Précédent"
+        >
+          <ArrowGlow orientation="left"></ArrowGlow>
+        </button>
+        <button
+          class="swiper-next unstyled-button rotate-right"
+          aria-label="Suivant"
+        >
+          <ArrowGlow orientation="right"></ArrowGlow>
+        </button>
       </div>
     </div>
   </section>
@@ -321,8 +364,8 @@ definePageMeta({
         <swiper-container
           ref="swiperRef"
           class="swiper-container"
-          navigation-next-el=".swiper-custom-next"
-          navigation-prev-el=".swiper-custom-prev"
+          navigation-next-el="section.advices .swiper-next"
+          navigation-prev-el="section.advices .swiper-prev"
           pagination-type="fraction"
           slides-per-view="4"
           slides-per-group="4"
@@ -346,15 +389,15 @@ definePageMeta({
             </div>
           </swiper-slide>
         </swiper-container>
-        <div class="swiper-custom-nav">
+        <div class="swiper-nav">
           <button
-            class="swiper-custom-prev unstyled-button rotate-left"
+            class="swiper-prev unstyled-button rotate-left"
             aria-label="Précédent"
           >
             <ArrowGlow orientation="left"></ArrowGlow>
           </button>
           <button
-            class="swiper-custom-next unstyled-button rotate-right"
+            class="swiper-next unstyled-button rotate-right"
             aria-label="Suivant"
           >
             <ArrowGlow orientation="right"></ArrowGlow>
@@ -530,16 +573,52 @@ section.realisations {
 }
 
 section.etapesProjet {
-  background: rgb(53, 0, 0);
+  background: black;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   min-height: 100vh;
   padding-block: 100px;
+  position: relative;
+  margin-block: 200px;
 
   &::after {
     content: ""; // For centering element
+  }
+
+  &:before,
+  &:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 40px;
+    opacity: 0.5;
+  }
+  &:before {
+    top: 0;
+    background: radial-gradient(
+      ellipse at 50% 0%,
+      rgba(white, 50%) 0%,
+      rgba(255, 255, 255, 0) 70%
+    );
+  }
+  &:after {
+    bottom: 0;
+    background: radial-gradient(
+      ellipse at 50% 100%,
+      rgba(white, 50%) 0%,
+      rgba(255, 255, 255, 0) 70%
+    );
+  }
+
+  h2 {
+    position: absolute;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   .etapes {
@@ -552,6 +631,8 @@ section.etapesProjet {
       display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
+      align-items: center;
+      padding: 5px;
 
       .description {
         display: flex;
@@ -562,7 +643,18 @@ section.etapesProjet {
         max-width: 400px;
         padding: 15px;
         border-radius: 12px;
+        height: fit-content;
       }
+    }
+  }
+
+  .swiper-nav {
+    display: none;
+  }
+  &.vanillaScroll {
+    .swiper-nav {
+      display: flex;
+      gap: 60px;
     }
   }
 }
