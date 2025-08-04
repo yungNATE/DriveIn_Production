@@ -31,7 +31,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url("~/assets/images/background.svg");
+    background-image: url("@/assets/images/background.svg");
     background-size: cover;
     background-position: center;
     z-index: -1;
@@ -111,13 +111,19 @@ a:focus {
   white-space: nowrap !important;
 }
 
-.unstyled-button {
+button.unstyled {
   background: none;
   border: none;
   padding: 0;
   margin: 0;
   color: inherit;
   cursor: pointer;
+}
+
+ul.unstyled {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .rotate {
@@ -140,6 +146,11 @@ a:focus {
   overflow: hidden !important;
   position: fixed;
   width: 100vw;
+}
+
+.swiper-nav {
+  display: flex;
+  gap: 60px;
 }
 
 // Animations

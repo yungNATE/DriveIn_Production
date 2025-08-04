@@ -21,7 +21,7 @@ onMounted(async () => {
   if (swiperEl) {
     if (swiperEl) {
       const { injectSwiperPaginationCurrentStyle } = await import(
-        "~/utils/inject-swiper-style.js"
+        "@/utils/inject-swiper-style.js"
       );
       injectSwiperPaginationCurrentStyle(swiperEl);
     }
@@ -34,19 +34,26 @@ const {
   data: partners,
   pending,
   error,
-} = await useAsyncData(contentType, () => queryCollectionFlat(contentType));
+} = await useAsyncData(contentType, async () => {
+  const data = await queryCollection(contentType).all();
+  return flattenMeta(data);
+});
 
 // Getting tags from content/projects/tags.json
 const { data: allTags } = await useAsyncData("allTags", () =>
-  import("~/content/projects/tags.json").then((mod) => mod.default)
+  import("@/content/projects/tags.json").then((mod) => mod.default)
 );
 
 // Getting all highlighted projects
 contentType = "projects";
-const { data: highlightedProjects } = await useAsyncData(contentType, () =>
-  queryCollectionFlat(contentType, (query: any) =>
-    query.where("highlighted", "IS NOT NULL")
-  )
+const { data: highlightedProjects } = await useAsyncData(
+  contentType,
+  async () => {
+    const data = await queryCollection(contentType)
+      .where("highlighted", "IS NOT NULL")
+      .all();
+    return flattenMeta(data);
+  }
 );
 
 const currentHighlightedProject = computed(() => {
@@ -69,7 +76,10 @@ function handleTagSelect(tagId: string) {
 // Etapes Projet
 const { data: etapesProjetAccueil } = await useAsyncData(
   "etapesProjetAccueil",
-  () => queryCollectionFlat("etapesProjetAccueil")
+  async () => {
+    const data = await queryCollection("etapesProjetAccueil").all();
+    return flattenMeta(data);
+  }
 );
 
 gsap.registerPlugin(ScrollTrigger);
@@ -98,10 +108,10 @@ onMounted(async () => {
     scrub: true,
     markers: true,
     onEnter: () => {
-      canScrollSwiper = false;
-      setTimeout(() => {
-        canScrollSwiper = true;
-      }, 1000);
+      canScrollSwiper = true;
+      // setTimeout(() => {
+      //   canScrollSwiper = true;
+      // }, 1000);
 
       // Cacher le <nav> pendant le pin
       const nav = document.querySelector("nav");
@@ -173,9 +183,10 @@ onMounted(async () => {
 });
 
 // Conseils
-const { data: advices } = await useAsyncData("conseils", () =>
-  queryCollectionFlat("conseils")
-);
+const { data: advices } = await useAsyncData("conseils", async () => {
+  const data = await queryCollection("conseils").all();
+  return flattenMeta(data);
+});
 
 const currentAdvice = ref(advices.value ? advices.value[0] : null); // defaults to first advice
 
@@ -196,7 +207,7 @@ definePageMeta({
       <h1 class="sr-only">DriveIn Production</h1>
       <img
         class="site-logo"
-        src="`~/assets/icones/driveInProductionIcone.svg`"
+        src="/assets/icones/driveInProductionIcone.svg"
         alt="Logo Drive-In Production"
       />
       <p class="h2 accroche">
@@ -316,7 +327,7 @@ definePageMeta({
           class="etape"
           :class="`etape-${i}`"
         >
-          <h3 class="h1">{{ etape.title }}</h3>
+          <h3 class="h2">{{ etape.title }}</h3>
           <div class="description">
             <img :src="etape.img" alt="" />
             <p class="h3">{{ etape.description }}</p>
@@ -324,23 +335,17 @@ definePageMeta({
         </swiper-slide>
       </swiper-container>
       <div class="swiper-nav">
-        <button
-          class="swiper-prev unstyled-button rotate-left"
-          aria-label="Précédent"
-        >
+        <button class="swiper-prev unstyled rotate-left" aria-label="Précédent">
           <ArrowGlow orientation="left"></ArrowGlow>
         </button>
-        <button
-          class="swiper-next unstyled-button rotate-right"
-          aria-label="Suivant"
-        >
+        <button class="swiper-next unstyled rotate-right" aria-label="Suivant">
           <ArrowGlow orientation="right"></ArrowGlow>
         </button>
       </div>
     </div>
   </section>
 
-  <section class="advices container">
+  <section class="advices container" id="nos-conseils">
     <div class="header">
       <h2>Nos conseils avant de lancer votre projet</h2>
       <p>
@@ -380,7 +385,7 @@ definePageMeta({
           >
             <div class="question">
               <button
-                class="h3 unstyled-button"
+                class="h3 unstyled"
                 :id="advice.id"
                 @click="() => handleAdviceSelect(advice)"
               >
@@ -391,13 +396,13 @@ definePageMeta({
         </swiper-container>
         <div class="swiper-nav">
           <button
-            class="swiper-prev unstyled-button rotate-left"
+            class="swiper-prev unstyled rotate-left"
             aria-label="Précédent"
           >
             <ArrowGlow orientation="left"></ArrowGlow>
           </button>
           <button
-            class="swiper-next unstyled-button rotate-right"
+            class="swiper-next unstyled rotate-right"
             aria-label="Suivant"
           >
             <ArrowGlow orientation="right"></ArrowGlow>
@@ -648,13 +653,9 @@ section.etapesProjet {
     }
   }
 
-  .swiper-nav {
-    display: none;
-  }
-  &.vanillaScroll {
+  &:not(.vanillaScroll) {
     .swiper-nav {
-      display: flex;
-      gap: 60px;
+      display: none;
     }
   }
 }
@@ -710,10 +711,7 @@ section.advices {
         }
       }
 
-      .swiper-custom-nav {
-        display: flex;
-        gap: 60px;
-        width: fit-content;
+      .swiper-nav {
         margin-left: 60px;
       }
     }

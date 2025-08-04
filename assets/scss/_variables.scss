@@ -1,3 +1,5 @@
+@use "sass:meta";
+
 // styles/_variables.scss
 
 // Définitions des familles de polices
@@ -25,6 +27,9 @@ $secondary-color-light: #efb401;
 .container {
   @include container();
 }
+.container-small {
+  @include container(920px);
+}
 
 // Glow mixin
 @mixin glow-discret($color, $blur: 5px) {
@@ -45,7 +50,7 @@ $secondary-color-light: #efb401;
     @media (min-width: 1024px) {
       @content;
     }
-  } @else if type-of($breakpoint) == "number" {
+  } @else if meta.type-of($breakpoint) == "number" {
     // Considère que c'est une dimension custom (ex: 600 (px))
     @media (max-width: #{$breakpoint}px) {
       @content;

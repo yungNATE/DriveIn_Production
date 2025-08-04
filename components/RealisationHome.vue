@@ -19,7 +19,7 @@ const props = defineProps<{
 
 // Tags here are only name, get tags from content/projects/tags.json and replace theme with the full tag object
 const { data: allTags } = await useAsyncData<Tag[]>("tags", () =>
-  import("~/content/projects/tags.json").then((mod) => mod.default)
+  import("@/content/projects/tags.json").then((mod) => mod.default)
 );
 const tags = computed(() => {
   const tagIds = props.project.tagIDs;

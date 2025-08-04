@@ -2,7 +2,7 @@
 
 <template>
   <div class="arrow-container">
-    <img src="~/assets/icones/arrow.svg" alt="" />
+    <img src="@/assets/icones/arrow.svg" alt="" />
   </div>
 </template>
 
