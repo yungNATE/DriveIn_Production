@@ -7,6 +7,8 @@ video: "dQw4w9WgXcQ"
 partner:
   - Axa France
 
+highlighted: null
+
 tagIDs:
   - communication
   - UX
