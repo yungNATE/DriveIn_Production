@@ -16,6 +16,19 @@ const actions = [
       "De la signature électronique à la remise des livrables numériques, tout est pensé pour réduire l’utilisation de papier et simplifier les échanges.",
   },
 ];
+
+const index = (i: number) => {
+  return i + 1;
+};
+
+const images = Array.from(
+  { length: actions.length },
+  (_, i) =>
+    new URL(
+      `../assets/icones/greenTag/greenTag${index(i)}.png`,
+      import.meta.url
+    ).href
+);
 </script>
 
 <template>
@@ -23,14 +36,14 @@ const actions = [
     <h2>Une société engagé</h2>
     <div class="actions">
       <div v-for="(action, i) in actions" :key="i" class="action">
-        <div>
-          <img
-            :src="`/assets/icones/greenTag/greenTagIcon${i + 1}.svg`"
-            alt="Action icon"
-          />
-          <h3>{{ action.title }}</h3>
+        <span class="h1">{{ index(i) }}.</span>
+        <div class="content">
+          <div class="title">
+            <img :src="images[i]" alt="Action icon" />
+            <h3>{{ action.title }}</h3>
+          </div>
+          <p>{{ action.description }}</p>
         </div>
-        <p>{{ action.description }}</p>
       </div>
     </div>
   </div>
@@ -41,6 +54,10 @@ const actions = [
   background-color: black;
   padding-block: 100px;
   position: relative;
+
+  display: flex;
+  flex-direction: column;
+  gap: 75px;
 
   &:before,
   &:after {
@@ -72,6 +89,38 @@ const actions = [
   h2 {
     color: #40c057;
     text-align: center;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 75px;
+
+    .action {
+      display: flex;
+      max-width: 500px;
+      gap: 15px;
+
+      .content {
+        display: flex;
+        flex-direction: column;
+
+        .title {
+          background-color: black;
+          @include glow-discret(#29c397);
+          border-radius: 12px;
+
+          display: flex;
+          gap: 35px;
+          padding: 15px;
+
+          h3 {
+            max-width: 225px;
+          }
+        }
+      }
+    }
   }
 }
 </style>
