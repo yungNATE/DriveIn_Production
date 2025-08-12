@@ -4,11 +4,16 @@ const currentYear = new Date().getFullYear();
 
 <template>
   <footer>
-    <div class="upperFooter">
+    <section class="comment">
+      <GoogleComments />
+    </section>
+
+    <section class="upperFooter">
       <GreenTag></GreenTag>
       <ContactCTA></ContactCTA>
-    </div>
-    <div class="footerContent">
+    </section>
+
+    <section class="footerContent">
       <nav class="container-small">
         <ul class="footer-links classic-pages unstyled">
           <li><SpecialLink to="/">L'agence</SpecialLink></li>
@@ -40,16 +45,17 @@ const currentYear = new Date().getFullYear();
         target="_self"
       />
       <p>© {{ currentYear }} DriveIn Production. Tous droits réservés.</p>
-    </div>
+    </section>
   </footer>
 </template>
 
 <style lang="scss" scoped>
 footer {
-  .upperFooter {
+  section.comment {
+    padding-block: 235px;
   }
 
-  .footerContent {
+  section.footerContent {
     background: black;
     padding-block: 90px 110px;
     display: flex;

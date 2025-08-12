@@ -39,5 +39,14 @@ export default defineContentConfig({
         img: z.string(),
       }),
     }),
+    googleComments: defineCollection({
+      source: "googleComments/*.md",
+      type: "data",
+      schema: z.object({
+        author: z.string(),
+        comment: z.string(),
+        rating: z.number().int().min(0).max(5),
+      }),
+    }),
   },
 });
