@@ -1,7 +1,11 @@
+<script setup lang="ts">
+const { isScrolled, y } = useScrollState();
+</script>
+
 <template>
   <SiteHeader />
 
-  <main>
+  <main :class="{ scrolled: isScrolled }" :data-scrolled-y="y">
     <NuxtPage />
   </main>
 

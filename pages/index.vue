@@ -203,28 +203,34 @@ definePageMeta({
 
 <template>
   <section class="hero">
-    <div class="text">
-      <h1 class="sr-only">DriveIn Production</h1>
-      <img
-        class="site-logo"
-        src="/assets/icones/driveInProductionIcone.svg"
-        alt="Logo Drive-In Production"
-      />
-      <p class="h2 accroche">
-        Capturons <span class="gold">votre histoire</span>, <br />
-        Captons <span class="blue">vos émotions</span>.
-      </p>
-      <Button to="/contact">Prendre rendez-vous →</Button>
+    <div class="top">
+      <ScriptYouTubePlayer
+        video-id="jDQtxlRUf54"
+        :width="700"
+        :height="400"
+        class="video-player"
+      ></ScriptYouTubePlayer>
+      <div class="text">
+        <h1 class="sr-only">DriveIn Production</h1>
+        <p class="h2 accroche">
+          Capturons
+          <span class="gold"
+            >votre
+            <span class="underlined underlined-gold">histoire</span></span
+          >, <br />
+          Captons
+          <span class="blue"
+            >vos <span class="underlined underlined-blue">émotions</span></span
+          >.
+        </p>
+        <Button to="/contact">Prendre rendez-vous →</Button>
+      </div>
+    </div>
+    <div class="scroll-down-wrapper">
       <ScrollDown to="presentation"
         >Découvrir <span class="gold">Drive-In</span></ScrollDown
       >
     </div>
-    <ScriptYouTubePlayer
-      video-id="jDQtxlRUf54"
-      :width="500"
-      :height="550"
-      class="video-player"
-    ></ScriptYouTubePlayer>
   </section>
 
   <section class="presentation" id="presentation">
@@ -418,40 +424,57 @@ section.hero {
   padding-inline: 50px;
   padding-block: 50px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 100px 135px;
   min-height: 100vh;
 
-  .text {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 50px;
+  // Hack to center div
+  &::before {
+    content: "";
+  }
 
-    .site-logo {
-      max-width: 450px;
-      width: 100%;
-      height: auto;
+  .top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 150px;
+    flex-wrap: wrap;
+
+    .text {
+      display: flex;
+      flex-direction: column;
+      gap: 50px;
+
+      .site-logo {
+        max-width: 450px;
+        width: 100%;
+        height: auto;
+      }
+
+      .accroche {
+        font-size: 4rem;
+        white-space: nowrap;
+      }
     }
 
-    .accroche {
-      white-space: nowrap;
+    .video-player {
+      width: 550px !important;
+      height: fit-content;
+      filter: drop-shadow(0 0 25px rgba($primary-color-light, 0.5));
+      transition: 0.3s;
+      border-radius: 20px;
+      overflow: hidden;
+
+      &:hover {
+        filter: drop-shadow(0 0 25px $secondary-color-dark);
+      }
     }
   }
 
-  .video-player {
-    width: 550px !important;
-    height: fit-content;
-    filter: drop-shadow(0 0 25px rgba($primary-color-light, 0.5));
-    transition: 0.3s;
-    border-radius: 20px;
-    overflow: hidden;
-
-    &:hover {
-      filter: drop-shadow(0 0 25px $secondary-color-dark);
-    }
+  .scroll-down-wrapper {
+    display: flex;
   }
 }
 

@@ -31,38 +31,33 @@ onMounted(async () => {
     :class="['icon-link', classes]"
     :aria-label="alt || icon"
     :title="alt || icon"
-  >
-    <span
-      class="icon"
-      v-html="iconSvg"
-      :style="{ width: `${size}`, height: `auto` }"
-    />
-  </NuxtLink>
+    :style="{ '--icon-size': size }"
+    v-html="iconSvg"
+  />
 </template>
 
 <style lang="scss" scoped>
 .icon-link {
-  .icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-    & :deep(svg) {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
+  :deep(svg) {
+    display: block;
+    width: var(--icon-size, auto);
+    height: auto;
+    transition:
+      width 0.3s,
+      height 0.3s;
   }
 
   &.glowing {
-    &:hover {
-      .icon :deep(svg) {
-        opacity: 1;
-        filter: drop-shadow(0 0 8px $primary-color-light);
-      }
+    &:hover :deep(svg) {
+      opacity: 1;
+      filter: drop-shadow(0 0 8px $primary-color-light);
     }
 
-    .icon :deep(svg) {
+    :deep(svg) {
       fill: currentColor;
       transition:
         opacity 0.2s,

@@ -9,12 +9,13 @@ defineProps({
 
 <!-- components/SpecialLink.vue -->
 <template>
-  <NuxtLink :to="to" class="special_link" v-bind="$attrs">
+  <NuxtLink :to="to" class="special_link underlined" v-bind="$attrs">
     <slot />
   </NuxtLink>
 </template>
 
 <style lang="scss" scoped>
+@use "@/assets/scss/main.scss";
 .special_link {
   position: relative;
   color: rgba(255, 255, 255, 0.75);
@@ -22,7 +23,6 @@ defineProps({
   display: block;
   width: fit-content;
 
-  &::before,
   &::after {
     content: "";
     position: absolute;
@@ -34,6 +34,7 @@ defineProps({
     transition: opacity 0.3s ease;
   }
 
+  // Default (gold) underline visible
   &::before {
     background: radial-gradient(
       ellipse at 50% 0,
@@ -44,6 +45,7 @@ defineProps({
     z-index: 1;
   }
 
+  // Hover (secondary color) underline hidden initially
   &::after {
     background: radial-gradient(
       ellipse at 50% 0,

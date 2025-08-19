@@ -56,6 +56,7 @@ footer {
   }
 
   section.footerContent {
+    position: relative;
     background: black;
     padding-block: 90px 110px;
     display: flex;

@@ -1,14 +1,21 @@
+<script setup>
+import { ref, computed } from "vue";
+const menuOpen = ref(false);
+const { isScrolled } = useScrollState();
+
+const iconWidth = computed(() => (isScrolled.value ? "50px" : "170px"));
+</script>
+
 <template>
   <header>
     <nav>
-      <div class="home-link">
-        <IconLink
-          to="/"
-          icon="driveInProductionIcone"
-          alt="Lien vers l'accueil du site"
-          target="_self"
-        />
-      </div>
+      <IconLink
+        to="/"
+        icon="driveInProductionIcone"
+        alt="Lien vers l'accueil du site"
+        target="_self"
+        :size="isScrolled ? '95px' : '170px'"
+      />
       <!-- Burger icon visible en mobile -->
       <button
         class="burger"
@@ -31,14 +38,13 @@
   </header>
 </template>
 
-<script setup>
-import { ref } from "vue";
-const menuOpen = ref(false);
-</script>
-
 <style lang="scss" scoped>
 header {
-  position: relative;
+  position: fixed;
+  width: 100%;
+  z-index: 99;
+  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.4);
 
   &::after {
     content: "";
@@ -51,6 +57,8 @@ header {
       rgba(255, 255, 255, 0) 50%
     );
     opacity: 25%;
+    position: absolute;
+    top: 100%;
   }
 
   nav {
@@ -60,10 +68,6 @@ header {
     gap: 4rem;
     flex-wrap: wrap;
     padding: 1rem;
-    backdrop-filter: blur(5px);
-    position: fixed;
-    width: 100%;
-    z-index: 99;
   }
 
   .menu-links {

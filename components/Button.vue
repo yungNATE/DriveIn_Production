@@ -21,6 +21,7 @@ const props = defineProps<{
   filter: drop-shadow(0 0 8px $primary-color-light);
   text-decoration: none;
   height: fit-content;
+  width: fit-content;
   white-space: nowrap;
 
   &:hover {

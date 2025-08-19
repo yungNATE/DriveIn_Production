@@ -1,7 +1,7 @@
 // styles/_base.scss
 
 @use "variables" as *;
-@import "node_modules/modern-normalize/modern-normalize.css";
+// @import "node_modules/modern-normalize/modern-normalize.css";
 
 // Page{ min-height: 100vh }
 
@@ -89,12 +89,12 @@ a:focus {
 }
 
 // Couleurs
-.blue {
-  color: $secondary-color-dark;
-}
-
 .gold {
   color: $primary-color-light;
+}
+
+.blue {
+  color: $secondary-color-dark;
 }
 
 // utils
@@ -161,4 +161,44 @@ ul.unstyled {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+// Underlined
+// --underlined-color-normal
+%underlinedBefore {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 0.2rem;
+  width: 100%;
+  transition: opacity 0.3s ease;
+}
+
+.underlined {
+  position: relative;
+  display: inline-block;
+
+  &::before {
+    @extend %underlinedBefore;
+  }
+
+  &::before {
+    background: radial-gradient(
+      ellipse at 50% 0,
+      var(--underlined-color) 0%,
+      rgba(255, 255, 255, 0) 70%
+    );
+    opacity: 1;
+    z-index: 1;
+  }
+}
+
+.underlined-gold {
+  --underlined-color: #{$primary-color-light};
+}
+
+.underlined-blue {
+  --underlined-color: #{$secondary-color-dark};
 }
