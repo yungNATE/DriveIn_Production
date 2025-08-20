@@ -38,6 +38,7 @@ defineEmits(["select"]);
   background: black;
   padding: 3px 10px;
   width: fit-content;
+  user-select: none;
 
   display: flex;
   gap: 5px;
@@ -46,6 +47,23 @@ defineEmits(["select"]);
   svg {
     width: 10px;
     height: 10px;
+    fill: $primary-color-light;
+  }
+
+  &.selected {
+    @include glow-discret($secondary-color-dark);
+    svg {
+      display: none;
+    }
+  }
+
+  &.inactive {
+    user-select: text;
+    cursor: default;
+
+    svg {
+      display: none;
+    }
   }
 }
 </style>

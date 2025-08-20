@@ -1,7 +1,7 @@
 // styles/_base.scss
 
 @use "variables" as *;
-// @import "node_modules/modern-normalize/modern-normalize.css";
+@import "modern-normalize/modern-normalize.css";
 
 // Page{ min-height: 100vh }
 
@@ -140,6 +140,11 @@ ul.unstyled {
 
 .hidden {
   display: none !important;
+}
+
+.invisible {
+  opacity: 0;
+  visibility: hidden;
 }
 
 .noScroll {

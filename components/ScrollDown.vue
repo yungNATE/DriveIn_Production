@@ -8,6 +8,25 @@ const props = defineProps({
 
 // On click, smooth scroll to the anchor
 const anchor = computed(() => `#${props.to}`);
+
+// Offset (header height + margin) pour éviter l'overlap
+const OFFSET_PX = 200; // demandé: scroll à l'élément - 200px
+
+function handleClick(event) {
+  // Empêche le scroll natif de l'ancre pour appliquer l'offset
+  event.preventDefault();
+
+  if (import.meta.server) return; // sécurité SSR
+  const id = props.to;
+  if (!id) return;
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  const top = el.getBoundingClientRect().top + window.pageYOffset - OFFSET_PX;
+  const clampedTop = Math.max(0, top); // Empêche le scroll négatif
+
+  window.scrollTo({ top: clampedTop, behavior: "smooth" });
+}
 </script>
 
 <template>
@@ -16,6 +35,7 @@ const anchor = computed(() => `#${props.to}`);
     style="scroll-behavior: smooth"
     aria-label="Scroll jusqu'au contenu de la page"
     :href="anchor"
+    @click="handleClick"
   >
     <ArrowGlow></ArrowGlow>
 

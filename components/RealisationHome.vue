@@ -51,7 +51,12 @@ const { data: partners } = await useAsyncData("partners-realisation", () =>
         <SpecialLink :to="project.path">Les coulisses du projet</SpecialLink>
       </div>
       <div class="tags">
-        <Tag v-for="tag in tags" :tag="tag" isInactive="true" />
+        <Tag
+          v-for="tag in tags"
+          class="inactive"
+          :tag="tag"
+          isInactive="true"
+        />
       </div>
     </div>
     <ScriptYouTubePlayer

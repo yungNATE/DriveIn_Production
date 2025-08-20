@@ -7,7 +7,7 @@ video: "dQw4w9WgXcQ"
 partner:
   - Axa France
 
-highlighted: null
+highlighted: "video"
 
 tagIDs:
   - communication

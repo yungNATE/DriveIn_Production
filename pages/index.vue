@@ -26,6 +26,42 @@ onMounted(async () => {
       injectSwiperPaginationCurrentStyle(swiperEl);
     }
   }
+
+  // Animation d'entrée de la section hero
+  const hero = document.querySelector(".hero");
+  // retirer la classe invisible juste avant de lancer la timeline
+  if (hero) hero.classList.remove("invisible");
+  const tl = gsap.timeline();
+  const HERO_DURATION = 2;
+  const HERO_DELAY = 0.5;
+  tl.from(".hero .text", {
+    x: 120,
+    opacity: 0,
+    duration: HERO_DURATION,
+    ease: "power3.out",
+  })
+    .from(
+      ".hero .video-player-wrapper",
+      {
+        x: -120,
+        opacity: 0,
+        duration: HERO_DURATION,
+        ease: "power3.out",
+      },
+      // Démarre 0.2s après le début de l'animation précédente (overlap)
+      `<+=${HERO_DELAY}`
+    )
+    .from(
+      ".hero .scroll-down",
+      {
+        y: 60,
+        opacity: 0,
+        duration: HERO_DURATION,
+        ease: "power3.out",
+      },
+      // Idem, chevauchement contrôlé
+      `<+=${HERO_DELAY}`
+    );
 });
 
 // Partenaires
@@ -39,7 +75,7 @@ const {
   return flattenMeta(data);
 });
 
-// Getting tags from content/projects/tags.json
+// Tags from content/projects/tags.json
 const { data: allTags } = await useAsyncData("allTags", () =>
   import("@/content/projects/tags.json").then((mod) => mod.default)
 );
@@ -57,17 +93,17 @@ const { data: highlightedProjects } = await useAsyncData(
 );
 
 const currentHighlightedProject = computed(() => {
-  if (!selectedTagId.value || !highlightedProjects.value) return null;
+  if (!highlightedProjects.value || highlightedProjects.value.length === 0)
+    return null;
 
-  let currentHighlightedProject = highlightedProjects.value.find(
-    (highlightedProjects) =>
-      highlightedProjects.highlighted === selectedTagId.value
+  return (
+    highlightedProjects.value.find(
+      (p) => p.highlighted === selectedTagId.value
+    ) || null
   );
-
-  return currentHighlightedProject;
 });
 
-const selectedTagId = ref<string | null>(null);
+const selectedTagId = ref(allTags.value ? allTags.value[0].id : null);
 
 function handleTagSelect(tagId: string) {
   selectedTagId.value = tagId;
@@ -202,14 +238,16 @@ definePageMeta({
 </script>
 
 <template>
-  <section class="hero">
+  <section class="hero invisible">
     <div class="top">
-      <ScriptYouTubePlayer
-        video-id="jDQtxlRUf54"
-        :width="700"
-        :height="400"
-        class="video-player"
-      ></ScriptYouTubePlayer>
+      <div class="video-player-wrapper">
+        <ScriptYouTubePlayer
+          video-id="jDQtxlRUf54"
+          :width="700"
+          :height="400"
+          class="video-player"
+        ></ScriptYouTubePlayer>
+      </div>
       <div class="text">
         <h1 class="sr-only">DriveIn Production</h1>
         <p class="h2 accroche">
@@ -300,12 +338,17 @@ definePageMeta({
         d'accomplir.
       </p>
       <div class="tags">
-        <Tag v-for="tag in allTags" :tag="tag" @select="handleTagSelect" />
+        <Tag
+          v-for="tag in allTags"
+          :class="{
+            selected: selectedTagId === tag.id,
+          }"
+          :tag="tag"
+          @select="handleTagSelect"
+        />
       </div>
       <p class="tagDescription">Lorem ipsum</p>
-      <NuxtLink to="/projets" class="button">
-        Voir toutes les réalisations →
-      </NuxtLink>
+      <Button to="/projets"> Voir toutes les réalisations → </Button>
     </div>
     <div class="realisationHomeWrapper">
       <Transition name="fade" mode="out-in">
@@ -438,13 +481,13 @@ section.hero {
   .top {
     display: flex;
     justify-content: center;
-    align-items: center;
     gap: 150px;
     flex-wrap: wrap;
 
     .text {
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
       gap: 50px;
 
       .site-logo {
@@ -456,6 +499,7 @@ section.hero {
       .accroche {
         font-size: 4rem;
         white-space: nowrap;
+        margin-top: -20px;
       }
     }
 
@@ -480,7 +524,7 @@ section.hero {
 
 section.presentation {
   position: relative;
-  margin-bottom: 200px;
+  margin-block: 200px;
 
   &:before,
   &:after {

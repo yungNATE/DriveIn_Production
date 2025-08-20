@@ -1,24 +1,44 @@
 [
-  { "id": "video", "title": "Vidéo", "description": "Projets vidéo" },
-  { "id": "photo", "title": "Photographie", "description": "Projets photo" },
   {
     "id": "UX",
     "title": "UX Design",
-    "description": "S'interesse à l'expérience utilisateur vécue"
+    "description": "S'interesse à l'expérience utilisateur vécue",
+    "type": "theme"
   },
   {
     "id": "communication",
     "title": "Communication",
-    "description": "Tout ce qui touche à la communication visuelle"
+    "description": "Tout ce qui touche à la communication visuelle",
+    "type": "theme"
   },
   {
     "id": "interview",
     "title": "Interview",
-    "description": "Projets d'interviews et de témoignages"
+    "description": "Projets d'interviews et de témoignages",
+    "type": "theme"
   },
   {
     "id": "institutionnelle",
     "title": "Institutionnelle",
-    "description": "Projets institutionnels et corporatifs"
+    "description": "Projets institutionnels et corporatifs",
+    "type": "theme"
+  },
+  {
+    "id": "360",
+    "title": "360°",
+    "description": "Les vidéos en 360° permettent une immersion totale dans l'environnement filmé",
+    "type": "techUsed"
+  },
+  {
+    "id": "video",
+    "title": "Vidéo",
+    "description": "Projets vidéo",
+    "type": "format"
+  },
+  {
+    "id": "photo",
+    "title": "Photographie",
+    "description": "Projets photo",
+    "type": "format"
   }
 ]
