@@ -48,7 +48,7 @@ const { data: partners } = await useAsyncData("partners-realisation", () =>
         </h3>
         <p>{{ project.presentation }}</p>
 
-        <SpecialLink :to="project.path">Les coulisses du projet</SpecialLink>
+        <SpecialLink :to="project.path">Les coulisses du projet →</SpecialLink>
       </div>
       <div class="tags">
         <Tag
@@ -76,17 +76,21 @@ const { data: partners } = await useAsyncData("partners-realisation", () =>
   max-width: 1000px;
   @include glow-discret($primary-color-light);
   text-align: left;
-  // container-type: inline-size;
 
   display: flex;
   flex-wrap: wrap;
   gap: 50px;
+
+  @include mediaquery(1400) {
+    flex-direction: column;
+  }
 
   .text {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     gap: 50px;
+    max-width: 350px;
 
     .tags {
       display: flex;

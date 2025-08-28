@@ -1,6 +1,7 @@
 @use "sass:meta";
 
 // styles/_variables.scss
+$header-height: 90px;
 
 // Définitions des familles de polices
 $font-work-sans: "Work Sans", sans-serif;
@@ -16,6 +17,9 @@ $primary-color-dark: #01152d;
 $secondary-color-dark: #2987c3;
 $primary-color-light: #ffda00;
 $secondary-color-light: #efb401;
+
+// Spécifiques
+$index-sectionHero-breakpoint: 1595;
 
 // Container mixin
 @mixin container($max-width: 1700px) {
@@ -37,25 +41,35 @@ $secondary-color-light: #efb401;
 }
 
 // Utils mixins
-@mixin mediaquery($breakpoint) {
-  @if $breakpoint == "mobile" {
-    @media (max-width: 767px) {
-      @content;
+@mixin mediaquery($breakpoints...) {
+  // Assoc map: breakpoint name => media query
+  $bp-map: (
+    mobile: "(max-width: 767px)",
+    tablet: "(min-width: 768px) and (max-width: 1023px)",
+    desktop: "(min-width: 1024px)",
+  );
+
+  $conditions: ();
+
+  @each $bp in $breakpoints {
+    @if map-has-key($bp-map, $bp) {
+      $conditions: append($conditions, map-get($bp-map, $bp), comma);
+    } @else if meta.type-of($bp) == "number" {
+      @if unitless($bp) {
+        $conditions: append($conditions, "(max-width: #{$bp}px)", comma);
+      } @else {
+        $conditions: append($conditions, "(max-width: #{$bp})", comma);
+      }
+    } @else {
+      @warn "Breakpoint '#{$bp}' not recognized. Available: #{map-keys($bp-map)}";
     }
-  } @else if $breakpoint == "tablet" {
-    @media (min-width: 768px) and (max-width: 1023px) {
-      @content;
-    }
-  } @else if $breakpoint == "desktop" {
-    @media (min-width: 1024px) {
-      @content;
-    }
-  } @else if meta.type-of($breakpoint) == "number" {
-    // Considère que c'est une dimension custom (ex: 600 (px))
-    @media (max-width: #{$breakpoint}px) {
+  }
+
+  @if length($conditions) > 0 {
+    @media #{$conditions} {
       @content;
     }
   } @else {
-    @warn "Breakpoint '#{$breakpoint}' not recognized.";
+    @warn "No valid breakpoints provided to mediaquery.";
   }
 }

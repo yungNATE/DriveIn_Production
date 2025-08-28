@@ -29,5 +29,13 @@ const props = defineProps<{
     text-decoration: none;
     filter: drop-shadow(0 0 8px $secondary-color-dark);
   }
+
+  &.discret {
+    @include glow-discret($primary-color-light);
+
+    &:hover {
+      @include glow-discret($secondary-color-dark);
+    }
+  }
 }
 </style>

@@ -55,13 +55,6 @@ function handleClick(event) {
   text-decoration: none;
   width: fit-content;
 
-  @include mediaquery("tablet") {
-    display: none;
-  }
-  @include mediaquery("mobile") {
-    display: none;
-  }
-
   &:hover {
     :deep(.arrow-container::before) {
       opacity: 0.9;

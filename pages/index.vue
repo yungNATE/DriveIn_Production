@@ -76,8 +76,16 @@ const {
 });
 
 // Tags from content/projects/tags.json
-const { data: allTags } = await useAsyncData("allTags", () =>
-  import("@/content/projects/tags.json").then((mod) => mod.default)
+type ProjectTag = {
+  id: string;
+  title: string;
+  description: string;
+  type: string;
+};
+const { data: allTags } = await useAsyncData<ProjectTag[]>("allTags", () =>
+  import("@/content/projects/tags.json").then(
+    (mod) => mod.default as ProjectTag[]
+  )
 );
 
 // Getting all highlighted projects
@@ -91,22 +99,21 @@ const { data: highlightedProjects } = await useAsyncData(
     return flattenMeta(data);
   }
 );
-
 const currentHighlightedProject = computed(() => {
   if (!highlightedProjects.value || highlightedProjects.value.length === 0)
     return null;
 
-  return (
-    highlightedProjects.value.find(
-      (p) => p.highlighted === selectedTagId.value
-    ) || null
-  );
+  const id = selectedTag.value?.id;
+  return highlightedProjects.value.find((p) => p.highlighted === id) || null;
 });
 
-const selectedTagId = ref(allTags.value ? allTags.value[0].id : null);
+const selectedTag = ref<ProjectTag | null>(
+  allTags.value ? allTags.value[0] : null
+);
 
 function handleTagSelect(tagId: string) {
-  selectedTagId.value = tagId;
+  if (!allTags.value) return;
+  selectedTag.value = allTags.value.find((tag) => tag.id === tagId) ?? null;
 }
 
 // Etapes Projet
@@ -341,14 +348,16 @@ definePageMeta({
         <Tag
           v-for="tag in allTags"
           :class="{
-            selected: selectedTagId === tag.id,
+            selected: selectedTag?.id === tag.id,
           }"
           :tag="tag"
           @select="handleTagSelect"
         />
       </div>
-      <p class="tagDescription">Lorem ipsum</p>
-      <Button to="/projets"> Voir toutes les réalisations → </Button>
+      <p class="tagDescription">{{ selectedTag?.description }}</p>
+      <Button to="/projets" :class="'discret'"
+        >Voir toutes les réalisations →</Button
+      >
     </div>
     <div class="realisationHomeWrapper">
       <Transition name="fade" mode="out-in">
@@ -426,6 +435,13 @@ definePageMeta({
           grid-rows="2"
           grid-fill="row"
           space-between="20"
+          :breakpoints="{
+            '0': { slidesPerView: 1, slidesPerGroup: 1, spaceBetween: 16 },
+            '640': { slidesPerView: 2, slidesPerGroup: 2, spaceBetween: 16 },
+            '768': { slidesPerView: 2, slidesPerGroup: 2, spaceBetween: 20 },
+            '1024': { slidesPerView: 3, slidesPerGroup: 3, spaceBetween: 20 },
+            '1280': { slidesPerView: 4, slidesPerGroup: 4, spaceBetween: 20 },
+          }"
         >
           <swiper-slide
             v-for="advice in advices"
@@ -471,11 +487,15 @@ section.hero {
   align-items: center;
   flex-direction: column;
   gap: 100px 135px;
-  min-height: 100vh;
+  height: calc(100vh - 90px);
 
   // Hack to center div
   &::before {
     content: "";
+
+    @include mediaquery($index-sectionHero-breakpoint) {
+      display: none;
+    }
   }
 
   .top {
@@ -484,11 +504,21 @@ section.hero {
     gap: 150px;
     flex-wrap: wrap;
 
+    @include mediaquery($index-sectionHero-breakpoint) {
+      gap: 75px;
+    }
+
     .text {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       gap: 50px;
+
+      @include mediaquery($index-sectionHero-breakpoint) {
+        align-items: center;
+        text-align: center;
+        width: 100%;
+      }
 
       .site-logo {
         max-width: 450px;
@@ -497,14 +527,15 @@ section.hero {
       }
 
       .accroche {
-        font-size: 4rem;
+        font-size: clamp(20px, 7vw, 4rem);
         white-space: nowrap;
         margin-top: -20px;
       }
     }
 
     .video-player {
-      width: 550px !important;
+      max-width: 550px !important;
+
       height: fit-content;
       filter: drop-shadow(0 0 25px rgba($primary-color-light, 0.5));
       transition: 0.3s;
@@ -519,6 +550,16 @@ section.hero {
 
   .scroll-down-wrapper {
     display: flex;
+
+    @include mediaquery($index-sectionHero-breakpoint) {
+      display: none;
+    }
+    @include mediaquery("tablet") {
+      display: none;
+    }
+    @include mediaquery("mobile") {
+      display: flex;
+    }
   }
 }
 
@@ -570,6 +611,10 @@ section.partners {
   margin-inline: 15px;
   margin-bottom: 200px;
 
+  @include mediaquery("tablet", "mobile") {
+    flex-direction: column;
+  }
+
   h2 {
     flex: 0 0 auto;
   }
@@ -578,6 +623,10 @@ section.partners {
     flex: 1 1 auto;
     min-width: 0;
     width: 5000px;
+
+    @include mediaquery("tablet", "mobile") {
+      width: 90vw;
+    }
 
     &::before {
       content: "";
@@ -619,12 +668,23 @@ section.realisations {
   align-items: flex-start;
   gap: 100px;
 
+  @include mediaquery("tablet", "mobile") {
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
+  }
+
   .controles {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
     gap: 20px;
+    max-width: 300px;
+
+    @include mediaquery("tablet", "mobile") {
+      max-width: 550px;
+    }
   }
 
   .tags {
@@ -730,9 +790,13 @@ section.etapesProjet {
 section.advices {
   margin-top: 100px;
   display: flex;
+  flex-wrap: wrap;
   gap: 50px;
 
   .header {
+    flex: 1;
+    min-width: 300px;
+
     h2 {
       margin-bottom: 20px;
     }
@@ -744,6 +808,7 @@ section.advices {
 
   .content {
     max-width: 1000px;
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 100px;

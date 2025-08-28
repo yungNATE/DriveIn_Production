@@ -62,7 +62,7 @@ defineEmits(["select"]);
     cursor: default;
 
     svg {
-      display: none;
+      opacity: 0;
     }
   }
 }
