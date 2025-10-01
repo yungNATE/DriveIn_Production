@@ -62,6 +62,105 @@ onMounted(async () => {
       // Idem, chevauchement contrôlé
       `<+=${HERO_DELAY}`
     );
+
+  // Pin de la section Étapes Projet lorsque son haut touche le haut de l'écran
+  // (utilise le ref si dispo, sinon fallback sur le sélecteur)
+  const etapesSection =
+    sectionProjet.value ||
+    (document.querySelector(
+      ".etapesProjets, .etapesProjet"
+    ) as HTMLElement | null);
+  if (etapesSection) {
+    // Util for retrieving the Swiper instance of the vertical steps carrousel
+    const getEtapesSwiper = () => {
+      const el = (etapesSection.querySelector(".etapes swiper-container") ||
+        etapesSection.querySelector("swiper-container")) as any;
+      return el && el.swiper ? (el.swiper as any) : null;
+    };
+
+    let isCooling = false;
+    const COOLDOWN = 450; // ms between steps to avoid multiple triggers per gesture
+    let touchStartY = 0;
+    let detachHandlers = () => {};
+
+    const attachScrollHandlers = () => {
+      const target = etapesSection;
+      if (!target) return;
+      // Safety: remove previous handlers if any (re-entrance)
+      detachHandlers();
+
+      const wheelHandler = (e: WheelEvent) => {
+        const swiper = getEtapesSwiper();
+        if (!swiper) return;
+        if (isCooling) return;
+        const dir = e.deltaY > 0 ? 1 : -1;
+        // If we're at the boundary, let the page scroll
+        if ((dir > 0 && swiper.isEnd) || (dir < 0 && swiper.isBeginning)) {
+          return; // don't preventDefault -> allow natural scroll to exit pin region
+        }
+        e.preventDefault();
+        if (dir > 0) swiper.slideNext();
+        else swiper.slidePrev();
+        isCooling = true;
+        setTimeout(() => (isCooling = false), COOLDOWN);
+      };
+
+      const touchStartHandler = (e: TouchEvent) => {
+        touchStartY = e.touches[0]?.clientY || 0;
+      };
+      const touchMoveHandler = (e: TouchEvent) => {
+        const swiper = getEtapesSwiper();
+        if (!swiper) return;
+        if (isCooling) return;
+        const currentY = e.touches[0]?.clientY || 0;
+        const dy = touchStartY - currentY; // >0 means swipe up -> next
+        const TH = 24; // px threshold to validate a step
+        if (Math.abs(dy) > TH) {
+          const goingNext = dy > 0;
+          // Let natural scroll out if at edges
+          if (
+            (goingNext && swiper.isEnd) ||
+            (!goingNext && swiper.isBeginning)
+          ) {
+            return; // don't preventDefault -> allow exit
+          }
+          e.preventDefault();
+          if (goingNext) swiper.slideNext();
+          else swiper.slidePrev();
+          isCooling = true;
+          setTimeout(() => (isCooling = false), COOLDOWN);
+          touchStartY = currentY; // allow chained steps
+        }
+      };
+
+      target.addEventListener("wheel", wheelHandler, { passive: false });
+      target.addEventListener("touchstart", touchStartHandler, {
+        passive: true,
+      });
+      target.addEventListener("touchmove", touchMoveHandler, {
+        passive: false,
+      });
+
+      detachHandlers = () => {
+        target.removeEventListener("wheel", wheelHandler as any);
+        target.removeEventListener("touchstart", touchStartHandler as any);
+        target.removeEventListener("touchmove", touchMoveHandler as any);
+      };
+    };
+
+    ScrollTrigger.create({
+      trigger: etapesSection,
+      start: "top top",
+      end: "bottom top",
+      pin: true,
+      anticipatePin: 1,
+      // markers: true,
+      onEnter: attachScrollHandlers,
+      onEnterBack: attachScrollHandlers,
+      onLeave: () => detachHandlers(),
+      onLeaveBack: () => detachHandlers(),
+    });
+  }
 });
 
 // Partenaires
@@ -127,103 +226,6 @@ const { data: etapesProjetAccueil } = await useAsyncData(
 
 gsap.registerPlugin(ScrollTrigger);
 const sectionProjet = ref<HTMLElement | null>(null);
-
-onMounted(async () => {
-  await nextTick();
-  if (!sectionProjet.value) return;
-
-  const slides = sectionProjet.value.querySelectorAll(".etape");
-
-  const sectionTop = sectionProjet.value.offsetTop;
-  const sectionHeight = sectionProjet.value.offsetHeight;
-
-  // Section pinned sur la durée totale
-  let waitLongerBeforeEnd = 0;
-  let totalScrollLength = window.innerHeight * slides.length;
-
-  let canScrollSwiper = false;
-
-  let pinTrigger = ScrollTrigger.create({
-    trigger: sectionProjet.value,
-    start: "top top",
-    end: () => `top+=${window.innerHeight * slides.length} top`,
-    pin: true,
-    scrub: true,
-    markers: true,
-    onEnter: () => {
-      canScrollSwiper = true;
-      // setTimeout(() => {
-      //   canScrollSwiper = true;
-      // }, 1000);
-
-      // Cacher le <nav> pendant le pin
-      const nav = document.querySelector("nav");
-      if (nav) nav.classList.add("hidden");
-      if (sectionProjet.value) {
-        sectionProjet.value.addEventListener(
-          "wheel",
-          onWheel as EventListener,
-          { passive: false }
-        );
-      }
-    },
-    onLeave: () => {
-      // Réafficher le <nav> à la sortie du pin
-      const nav = document.querySelector("nav");
-      if (nav) nav.classList.remove("hidden");
-      if (sectionProjet.value) {
-        sectionProjet.value.removeEventListener(
-          "wheel",
-          onWheel as EventListener
-        );
-      }
-    },
-  });
-
-  function onWheel(e: WheelEvent) {
-    if (!sectionProjet.value) return;
-    if (!canScrollSwiper) return;
-
-    const swiperEl = sectionProjet.value.querySelector(
-      "swiper-container"
-    ) as any;
-
-    if (!swiperEl || !swiperEl.swiper) return;
-    e.preventDefault();
-
-    const swiperInstance = swiperEl.swiper;
-    const currentIndex = swiperInstance.activeIndex;
-    const totalSlides = swiperInstance.slides.length;
-    let isScrollingDown = e.deltaY > 0;
-    let isScrollingUp = e.deltaY < 0;
-    let isLastSlide = currentIndex >= totalSlides - 1;
-
-    if (isScrollingDown) {
-      swiperInstance.slideNext();
-    } else if (isScrollingUp) {
-      swiperInstance.slidePrev();
-    }
-
-    // Remove du pin à la dernière slide
-    if (isScrollingDown && isLastSlide) {
-      const sectionRect = sectionProjet.value.getBoundingClientRect();
-      const scrollY = window.scrollY || window.pageYOffset;
-      const sectionBottom = sectionRect.bottom + scrollY;
-      const targetScroll = sectionBottom - window.innerHeight;
-
-      window.scrollTo({ top: targetScroll, behavior: "auto" }); // Evite le jump en fin de section
-      pinTrigger.kill();
-      sectionProjet.value.removeEventListener(
-        "wheel",
-        onWheel as EventListener
-      );
-
-      sectionProjet.value.classList.add("vanillaScroll");
-
-      return;
-    }
-  }
-});
 
 // Conseils
 const { data: advices } = await useAsyncData("conseils", async () => {

@@ -1,5 +1,5 @@
 ---
 title: "Préparation & planning"
-description: "Définissons ensemble l'étape 3 de votre projet"
+description: "Organisons le tournage, les équipes et les lieux pour un déroulé sans accroc."
 img: "/images/icones/handshake.png"
 ---

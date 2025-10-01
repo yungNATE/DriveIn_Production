@@ -28,6 +28,7 @@ export default defineContentConfig({
         title: z.string(),
         description: z.string(),
         img: z.string(),
+        bg: z.string(),
       }),
     }),
     conseils: defineCollection({
