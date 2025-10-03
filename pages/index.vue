@@ -63,6 +63,14 @@ onMounted(async () => {
       `<+=${HERO_DELAY}`
     );
 
+  // Force a layout/resize tick once visible so iframe-based players re-measure correctly
+  requestAnimationFrame(() => {
+    window.dispatchEvent(new Event("resize"));
+  });
+  tl.eventCallback("onComplete", () => {
+    window.dispatchEvent(new Event("resize"));
+  });
+
   // Pin de la section Étapes Projet lorsque son haut touche le haut de l'écran
   // (utilise le ref si dispo, sinon fallback sur le sélecteur)
   const etapesSection =
@@ -506,6 +514,12 @@ section.hero {
     gap: 150px;
     flex-wrap: wrap;
 
+    // Prevent flex item intrinsic sizing glitches during entrance animations
+    > * {
+      min-width: 0;
+      min-height: 0;
+    }
+
     @include mediaquery($index-sectionHero-breakpoint) {
       gap: 75px;
     }
@@ -535,10 +549,23 @@ section.hero {
       }
     }
 
-    .video-player {
-      max-width: 550px !important;
+    .video-player-wrapper {
+      // Give the flex item a definite base size so it doesn't collapse to 0
+      flex: 0 1 700px;
+      width: min(700px, 100%);
+      aspect-ratio: 16 / 9;
+      display: block;
+      overflow: hidden;
+      border-radius: 20px;
+    }
 
-      height: fit-content;
+    .video-player {
+      // Ensure the iframe/player fills the wrapper and keeps aspect
+      width: 100% !important;
+      height: auto !important;
+      max-width: 700px !important;
+      aspect-ratio: 16 / 9;
+
       filter: drop-shadow(0 0 25px rgba($primary-color-light, 0.5));
       transition: 0.3s;
       border-radius: 20px;
