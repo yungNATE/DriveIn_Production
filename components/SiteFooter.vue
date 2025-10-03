@@ -16,7 +16,7 @@ const currentYear = new Date().getFullYear();
     <section class="footerContent">
       <nav class="container-small">
         <ul class="footer-links classic-pages unstyled">
-          <li><SpecialLink to="/">L'agence</SpecialLink></li>
+          <li><SpecialLink to="/">Accueil</SpecialLink></li>
           <li><SpecialLink to="/sitemap">Plan du site</SpecialLink></li>
           <li>
             <SpecialLink to="/mentions-legales">Mentions légales</SpecialLink>
@@ -62,6 +62,7 @@ footer {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-inline: 20px;
 
     &::before {
       content: "";
@@ -84,11 +85,23 @@ footer {
       display: flex;
       justify-content: space-between;
       padding: 1rem 0;
+      @include mediaquery(450) {
+        flex-direction: column;
+        gap: 20px;
+
+        .footer-links {
+          align-items: center !important;
+        }
+      }
 
       .footer-links {
         display: flex;
         flex-direction: column;
         row-gap: 15px;
+      }
+
+      .special-pages {
+        align-items: flex-end;
       }
     }
   }

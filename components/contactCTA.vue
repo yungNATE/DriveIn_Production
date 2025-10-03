@@ -11,5 +11,7 @@
   justify-content: space-around;
   margin-bottom: 1rem;
   margin-block: 110px;
+  flex-wrap: wrap;
+  gap: 50px 40px;
 }
 </style>
