@@ -1,13 +1,20 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
+import { useHeaderVisibility } from "@/composables/useHeaderVisibility";
 const menuOpen = ref(false);
 const { isScrolled } = useScrollState();
+const { isHeaderHidden } = useHeaderVisibility();
 
 const iconWidth = computed(() => (isScrolled.value ? "50px" : "170px"));
+
+// Close menu automatically if header becomes hidden (avoid off-canvas lingering)
+watch(isHeaderHidden, (hidden) => {
+  if (hidden) menuOpen.value = false;
+});
 </script>
 
 <template>
-  <header>
+  <header :class="{ hiddenHeader: isHeaderHidden }">
     <nav>
       <IconLink
         to="/"
@@ -45,6 +52,15 @@ header {
   z-index: 99;
   backdrop-filter: blur(5px);
   background-color: rgba(0, 0, 0, 0.4);
+  transition:
+    transform 0.5s ease,
+    opacity 0.5s ease;
+
+  &.hiddenHeader {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+  }
 
   &::after {
     content: "";

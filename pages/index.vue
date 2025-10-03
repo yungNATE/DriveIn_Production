@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
+import { useHeaderVisibility } from "@/composables/useHeaderVisibility";
 import { register } from "swiper/element/bundle";
 import { gsap } from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 
 register();
-let contentType: string;
 
 // Swiper
 const swiperRef = ref<HTMLElement | null>(null);
@@ -15,6 +15,39 @@ let distanceRatio = 0;
 let startTimer;
 const isPlaying = ref(true);
 let clickable = true;
+
+// --- Image dynamique pour etapesProjet ---
+const currentEtapeSlideIndex = ref(0);
+const currentEtapeNumber = computed(() => currentEtapeSlideIndex.value + 1);
+const currentEtapeImageSrc = computed(
+  () => `/images/etapesProjet/etape${currentEtapeNumber.value}.png`
+);
+// Handler déclenché au changement de slide Swiper (web component event)
+// --- ScrollTrigger sync (to éviter la latence de dépin) ---
+let etapesScrollTrigger: ScrollTrigger | null = null;
+let totalEtapesSlides = 0;
+
+function handleEtapesSlideChange(e: Event) {
+  const swiper = (e as CustomEvent).detail?.[0];
+  if (!swiper) return;
+  currentEtapeSlideIndex.value =
+    swiper.realIndex ?? swiper.activeIndex ?? currentEtapeSlideIndex.value;
+
+  // Si le ScrollTrigger est actif, on avance proportionnellement la scroll position
+  if (etapesScrollTrigger && totalEtapesSlides > 1) {
+    const st = etapesScrollTrigger;
+    // Progression théorique du scroll basée sur l'index de slide
+    const perSlide = 1 / (totalEtapesSlides - 1);
+    const targetProgress = Math.min(
+      1,
+      Math.max(0, currentEtapeSlideIndex.value * perSlide)
+    );
+    const targetScrollY = st.start + (st.end - st.start) * targetProgress;
+    // Ajuste le scroll réel pour que ScrollTrigger soit déjà presque à la fin
+    // -> le prochain wheel après la dernière slide libèrera immédiatement le pin
+    window.scrollTo({ top: targetScrollY });
+  }
+}
 
 onMounted(async () => {
   const swiperEl = swiperRef.value;
@@ -87,7 +120,8 @@ onMounted(async () => {
     };
 
     let isCooling = false;
-    const COOLDOWN = 450; // ms between steps to avoid multiple triggers per gesture
+    // Cooldown réduit pour plus de réactivité (latence perçue moindre)
+    const COOLDOWN = 250; // ms entre changements de slides
     let touchStartY = 0;
     let detachHandlers = () => {};
 
@@ -156,7 +190,7 @@ onMounted(async () => {
       };
     };
 
-    ScrollTrigger.create({
+    etapesScrollTrigger = ScrollTrigger.create({
       trigger: etapesSection,
       start: "top top",
       end: "bottom top",
@@ -167,18 +201,28 @@ onMounted(async () => {
       onEnterBack: attachScrollHandlers,
       onLeave: () => detachHandlers(),
       onLeaveBack: () => detachHandlers(),
+      onToggle: (self) => {
+        // we set header visibility state elsewhere once ref available
+        isHeaderHidden.value = self.isActive;
+      },
     });
+
+    // Nombre total de slides (pour la synchro de progression)
+    totalEtapesSlides =
+      etapesSection.querySelectorAll(".etapes swiper-slide").length || 0;
+
+    // Option : démarrer avec progress = 0 aligné sur la première slide
+    // (Si besoin future logique ici)
   }
 });
 
 // Partenaires
-contentType = "partners";
 const {
   data: partners,
   pending,
   error,
-} = await useAsyncData(contentType, async () => {
-  const data = await queryCollection(contentType).all();
+} = await useAsyncData("partners", async () => {
+  const data = await queryCollection("partners").all();
   return flattenMeta(data);
 });
 
@@ -188,19 +232,23 @@ type ProjectTag = {
   title: string;
   description: string;
   type: string;
+  hidden: boolean; // required by <Tag /> component
 };
 const { data: allTags } = await useAsyncData<ProjectTag[]>("allTags", () =>
   import("@/content/projects/tags.json").then(
-    (mod) => mod.default as ProjectTag[]
+    (mod) =>
+      (mod.default as any[]).map((t) => ({
+        hidden: false,
+        ...t,
+      })) as ProjectTag[]
   )
 );
 
 // Getting all highlighted projects
-contentType = "projects";
 const { data: highlightedProjects } = await useAsyncData(
-  contentType,
+  "projects",
   async () => {
-    const data = await queryCollection(contentType)
+    const data = await queryCollection("projects")
       .where("highlighted", "IS NOT NULL")
       .all();
     return flattenMeta(data);
@@ -234,6 +282,7 @@ const { data: etapesProjetAccueil } = await useAsyncData(
 
 gsap.registerPlugin(ScrollTrigger);
 const sectionProjet = ref<HTMLElement | null>(null);
+const { isHeaderHidden } = useHeaderVisibility();
 
 // Conseils
 const { data: advices } = await useAsyncData("conseils", async () => {
@@ -293,6 +342,7 @@ definePageMeta({
       <MembreEquipe
         src="images/profil_pics/sashaProfilPic.png"
         alt="DriveIn Production"
+        :customClass="undefined"
       >
         <h2>Par Sacha Stadtfeld</h2>
         <p>
@@ -388,6 +438,7 @@ definePageMeta({
         navigation-next-el="section.etapesProjet .swiper-next"
         navigation-prev-el="section.etapesProjet .swiper-prev"
         style="height: 500px"
+        @swiperslidechange="handleEtapesSlideChange"
       >
         <swiper-slide
           v-for="(etape, i) in etapesProjetAccueil"
@@ -395,10 +446,12 @@ definePageMeta({
           class="etape"
           :class="`etape-${i}`"
         >
-          <h3 class="h2">{{ etape.title }}</h3>
-          <div class="description">
-            <img :src="etape.img" alt="" />
-            <p class="h3">{{ etape.description }}</p>
+          <div class="swiperSlideContent">
+            <h3 class="h2">{{ etape.title }}</h3>
+            <div class="description">
+              <img :src="etape.img" alt="" />
+              <p class="h3">{{ etape.description }}</p>
+            </div>
           </div>
         </swiper-slide>
       </swiper-container>
@@ -410,6 +463,18 @@ definePageMeta({
           <ArrowGlow orientation="right"></ArrowGlow>
         </button>
       </div>
+    </div>
+    <div class="dynamic-step-image-wrapper" aria-hidden="true">
+      <Transition name="fade-step-img" mode="out-in">
+        <img
+          v-if="currentEtapeImageSrc"
+          :key="currentEtapeImageSrc"
+          :src="currentEtapeImageSrc"
+          alt=""
+          class="dynamic-step-image"
+          decoding="async"
+        />
+      </Transition>
     </div>
   </section>
 
@@ -743,6 +808,7 @@ section.etapesProjet {
   padding-block: 100px;
   position: relative;
   margin-block: 200px;
+  overflow: hidden;
 
   &::after {
     content: ""; // For centering element
@@ -757,6 +823,7 @@ section.etapesProjet {
     width: 100%;
     height: 40px;
     opacity: 0.5;
+    z-index: 2;
   }
   &:before {
     top: 0;
@@ -783,28 +850,34 @@ section.etapesProjet {
   }
 
   .etapes {
-    padding-inline: 150px;
     display: flex;
     flex-direction: column;
     gap: 50px;
 
     .etape {
       display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
       align-items: center;
       padding: 5px;
 
-      .description {
+      .swiperSlideContent {
         display: flex;
+        justify-content: center;
         align-items: center;
-        gap: 20px;
-        background-color: black;
-        @include glow-discret(white);
-        max-width: 400px;
-        padding: 15px;
-        border-radius: 12px;
-        height: fit-content;
+        flex-wrap: wrap;
+        width: 100%;
+        gap: 30px 100px;
+
+        .description {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+          background-color: black;
+          @include glow-discret(white);
+          max-width: 400px;
+          padding: 15px;
+          border-radius: 12px;
+          height: fit-content;
+        }
       }
     }
   }
@@ -813,6 +886,21 @@ section.etapesProjet {
     .swiper-nav {
       display: none;
     }
+  }
+
+  .dynamic-step-image-wrapper {
+    position: absolute;
+    bottom: -90px;
+    right: -70px;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0.4;
+  }
+  .dynamic-step-image {
+    width: clamp(50px, 65vw, 400px);
+    height: auto;
+    object-fit: contain;
+    user-select: none;
   }
 }
 
@@ -881,5 +969,14 @@ section.advices {
       color: white;
     }
   }
+}
+
+.fade-step-img-enter-active,
+.fade-step-img-leave-active {
+  transition: opacity 0.4s ease;
+}
+.fade-step-img-enter-from,
+.fade-step-img-leave-to {
+  opacity: 0;
 }
 </style>
