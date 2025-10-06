@@ -49,6 +49,31 @@ function handleEtapesSlideChange(e: Event) {
   }
 }
 
+// Préchargement des images des étapes (slides + image dynamique)
+function preloadEtapesImages() {
+  try {
+    const urls = new Set<string>();
+    // Dynamic step overlay images (etape1.png ... etapeN.png)
+    const count = etapesProjetAccueil?.value?.length || 0;
+    for (let i = 1; i <= count; i++) {
+      urls.add(`/images/etapesProjet/etape${i}.png`);
+    }
+    // Images déclarées dans le contenu (front-matter .img)
+    etapesProjetAccueil?.value?.forEach((e: any) => {
+      if (e?.img && typeof e.img === "string") urls.add(e.img);
+    });
+    // Préchargement basique via objets Image
+    urls.forEach((src) => {
+      const img = new Image();
+      img.decoding = "async";
+      img.src = src;
+    });
+  } catch (err) {
+    // Soft fail: ne rien bloquer si erreur
+    console.warn("Préchargement étapes échoué", err);
+  }
+}
+
 onMounted(async () => {
   const swiperEl = swiperRef.value;
   if (swiperEl) {
@@ -214,6 +239,9 @@ onMounted(async () => {
     // Option : démarrer avec progress = 0 aligné sur la première slide
     // (Si besoin future logique ici)
   }
+
+  // Lancer le préchargement tout à la fin du montage pour ne pas bloquer les animations initiales
+  preloadEtapesImages();
 });
 
 // Partenaires
@@ -279,6 +307,19 @@ const { data: etapesProjetAccueil } = await useAsyncData(
     return flattenMeta(data);
   }
 );
+
+// Ajout de balises <link rel="preload"> pour les images des étapes (améliore le LCP perçu sur changements de slide)
+useHead(() => {
+  const links: any[] = [];
+  const count = etapesProjetAccueil?.value?.length || 0;
+  for (let i = 1; i <= count; i++) {
+    links.push({ rel: "preload", as: "image", href: `/images/etapesProjet/etape${i}.png` });
+  }
+  etapesProjetAccueil?.value?.forEach((e: any) => {
+    if (e?.img) links.push({ rel: "preload", as: "image", href: e.img });
+  });
+  return { link: links };
+});
 
 gsap.registerPlugin(ScrollTrigger);
 const sectionProjet = ref<HTMLElement | null>(null);
