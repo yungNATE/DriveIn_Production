@@ -1,11 +1,9 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
 import { useHeaderVisibility } from "@/composables/useHeaderVisibility";
-import { register } from "swiper/element/bundle";
 import { gsap } from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 
-register();
 
 // Swiper
 const swiperRef = ref<HTMLElement | null>(null);
@@ -313,7 +311,11 @@ useHead(() => {
   const links: any[] = [];
   const count = etapesProjetAccueil?.value?.length || 0;
   for (let i = 1; i <= count; i++) {
-    links.push({ rel: "preload", as: "image", href: `/images/etapesProjet/etape${i}.png` });
+    links.push({
+      rel: "preload",
+      as: "image",
+      href: `/images/etapesProjet/etape${i}.png`,
+    });
   }
   etapesProjetAccueil?.value?.forEach((e: any) => {
     if (e?.img) links.push({ rel: "preload", as: "image", href: e.img });
@@ -378,36 +380,7 @@ definePageMeta({
     </div>
   </section>
 
-  <section class="presentation" id="presentation">
-    <div class="container content">
-      <MembreEquipe
-        src="images/profil_pics/sashaProfilPic.png"
-        alt="DriveIn Production"
-        :customClass="undefined"
-      >
-        <h2>Par Sacha Stadtfeld</h2>
-        <p>
-          Je suis persuadé que la vidéo est le support de communication par
-          excellence ! Dans un monde dominé par le web j'ai donc décidé de me
-          former aux métiers du digital et de l'audiovisuel pour devenir
-          réalisateur vidéo.
-        </p>
-      </MembreEquipe>
-      <MembreEquipe
-        src="images/profil_pics/arthurProfilPic.png"
-        alt="DriveIn Production"
-        customClass="blue"
-      >
-        <h2>Avec Arthur Roberdeau</h2>
-        <p>
-          Arthur passionné par la photographie et la vidéo depuis tout petit.
-          Devenu photographe professionnel depuis de nombreuses années, je me
-          suis spécialisé dans les photographies événementielles, afin de vous
-          offrir un service unique et personnalisé.
-        </p>
-      </MembreEquipe>
-    </div>
-  </section>
+  <PresentationEquipeSection />
 
   <section class="partners">
     <h2>Ils nous font confiance</h2>
@@ -592,6 +565,10 @@ definePageMeta({
       </div>
     </div>
   </section>
+
+  <section class="comments">
+    <GoogleComments />
+  </section>
 </template>
 
 <style lang="scss" scoped>
@@ -603,7 +580,7 @@ section.hero {
   align-items: center;
   flex-direction: column;
   gap: 100px 135px;
-  height: calc(100vh - 90px);
+  height: $heroBanner-fullHeight;
 
   // Hack to center div
   &::before {
@@ -695,45 +672,6 @@ section.hero {
     @include mediaquery("mobile") {
       display: flex;
     }
-  }
-}
-
-section.presentation {
-  position: relative;
-  margin-block: 200px;
-
-  &:before,
-  &:after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 40px;
-    height: 100%;
-    opacity: 0.5;
-    z-index: -1;
-  }
-  &:before {
-    left: 0;
-    background: radial-gradient(
-      ellipse at 0% 50%,
-      rgba($primary-color-light, 50%) 0%,
-      rgba(255, 255, 255, 0) 70%
-    );
-  }
-  &:after {
-    right: 0;
-    background: radial-gradient(
-      ellipse at 100% 50%,
-      rgba($secondary-color-dark, 50%) 0%,
-      rgba(255, 255, 255, 0) 70%
-    );
-  }
-  div.content {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 30px;
   }
 }
 
@@ -1010,6 +948,10 @@ section.advices {
       color: white;
     }
   }
+}
+
+section.comments {
+  padding-block: 235px;
 }
 
 .fade-step-img-enter-active,

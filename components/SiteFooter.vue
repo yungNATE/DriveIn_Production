@@ -4,9 +4,7 @@ const currentYear = new Date().getFullYear();
 
 <template>
   <footer>
-    <section class="comment">
-      <GoogleComments />
-    </section>
+    <section class="comment"></section>
 
     <section class="upperFooter">
       <GreenTag></GreenTag>
@@ -51,10 +49,6 @@ const currentYear = new Date().getFullYear();
 
 <style lang="scss" scoped>
 footer {
-  section.comment {
-    padding-block: 235px;
-  }
-
   section.footerContent {
     position: relative;
     background: black;

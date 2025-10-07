@@ -2,6 +2,7 @@
 
 // styles/_variables.scss
 $header-height: 90px;
+$heroBanner-fullHeight: calc(100vh - $header-height);
 
 // Définitions des familles de polices
 $font-work-sans: "Work Sans", sans-serif;
@@ -20,8 +21,6 @@ $secondary-color-light: #efb401;
 
 // Spécifiques
 $index-sectionHero-breakpoint: 1595;
-
-// Container mixin
 @mixin container($max-width: 1700px) {
   max-width: $max-width;
   width: 100%;
