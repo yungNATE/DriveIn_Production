@@ -2,73 +2,27 @@
 import ImgGlow from "~/components/ImgGlow.vue";
 import type { AccordionPanel } from "~/components/Accordion.vue";
 
-// Exemple d'utilisation du nouvel accordéon interne (remplace l'ancien composant UAccordion de Nuxt UI)
-const accordionPanels = ref<AccordionPanel[]>([
-  {
-    header: "Drive-In Production : Notre vision",
-    content:
-      "Nous créons des expériences vidéo sur-mesure qui racontent une histoire et engagent votre audience.",
-    customHtml:
-      "<ul><li>Créativité</li><li>Précision</li><li>Engagement</li></ul>",
-    open: true,
-  },
-  {
-    header: "Pourquoi choisir notre équipe ?",
-    content:
-      "Une équipe pluridisciplinaire capable d'accompagner un projet de A à Z, de l'écriture à la diffusion.",
-    customHtml:
-      "<p>Compétences : <strong>Réalisation</strong>, <strong>Motion design</strong>, <strong>Montage</strong>, <strong>Captation multi-cam</strong>.</p>",
-  },
-  {
-    header: "Quels types de formats produisons-nous ?",
-    content:
-      "Films institutionnels, publicités, contenus sociaux, captations d'événements, interviews, aftermovies, clips, formats pédagogiques, etc.",
-    customHtml:
-      '<p>Besoin d\'un format particulier ? <a href="/contact">Parlez-nous de votre idée</a>.</p>',
-  },
-  {
-    header: "Quels types de formats produisons-nous ?",
-    content:
-      "Films institutionnels, publicités, contenus sociaux, captations d'événements, interviews, aftermovies, clips, formats pédagogiques, etc.",
-    customHtml:
-      '<p>Besoin d\'un format particulier ? <a href="/contact">Parlez-nous de votre idée</a>.</p>',
-  },
-  {
-    header: "Quels types de formats produisons-nous ?",
-    content:
-      "Films institutionnels, publicités, contenus sociaux, captations d'événements, interviews, aftermovies, clips, formats pédagogiques, etc.",
-    customHtml:
-      '<p>Besoin d\'un format particulier ? <a href="/contact">Parlez-nous de votre idée</a>.</p>',
-  },
-  {
-    header: "Quels types de formats produisons-nous ?",
-    content:
-      "Films institutionnels, publicités, contenus sociaux, captations d'événements, interviews, aftermovies, clips, formats pédagogiques, etc.",
-    customHtml:
-      '<p>Besoin d\'un format particulier ? <a href="/contact">Parlez-nous de votre idée</a>.</p>',
-  },
-  {
-    header: "Quels types de formats produisons-nous ?",
-    content:
-      "Films institutionnels, publicités, contenus sociaux, captations d'événements, interviews, aftermovies, clips, formats pédagogiques, etc.",
-    customHtml:
-      '<p>Besoin d\'un format particulier ? <a href="/contact">Parlez-nous de votre idée</a>.</p>',
-  },
-  {
-    header: "Quels types de formats produisons-nous ?",
-    content:
-      "Films institutionnels, publicités, contenus sociaux, captations d'événements, interviews, aftermovies, clips, formats pédagogiques, etc.",
-    customHtml:
-      '<p>Besoin d\'un format particulier ? <a href="/contact">Parlez-nous de votre idée</a>.</p>',
-  },
-  {
-    header: "Quels types de formats produisons-nous ?",
-    content:
-      "Films institutionnels, publicités, contenus sociaux, captations d'événements, interviews, aftermovies, clips, formats pédagogiques, etc.",
-    customHtml:
-      '<p>Besoin d\'un format particulier ? <a href="/contact">Parlez-nous de votre idée</a>.</p>',
-  },
-]);
+// Charger les panneaux d'historique via Nuxt Content, comme dans index.vue
+const { data: agencyStory } = await useAsyncData("agencyStory", async () => {
+  const data = await queryCollection("agencyStory").all();
+  return flattenMeta(data);
+});
+
+// Mapper le contenu vers le format attendu par <Accordion /> et assurer un tableau non nul
+const accordionPanels = computed<AccordionPanel[]>(() => {
+  const items = (agencyStory.value as any[]) || [];
+  return (
+    items
+      .map((i) => ({
+        header: i.header,
+        content: i.content,
+        customHtml: i.customHtml,
+        open: !!i.open,
+      }))
+      // Maintenir un ordre cohérent: par date si présente dans customHtml ou par chemin
+      .sort((a, b) => (a.header || "").localeCompare(b.header || ""))
+  );
+});
 
 definePageMeta({ title: "À propos" });
 </script>
@@ -83,17 +37,17 @@ definePageMeta({ title: "À propos" });
           <Button to="/contact">Nous contacter</Button>
         </div>
         <p>
-          Driveln Production est une société spécialisée dans la réalisation
-          vidéo sur mesure, au service des marques. des institutions et des
-          créateurs de demain. De la conception à la postproduction, nous
-          donnons vie à vos idées àDe la signature électronique à la remise des
-          livrables numériques, tout est pensé pour réduire l'utilisation de
-          papier et simplifier les échanges. travers des contenus percutants,
-          engageants et parfaitement adaptés à votre public. Notre équipe réunit
-          des réalisatcleurs, cadreurs, monteurs et motion designers passionnés,
-          capables de répondre à tous types de projets : films institutionnels,
-          vidéos corporate, publicités, clips musicaux, contenus pour les
-          réseaux sociaux, captations d'événements, et bien plus encore.
+          DriveIn Production est une société de création vidéo sur mesure, au
+          service de celles et ceux qui veulent raconter leur histoire, marquer
+          les esprits et toucher leur public.Nous accompagnons marques,
+          institutions et créateurs de demain, en imaginant et réalisant des
+          contenus engageants, actuels et parfaitement adaptés à vos besoins. De
+          l’idée à l’écran, notre équipe met en œuvre toute son expertise et sa
+          créativité pour donner vie à vos projets. Réalisateurs, cadreurs,
+          monteurs et motion designers travaillent main dans la main pour
+          produire des films institutionnels, vidéos corporate, publicités,
+          clips musicaux, contenus pour les réseaux sociaux, captations
+          d’événements… et bien plus encore.
         </p>
       </div>
       <ImgGlow
@@ -115,14 +69,7 @@ definePageMeta({ title: "À propos" });
     <GoogleComments />
   </section>
 
-  <section class="histoire">
-    <div class="accordion">
-      <Accordion
-        :accordionPanels="accordionPanels"
-        :onlyOnOpenAtTheTime="true"
-        maxWidth="300px"
-      />
-    </div>
+  <section class="history">
     <div class="video">
       <ImgGlow
         class="photo"
@@ -130,6 +77,22 @@ definePageMeta({ title: "À propos" });
         alt="À propos de DriveIn Production !"
       />
     </div>
+    <div class="accordion">
+      <h2 class="gold">L'histoire de l'agence</h2>
+      <p>
+        Drive-In Production, c’est l’histoire d’une envie de liberté, d’un goût
+        pour la créativité et d’une vision plus humaine de la vidéo
+        professionnelle. Voici notre parcours en quelques étapes.
+      </p>
+      <Accordion
+        :accordionPanels="accordionPanels"
+        :onlyOneOpenAtTheTime="true"
+      />
+    </div>
+  </section>
+
+  <section class="workMethod">
+    <h2>Une méthode de travail bien rôdée</h2>
   </section>
 </template>
 
@@ -140,13 +103,18 @@ section.hero {
   align-items: center;
   justify-content: space-between;
   height: $heroBanner-fullHeight;
-  padding-top: 200px;
-  padding-bottom: 50px;
+  padding: 50px;
+
+  &::before {
+    content: "";
+  }
 
   .content {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: space-around;
+    gap: 50px;
+    margin-bottom: 40px;
 
     .text {
       max-width: 750px;
@@ -171,10 +139,22 @@ section.hero {
   }
 }
 
-section.histoire {
+section.history {
   display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 50px;
+  margin-block: 100px;
+
+  .accordion {
+    max-width: 300px;
+
+    > p {
+      text-align: justify;
+      margin-bottom: 60px;
+    }
+  }
 
   .video {
     .photo {
@@ -190,6 +170,43 @@ section.histoire {
         object-fit: cover;
       }
     }
+  }
+}
+
+section.workMethod {
+  background-color: black;
+  padding-block: 100px;
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  gap: 75px;
+
+  &:before,
+  &:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 40px;
+    opacity: 0.5;
+  }
+  &:before {
+    top: 0;
+    background: radial-gradient(
+      ellipse at 50% 0%,
+      rgba($primary-color-light, 1) 0%,
+      rgba(255, 255, 255, 0) 70%
+    );
+  }
+  &:after {
+    bottom: 0;
+    background: radial-gradient(
+      ellipse at 50% 100%,
+      rgba($secondary-color-dark, 1) 0%,
+      rgba(255, 255, 255, 0) 70%
+    );
   }
 }
 </style>
