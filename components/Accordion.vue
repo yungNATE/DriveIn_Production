@@ -3,7 +3,8 @@
  * Simple accessible accordion component.
  * Props:
  *  - accordionPanels: Array of panels { header: string; content?: string; customHtml?: string; open?: boolean }
- *  - onlyOnOpenAtTheTime: boolean (if true, only one panel can be open at a time)
+ *  - onlyOneOpenAtTheTime: boolean (if true, only one panel can be open at a time)
+ *  - openFirstPanel: boolean (default true). If no panel has explicit `open: true`, the first panel starts open.
  *
  * Emits:
  *  - update:openPanels (number[]) => indices of panels currently open (potential future v-model extension)
@@ -26,15 +27,24 @@ export interface AccordionPanel {
   open?: boolean; // Initial open state
 }
 
-const props = defineProps<{
-  accordionPanels: AccordionPanel[];
-  onlyOnOpenAtTheTime?: boolean;
-  /**
-   * Max width of the accordion container. Accepts any CSS size value (e.g. '800px', '60ch', '50%', 'min(100%,900px)').
-   * If a number is provided, it's treated as pixels.
-   */
-  maxWidth?: string | number;
-}>();
+const props = withDefaults(
+  defineProps<{
+    accordionPanels: AccordionPanel[];
+    onlyOneOpenAtTheTime?: boolean;
+    /**
+     * Max width of the accordion container. Accepts any CSS size value (e.g. '800px', '60ch', '50%', 'min(100%,900px)').
+     * If a number is provided, it's treated as pixels.
+     */
+    maxWidth?: string | number;
+    /**
+     * If true, opens the first panel by default (unless an explicit `open: true` exists on any panel).
+     */
+    openFirstPanel?: boolean;
+  }>(),
+  {
+    openFirstPanel: true,
+  }
+);
 
 const emit = defineEmits<{
   (e: "toggle", index: number, isOpen: boolean): void;
@@ -43,7 +53,14 @@ const emit = defineEmits<{
 
 // Create a local reactive copy to manage open state without mutating prop array directly.
 const internalPanels = ref(
-  props.accordionPanels.map((p) => ({ ...p, isOpen: !!p.open }))
+  (() => {
+    const anyExplicitOpen = props.accordionPanels.some((p) => !!p.open);
+    return props.accordionPanels.map((p, idx) => ({
+      ...p,
+      isOpen:
+        !!p.open || (!anyExplicitOpen && props.openFirstPanel && idx === 0),
+    }));
+  })()
 );
 
 watch(
@@ -53,12 +70,30 @@ watch(
     const openStateByHeader = new Map(
       internalPanels.value.map((p) => [p.header, p.isOpen])
     );
-    internalPanels.value = newVal.map((p) => ({
+    const anyExplicitOpen = newVal.some((p) => !!p.open);
+    internalPanels.value = newVal.map((p, idx) => ({
       ...p,
-      isOpen: openStateByHeader.get(p.header) ?? !!p.open,
+      isOpen:
+        openStateByHeader.get(p.header) ??
+        (!!p.open || (!anyExplicitOpen && props.openFirstPanel && idx === 0)),
     }));
   },
   { deep: true }
+);
+
+// If consumer toggles the prop on and no panels are open, open the first one
+watch(
+  () => props.openFirstPanel,
+  (val) => {
+    if (!val) return;
+    const anyOpen = internalPanels.value.some((p) => p.isOpen);
+    if (!anyOpen && internalPanels.value.length) {
+      internalPanels.value = internalPanels.value.map((p, idx) => ({
+        ...p,
+        isOpen: idx === 0,
+      }));
+    }
+  }
 );
 
 const openPanelsIndexes = computed(() =>
@@ -140,7 +175,7 @@ function toggle(index: number) {
   const previous = internalPanels.value.map((p) => p.isOpen);
   internalPanels.value = internalPanels.value.map((p, i) => {
     if (i !== index) {
-      if (props.onlyOnOpenAtTheTime) return { ...p, isOpen: false };
+      if (props.onlyOneOpenAtTheTime) return { ...p, isOpen: false };
       return p;
     }
     const willOpen = !p.isOpen;
@@ -183,7 +218,7 @@ onMounted(() => {
 <template>
   <div
     class="accordion"
-    :class="{ 'single-open': onlyOnOpenAtTheTime }"
+    :class="{ 'single-open': onlyOneOpenAtTheTime }"
     :style="{ maxWidth: resolvedMaxWidth, width: '100%' }"
   >
     <div
@@ -250,13 +285,14 @@ onMounted(() => {
 }
 
 .accordion-panel {
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  @include glow-discret($primary-color-light);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(4px);
   transition:
     border-color 0.3s ease,
-    background 0.3s ease;
+    background 0.3s ease,
+    0.3s filter;
   position: relative;
   overflow: hidden;
 
@@ -279,14 +315,9 @@ onMounted(() => {
     opacity: 1;
   }
 
-  &:hover:not(.open) {
-    border-color: rgba(255, 255, 255, 0.25);
-    background: rgba(255, 255, 255, 0.05);
-  }
-
+  * &:hover:not(.open),
   &.open {
-    border-color: rgba(255, 255, 255, 0.35);
-    background: rgba(255, 255, 255, 0.08);
+    @include glow-discret($secondary-color-dark);
   }
 }
 
@@ -317,8 +348,8 @@ onMounted(() => {
     height: 2px;
     background: linear-gradient(
       90deg,
-      #d1b464 0%,
-      rgba(209, 180, 100, 0.2) 100%
+      rgba($secondary-color-dark, 0.5) 0%,
+      rgba(0, 0, 0, 0.2) 100%
     );
     transform: scaleX(0);
     transform-origin: left center;
