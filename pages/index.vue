@@ -352,7 +352,7 @@ definePageMeta({
       <div class="video-player-wrapper">
         <ScriptYouTubePlayer
           video-id="jDQtxlRUf54"
-          :width="700"
+          :width="600"
           :height="400"
           class="video-player"
         ></ScriptYouTubePlayer>
@@ -585,9 +585,11 @@ section.hero {
   // Hack to center div
   &::before {
     content: "";
+  }
 
-    @include mediaquery($index-sectionHero-breakpoint) {
-      display: none;
+  @include mediaquery($index-sectionHero-breakpoint) {
+    &::after {
+      content: "";
     }
   }
 
@@ -634,8 +636,8 @@ section.hero {
 
     .video-player-wrapper {
       // Give the flex item a definite base size so it doesn't collapse to 0
-      flex: 0 1 700px;
-      width: min(700px, 100%);
+      flex: 0 1 600px;
+      width: min(600px, 100%);
       aspect-ratio: 16 / 9;
       display: block;
       overflow: hidden;
@@ -646,7 +648,7 @@ section.hero {
       // Ensure the iframe/player fills the wrapper and keeps aspect
       width: 100% !important;
       height: auto !important;
-      max-width: 700px !important;
+      max-width: 600px !important;
       aspect-ratio: 16 / 9;
 
       filter: drop-shadow(0 0 25px rgba($primary-color-light, 0.5));

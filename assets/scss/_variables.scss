@@ -20,7 +20,9 @@ $primary-color-light: #ffda00;
 $secondary-color-light: #efb401;
 
 // Spécifiques
-$index-sectionHero-breakpoint: 1595;
+$index-sectionHero-breakpoint: 1650;
+
+// Container mixin
 @mixin container($max-width: 1700px) {
   max-width: $max-width;
   width: 100%;
