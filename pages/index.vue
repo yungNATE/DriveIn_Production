@@ -4,7 +4,6 @@ import { useHeaderVisibility } from "@/composables/useHeaderVisibility";
 import { gsap } from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 
-
 // Swiper
 const swiperRef = ref<HTMLElement | null>(null);
 
@@ -52,12 +51,12 @@ function preloadEtapesImages() {
   try {
     const urls = new Set<string>();
     // Dynamic step overlay images (etape1.png ... etapeN.png)
-    const count = etapesProjetAccueil?.value?.length || 0;
+    const count = projectStepHome?.value?.length || 0;
     for (let i = 1; i <= count; i++) {
       urls.add(`/images/etapesProjet/etape${i}.png`);
     }
     // Images déclarées dans le contenu (front-matter .img)
-    etapesProjetAccueil?.value?.forEach((e: any) => {
+    projectStepHome?.value?.forEach((e: any) => {
       if (e?.img && typeof e.img === "string") urls.add(e.img);
     });
     // Préchargement basique via objets Image
@@ -298,10 +297,10 @@ function handleTagSelect(tagId: string) {
 }
 
 // Etapes Projet
-const { data: etapesProjetAccueil } = await useAsyncData(
-  "etapesProjetAccueil",
+const { data: projectStepHome } = await useAsyncData(
+  "projectStepHome",
   async () => {
-    const data = await queryCollection("etapesProjetAccueil").all();
+    const data = await queryCollection("projectStepHome").all();
     return flattenMeta(data);
   }
 );
@@ -309,7 +308,7 @@ const { data: etapesProjetAccueil } = await useAsyncData(
 // Ajout de balises <link rel="preload"> pour les images des étapes (améliore le LCP perçu sur changements de slide)
 useHead(() => {
   const links: any[] = [];
-  const count = etapesProjetAccueil?.value?.length || 0;
+  const count = projectStepHome?.value?.length || 0;
   for (let i = 1; i <= count; i++) {
     links.push({
       rel: "preload",
@@ -317,7 +316,7 @@ useHead(() => {
       href: `/images/etapesProjet/etape${i}.png`,
     });
   }
-  etapesProjetAccueil?.value?.forEach((e: any) => {
+  projectStepHome?.value?.forEach((e: any) => {
     if (e?.img) links.push({ rel: "preload", as: "image", href: e.img });
   });
   return { link: links };
@@ -455,7 +454,7 @@ definePageMeta({
         @swiperslidechange="handleEtapesSlideChange"
       >
         <swiper-slide
-          v-for="(etape, i) in etapesProjetAccueil"
+          v-for="(etape, i) in projectStepHome"
           :key="i"
           class="etape"
           :class="`etape-${i}`"
