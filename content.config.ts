@@ -21,8 +21,8 @@ export default defineContentConfig({
         description: z.string(),
       }),
     }),
-    etapesProjetAccueil: defineCollection({
-      source: "etapesProjetAccueil/*.md",
+    projectStepHome: defineCollection({
+      source: "projectStepHome/*.md",
       type: "data",
       schema: z.object({
         title: z.string(),
@@ -47,6 +47,24 @@ export default defineContentConfig({
         author: z.string(),
         comment: z.string(),
         rating: z.number().int().min(0).max(5),
+      }),
+    }),
+    agencyStory: defineCollection({
+      source: "agencyStory/*.md",
+      type: "data",
+      schema: z.object({
+        header: z.string(),
+        content: z.string(),
+        customHtml: z.string().optional(),
+      }),
+    }),
+    workMethod: defineCollection({
+      source: "workMethod/*.md",
+      type: "data",
+      schema: z.object({
+        title: z.string(),
+        description: z.string(),
+        img: z.string(),
       }),
     }),
   },
