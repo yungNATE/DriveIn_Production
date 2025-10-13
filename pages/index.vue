@@ -17,7 +17,7 @@ let clickable = true;
 const currentEtapeSlideIndex = ref(0);
 const currentEtapeNumber = computed(() => currentEtapeSlideIndex.value + 1);
 const currentEtapeImageSrc = computed(
-  () => `/images/etapesProjet/etape${currentEtapeNumber.value}.png`
+  () => `/images/projectSteps/etape${currentEtapeNumber.value}.png`
 );
 // Handler déclenché au changement de slide Swiper (web component event)
 // --- ScrollTrigger sync (to éviter la latence de dépin) ---
@@ -53,7 +53,7 @@ function preloadEtapesImages() {
     // Dynamic step overlay images (etape1.png ... etapeN.png)
     const count = projectStepHome?.value?.length || 0;
     for (let i = 1; i <= count; i++) {
-      urls.add(`/images/etapesProjet/etape${i}.png`);
+      urls.add(`/images/projectSteps/etape${i}.png`);
     }
     // Images déclarées dans le contenu (front-matter .img)
     projectStepHome?.value?.forEach((e: any) => {
@@ -313,7 +313,7 @@ useHead(() => {
     links.push({
       rel: "preload",
       as: "image",
-      href: `/images/etapesProjet/etape${i}.png`,
+      href: `/images/projectSteps/etape${i}.png`,
     });
   }
   projectStepHome?.value?.forEach((e: any) => {
