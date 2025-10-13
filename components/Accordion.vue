@@ -287,7 +287,7 @@ onMounted(() => {
 .accordion-panel {
   @include glow-discret($primary-color-light);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.03);
+  background: black;
   backdrop-filter: blur(4px);
   transition:
     border-color 0.3s ease,
