@@ -87,6 +87,63 @@ watch(
 );
 
 definePageMeta({ title: "À propos" });
+
+// ================= They Chose Us (Testimonials) =================
+// Load testimonials collection
+const { data: theyChoseUs } = await useAsyncData("theyChoseUs", async () => {
+  const data = await queryCollection("theyChoseUs").all();
+  return flattenMeta(data);
+});
+
+// Index of currently open testimonial (for showing video + person info)
+const theyChoseUsOpenIndex = ref<number>(0);
+
+// Normalize potential YouTube links to embeddable src (supports placeholder XXX)
+function normalizeVideoUrl(raw: string): string | null {
+  if (!raw || raw === "XXX") return null;
+  // Accept already embed urls
+  if (/^https?:\/\/.*(youtube\.com|youtu\.be)\//i.test(raw)) {
+    // youtu.be/<id>
+    const short = raw.match(/youtu\.be\/([a-zA-Z0-9_-]{6,})/);
+    if (short) return `https://www.youtube.com/embed/${short[1]}`;
+    // youtube.com/watch?v=<id>
+    const watch = raw.match(/[?&]v=([a-zA-Z0-9_-]{6,})/);
+    if (watch) return `https://www.youtube.com/embed/${watch[1]}`;
+    // Already embed form
+    if (/\/embed\//.test(raw)) return raw;
+  }
+  return raw; // fallback (could be another provider)
+}
+
+// Map to accordion panels
+const theyChoseUsPanels = computed<AccordionPanel[]>(() => {
+  const items = (theyChoseUs.value as any[]) || [];
+  return items.map((t, idx) => ({
+    header: t.title,
+    content: t.description,
+    open: theyChoseUsOpenIndex.value === idx,
+  }));
+});
+
+function onTheyChoseUsToggle(index: number, isOpen: boolean) {
+  if (isOpen) {
+    theyChoseUsOpenIndex.value = index;
+  } else if (theyChoseUsOpenIndex.value === index) {
+    // Prevent having none open: keep at least one (optional behavior)
+    // theyChoseUsOpenIndex.value = -1; // Uncomment to allow all closed
+  }
+}
+
+const activeTestimonial = computed(() => {
+  const list = (theyChoseUs.value as any[]) || [];
+  return list[theyChoseUsOpenIndex.value] || list[0];
+});
+
+const activeVideoUrl = computed(() =>
+  activeTestimonial.value
+    ? normalizeVideoUrl(activeTestimonial.value.video)
+    : null
+);
 </script>
 
 <template>
@@ -191,6 +248,42 @@ definePageMeta({ title: "À propos" });
       </div>
     </div>
   </section>
+
+  <section class="theyChoseUs">
+    <div class="testimonial-visual">
+      <div class="video-wrapper" v-if="activeVideoUrl">
+        <iframe
+          :src="activeVideoUrl"
+          title="Témoignage client"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>
+      <div class="placeholder" v-else>
+        <ImgGlow
+          class="photo revert"
+          src="/images/profil_pics/sashaProfilPic.png"
+          alt="Témoignage Drive-In Production"
+        />
+      </div>
+      <div class="person" v-if="activeTestimonial">
+        <span class="name">{{ activeTestimonial.personneInterviewee }}</span>
+        <span class="title">{{
+          activeTestimonial.titrePersonneInterviewee
+        }}</span>
+      </div>
+    </div>
+    <div class="accordion testimonials">
+      <h2 class="blue">Ils nous ont choisis</h2>
+      <Accordion
+        :accordionPanels="theyChoseUsPanels"
+        :onlyOneOpenAtTheTime="true"
+        :openFirstPanel="true"
+        @toggle="(index, isOpen) => onTheyChoseUsToggle(index, isOpen)"
+      />
+    </div>
+  </section>
 </template>
 
 <style lang="scss" scoped>
@@ -244,12 +337,12 @@ section.history {
   gap: 50px;
   margin-block: 100px;
 
-  h2 {
-    text-align: center;
-  }
-
   .accordion {
     max-width: 350px;
+
+    h2 {
+      text-align: center;
+    }
 
     > p {
       text-align: justify;
@@ -346,6 +439,72 @@ section.workMethod {
       align-items: center;
       justify-content: center; /* Centrage des flèches sous le swiper */
       gap: 40px;
+    }
+  }
+}
+
+section.theyChoseUs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 60px;
+  margin-block: 120px;
+
+  .testimonial-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    position: sticky;
+    top: calc(10px + $header-height);
+    max-width: 560px;
+    width: 100%;
+
+    .video-wrapper {
+      width: 100%;
+      aspect-ratio: 16/9;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.08),
+        0 8px 32px -4px rgba(0, 0, 0, 0.55);
+      iframe {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+    }
+    .placeholder {
+      width: 100%;
+      :deep(img) {
+        width: 100%;
+        aspect-ratio: 16/9;
+        object-fit: cover;
+      }
+    }
+    .person {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      .name {
+        font-weight: 600;
+      }
+      .title {
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+    }
+  }
+
+  .accordion.testimonials {
+    max-width: 420px;
+    width: 100%;
+    h2 {
+      text-align: center;
+      margin-bottom: 1.25rem;
     }
   }
 }
