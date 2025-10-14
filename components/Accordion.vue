@@ -294,7 +294,6 @@ onMounted(() => {
     background 0.3s ease,
     0.3s filter;
   position: relative;
-  overflow: hidden;
 
   // Subtle gradient sheen for hover (fading in)
   &::before {

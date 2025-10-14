@@ -147,12 +147,30 @@ section.history {
   gap: 50px;
   margin-block: 100px;
 
+  h2 {
+    text-align: center;
+  }
+
   .accordion {
-    max-width: 300px;
+    max-width: 350px;
 
     > p {
       text-align: justify;
       margin-bottom: 60px;
+    }
+
+    :deep(.custom-html) {
+      .date {
+        position: absolute;
+        right: calc(100% + 10px);
+        top: 15px;
+        writing-mode: vertical-rl;
+        text-orientation: upright;
+
+        .ellipsis {
+          writing-mode: horizontal-tb;
+        }
+      }
     }
   }
 
