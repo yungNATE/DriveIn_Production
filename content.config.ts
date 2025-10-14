@@ -67,5 +67,16 @@ export default defineContentConfig({
         img: z.string(),
       }),
     }),
+    theyChoseUs: defineCollection({
+      source: "theyChoseUs/*.md",
+      type: "data",
+      schema: z.object({
+        title: z.string(),
+        description: z.string(),
+        video: z.string(),
+        personneInterviewee: z.string(),
+        titrePersonneInterviewee: z.string(),
+      }),
+    }),
   },
 });
