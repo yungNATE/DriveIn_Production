@@ -24,6 +24,68 @@ const accordionPanels = computed<AccordionPanel[]>(() => {
   );
 });
 
+// Récupération de la méthode de travail (workMethod)
+const { data: workMethod } = await useAsyncData("workMethod", async () => {
+  const data = await queryCollection("workMethod").all();
+  return flattenMeta(data);
+});
+
+// Panels pour le swiper: chaque slide contient un seul panel d'accordéon
+const workMethodOpenIndex = ref<number | null>(null);
+const workMethodPanels = computed<AccordionPanel[]>(() => {
+  const items = (workMethod.value as any[]) || [];
+  // Tenter d'ordonner selon le numéro présent dans l'URL d'image (…-1.png, …-2.png, etc.)
+  const getOrder = (it: any) => {
+    const m = String(it?.img || "").match(/(\d+)(?=\.[a-z]+$)/i);
+    return m ? Number(m[1]) : Number.MAX_SAFE_INTEGER;
+  };
+  return items
+    .slice()
+    .sort((a, b) => getOrder(a) - getOrder(b))
+    .map((i, idx) => ({
+      header: i.title,
+      content: i.description,
+      open: workMethodOpenIndex.value === idx,
+    }));
+});
+
+function onWorkMethodToggle(idx: number, isOpen: boolean) {
+  workMethodOpenIndex.value = isOpen ? idx : null;
+}
+
+// Swiper control: centrer la slide active quand un panneau s'ouvre
+const workMethodSwiperEl = ref<any>(null);
+const getWorkMethodSwiper = () => {
+  const el = workMethodSwiperEl.value as any;
+  return el && el.swiper ? (el.swiper as any) : null;
+};
+watch(workMethodOpenIndex, (idx) => {
+  if (idx == null) return;
+  const swiper = getWorkMethodSwiper();
+  if (swiper) {
+    try {
+      if (swiper.activeIndex !== idx) swiper.slideTo(idx);
+    } catch (e) {
+      // ignore
+    }
+  }
+});
+
+// Ouvrir par défaut la première slide lorsque les données sont prêtes
+watch(
+  () => workMethod.value,
+  (val) => {
+    if (
+      Array.isArray(val) &&
+      val.length > 0 &&
+      workMethodOpenIndex.value == null
+    ) {
+      workMethodOpenIndex.value = 0;
+    }
+  },
+  { immediate: true }
+);
+
 definePageMeta({ title: "À propos" });
 </script>
 
@@ -93,6 +155,41 @@ definePageMeta({ title: "À propos" });
 
   <section class="workMethod">
     <h2>Une méthode de travail bien rôdée</h2>
+    <div class="work-swiper container">
+      <swiper-container
+        ref="workMethodSwiperEl"
+        navigation-next-el="section.workMethod .swiper-next"
+        navigation-prev-el="section.workMethod .swiper-prev"
+        slides-per-view="auto"
+        centered-slides="true"
+        space-between="20"
+        @swiperslidechange="
+          (e: Event) => {
+            const swiper = (e as CustomEvent).detail?.[0];
+            if (!swiper) return;
+            const idx = swiper.realIndex ?? swiper.activeIndex;
+            if (typeof idx === 'number') workMethodOpenIndex = idx;
+          }
+        "
+      >
+        <swiper-slide v-for="(panel, idx) in workMethodPanels" :key="idx">
+          <Accordion
+            :accordionPanels="[panel]"
+            :onlyOneOpenAtTheTime="true"
+            :openFirstPanel="false"
+            @toggle="(_, isOpen) => onWorkMethodToggle(idx, isOpen)"
+          />
+        </swiper-slide>
+      </swiper-container>
+      <div class="swiper-nav">
+        <button class="swiper-prev unstyled rotate-left" aria-label="Précédent">
+          <ArrowGlow orientation="left"></ArrowGlow>
+        </button>
+        <button class="swiper-next unstyled rotate-right" aria-label="Suivant">
+          <ArrowGlow orientation="right"></ArrowGlow>
+        </button>
+      </div>
+    </div>
   </section>
 </template>
 
@@ -225,6 +322,31 @@ section.workMethod {
       rgba($secondary-color-dark, 1) 0%,
       rgba(255, 255, 255, 0) 70%
     );
+  }
+}
+
+section.workMethod {
+  h2 {
+    text-align: center;
+  }
+
+  .work-swiper {
+    swiper-container {
+      width: 100%;
+
+      swiper-slide {
+        width: 350px;
+        padding: 20px;
+      }
+    }
+
+    .swiper-nav {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center; /* Centrage des flèches sous le swiper */
+      gap: 40px;
+    }
   }
 }
 </style>
