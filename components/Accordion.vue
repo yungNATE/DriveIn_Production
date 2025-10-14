@@ -161,6 +161,7 @@ function setBodyWrapper(
 function animateOpen(el: HTMLElement) {
   clearPreviousTransition(el);
   el.dataset.animating = "true";
+  el.dataset.transitionKind = "open"; // mark kind to discriminate stale fallbacks
   el.style.overflow = "hidden";
 
   // Establish current height as start value (even if mid-transition)
@@ -185,6 +186,7 @@ function animateOpen(el: HTMLElement) {
       el.style.height = "auto";
       el.style.overflow = "visible";
       el.dataset.animating = "false";
+      delete el.dataset.transitionKind;
       el.removeEventListener("transitionend", handler);
       transitionHandlers.delete(el);
     };
@@ -193,7 +195,11 @@ function animateOpen(el: HTMLElement) {
 
     // Fallback in case transitionend doesn't fire
     setTimeout(() => {
-      if (el.dataset.animating === "true") {
+      // Guard against race: ensure it's still the same transition kind
+      if (
+        el.dataset.animating === "true" &&
+        el.dataset.transitionKind === "open"
+      ) {
         handler(
           new TransitionEvent("transitionend", { propertyName: "height" })
         );
@@ -205,6 +211,7 @@ function animateOpen(el: HTMLElement) {
 function animateClose(el: HTMLElement) {
   clearPreviousTransition(el);
   el.dataset.animating = "true";
+  el.dataset.transitionKind = "close"; // mark kind for fallback discrimination
   el.style.overflow = "hidden";
   const currentHeight = el.getBoundingClientRect().height || el.scrollHeight;
   el.style.transition = "none";
@@ -219,6 +226,7 @@ function animateClose(el: HTMLElement) {
     const handler = (e: TransitionEvent) => {
       if (e.propertyName !== "height") return;
       el.dataset.animating = "false";
+      delete el.dataset.transitionKind;
       el.removeEventListener("transitionend", handler);
       transitionHandlers.delete(el);
     };
@@ -227,7 +235,10 @@ function animateClose(el: HTMLElement) {
 
     // Fallback in case transitionend doesn't fire
     setTimeout(() => {
-      if (el.dataset.animating === "true") {
+      if (
+        el.dataset.animating === "true" &&
+        el.dataset.transitionKind === "close"
+      ) {
         handler(
           new TransitionEvent("transitionend", { propertyName: "height" })
         );
