@@ -165,14 +165,16 @@ function animateOpen(el: HTMLElement) {
 
   // Establish current height as start value (even if mid-transition)
   const computed = getComputedStyle(el);
-  const startHeight = el.getBoundingClientRect().height || el.scrollHeight;
+  const current = el.getBoundingClientRect().height; // may be 0 when closed
+  const target = el.scrollHeight;
   el.style.transition = "none";
+  // If current equals target (e.g., previously auto), force start at 0 to ensure visible animation
+  const startHeight = Math.abs(current - target) < 1 ? 0 : current;
   el.style.height = startHeight + "px";
   el.style.opacity = computed.opacity || "0";
   // Force reflow before transitioning to target height
   void el.offsetHeight;
 
-  const target = el.scrollHeight;
   requestAnimationFrame(() => {
     el.style.transition =
       "height 0.45s cubic-bezier(.35,.6,.25,1), opacity 0.35s ease";
