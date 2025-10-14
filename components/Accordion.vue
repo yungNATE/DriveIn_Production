@@ -66,17 +66,35 @@ const internalPanels = ref(
 watch(
   () => props.accordionPanels,
   (newVal) => {
-    // If array reference changes, sync (keep current open states when possible by header match)
+    // Preserve previous state to animate diffs
+    const previous = internalPanels.value.map((p) => p.isOpen);
+
+    // Keep current open states when possible by header match,
+    // but honor explicit `open` values if they are provided by the parent
     const openStateByHeader = new Map(
       internalPanels.value.map((p) => [p.header, p.isOpen])
     );
-    const anyExplicitOpen = newVal.some((p) => !!p.open);
-    internalPanels.value = newVal.map((p, idx) => ({
-      ...p,
-      isOpen:
-        openStateByHeader.get(p.header) ??
-        (!!p.open || (!anyExplicitOpen && props.openFirstPanel && idx === 0)),
-    }));
+    const anyExplicitOpen = newVal.some((p) => typeof p.open === "boolean");
+
+    internalPanels.value = newVal.map((p, idx) => {
+      const explicit = typeof p.open === "boolean" ? p.open : undefined;
+      const defaultFirst =
+        !anyExplicitOpen && props.openFirstPanel && idx === 0;
+      return {
+        ...p,
+        isOpen: explicit ?? openStateByHeader.get(p.header) ?? defaultFirst,
+      };
+    });
+
+    nextTick(() => {
+      internalPanels.value.forEach((p, i) => {
+        const el = bodyWrappers.value[i];
+        if (!el) return;
+        if (previous[i] !== p.isOpen) {
+          p.isOpen ? animateOpen(el) : animateClose(el);
+        }
+      });
+    });
   },
   { deep: true }
 );
@@ -113,6 +131,21 @@ watch(openPanelsIndexes, (val) => emit("update:openPanels", val));
 
 // Refs to wrapper elements for manual animation (no display:none usage)
 const bodyWrappers = ref<HTMLElement[]>([]);
+// Track transitionend handlers to safely cancel/replace on rapid toggles
+const transitionHandlers = new WeakMap<
+  HTMLElement,
+  (e: TransitionEvent) => void
+>();
+
+function clearPreviousTransition(el: HTMLElement) {
+  const prev = transitionHandlers.get(el);
+  if (prev) {
+    el.removeEventListener("transitionend", prev);
+    transitionHandlers.delete(el);
+  }
+  // Do not reset styles here; caller sets appropriate starting styles
+}
+
 function setBodyWrapper(
   el: Element | ComponentPublicInstance | null,
   index: number
@@ -126,48 +159,78 @@ function setBodyWrapper(
 }
 
 function animateOpen(el: HTMLElement) {
+  clearPreviousTransition(el);
   el.dataset.animating = "true";
   el.style.overflow = "hidden";
-  // Start closed state (if not already)
-  const startHeight = el.offsetHeight; // may be 0
-  const target = el.scrollHeight;
+
+  // Establish current height as start value (even if mid-transition)
+  const computed = getComputedStyle(el);
+  const startHeight = el.getBoundingClientRect().height || el.scrollHeight;
+  el.style.transition = "none";
   el.style.height = startHeight + "px";
-  el.style.opacity =
-    getComputedStyle(el).opacity === "0" ? "0" : el.style.opacity || "0";
+  el.style.opacity = computed.opacity || "0";
+  // Force reflow before transitioning to target height
+  void el.offsetHeight;
+
+  const target = el.scrollHeight;
   requestAnimationFrame(() => {
     el.style.transition =
       "height 0.45s cubic-bezier(.35,.6,.25,1), opacity 0.35s ease";
     el.style.height = target + "px";
     el.style.opacity = "1";
     const handler = (e: TransitionEvent) => {
-      if (e.propertyName === "height") {
-        el.style.height = "auto";
-        el.style.overflow = "visible";
-        el.dataset.animating = "false";
-        el.removeEventListener("transitionend", handler);
-      }
+      if (e.propertyName !== "height") return;
+      el.style.height = "auto";
+      el.style.overflow = "visible";
+      el.dataset.animating = "false";
+      el.removeEventListener("transitionend", handler);
+      transitionHandlers.delete(el);
     };
+    transitionHandlers.set(el, handler);
     el.addEventListener("transitionend", handler);
+
+    // Fallback in case transitionend doesn't fire
+    setTimeout(() => {
+      if (el.dataset.animating === "true") {
+        handler(
+          new TransitionEvent("transitionend", { propertyName: "height" })
+        );
+      }
+    }, 650);
   });
 }
 
 function animateClose(el: HTMLElement) {
+  clearPreviousTransition(el);
   el.dataset.animating = "true";
   el.style.overflow = "hidden";
-  const current = el.scrollHeight; // current full height
-  el.style.height = current + "px"; // set explicit height to allow transition to 0
+  const currentHeight = el.getBoundingClientRect().height || el.scrollHeight;
+  el.style.transition = "none";
+  el.style.height = currentHeight + "px"; // explicit height to allow transition to 0
+  // Force reflow
+  void el.offsetHeight;
   requestAnimationFrame(() => {
     el.style.transition =
       "height 0.4s cubic-bezier(.6,.05,.4,1), opacity 0.3s ease";
     el.style.height = "0px";
     el.style.opacity = "0";
     const handler = (e: TransitionEvent) => {
-      if (e.propertyName === "height") {
-        el.dataset.animating = "false";
-        el.removeEventListener("transitionend", handler);
-      }
+      if (e.propertyName !== "height") return;
+      el.dataset.animating = "false";
+      el.removeEventListener("transitionend", handler);
+      transitionHandlers.delete(el);
     };
+    transitionHandlers.set(el, handler);
     el.addEventListener("transitionend", handler);
+
+    // Fallback in case transitionend doesn't fire
+    setTimeout(() => {
+      if (el.dataset.animating === "true") {
+        handler(
+          new TransitionEvent("transitionend", { propertyName: "height" })
+        );
+      }
+    }, 550);
   });
 }
 
