@@ -6,10 +6,15 @@ export default defineContentConfig({
       source: "projects/*.md",
       type: "data",
       schema: z.object({
-        tags: z.array(z.string()),
-        image: z.string(),
+        title: z.string(),
         presentation: z.string(),
+        cover: z.string(),
+        video: z.string(),
+        otherFormats: z.array(z.string()).optional(),
+        photos: z.array(z.string()),
+        partner: z.array(z.string()),
         highlighted: z.string().optional(),
+        tagIDs: z.array(z.string()),
       }),
     }),
     partners: defineCollection({
