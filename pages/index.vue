@@ -428,7 +428,7 @@ definePageMeta({
         />
       </div>
       <p class="tagDescription">{{ selectedTag?.description }}</p>
-      <Button to="/projets" :class="'discret'"
+      <Button to="/projects/" :class="'discret'"
         >Voir toutes les réalisations →</Button
       >
     </div>

@@ -27,7 +27,7 @@ const currentYear = new Date().getFullYear();
         </ul>
         <ul class="footer-links special-pages unstyled">
           <li><SpecialLink to="/about">L'agence</SpecialLink></li>
-          <li><SpecialLink to="/projets">Réalisations</SpecialLink></li>
+          <li><SpecialLink to="/projects/">Réalisations</SpecialLink></li>
           <li><SpecialLink to="/#nos-conseils">Nos conseils</SpecialLink></li>
           <li>
             <SpecialLink to="/about#processus-creatif"

@@ -36,7 +36,7 @@ watch(isHeaderHidden, (hidden) => {
       <div class="menu-links" :class="{ open: menuOpen }">
         <ul class="special-links">
           <li><SpecialLink to="/about">L'agence</SpecialLink></li>
-          <li><SpecialLink to="/projets">Réalisations</SpecialLink></li>
+          <li><SpecialLink to="/projects/">Réalisations</SpecialLink></li>
         </ul>
         <Button to="/contact">Nous contacter</Button>
         <RSLinks></RSLinks>

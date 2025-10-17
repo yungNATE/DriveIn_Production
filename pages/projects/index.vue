@@ -1,19 +1,34 @@
 <script lang="ts" setup>
-const contentType = "projets";
+const contentType = "projects";
 const {
   data: projets,
   pending,
   error,
-} = await useAsyncData(contentType, () =>
-  queryCollection("content").where("path", "LIKE", `/${contentType}%`).all()
-);
-
-console.log("Projets data:", projets.value[0]);
+} = await useAsyncData(contentType, async () => {
+  const data = await queryCollection(contentType).all();
+  return flattenMeta(data);
+});
 </script>
 
 <template>
   <div class="projets-page">
-    <h1>Nos Projets</h1>
+    <h1 class="sr-only">Les projets de nos clients - DriveIn Production !</h1>
+
+    <section class="header">
+      <h1>Nos réalisations</h1>
+      <Button to="/contact">Prendre rendez-vous →</Button>
+    </section>
+
+    <section class="filter" aria-controls="filteredProjects"></section>
+
+    <section
+      id="filteredProjects"
+      aria-live="polite"
+      aria-labelledby="filteredProjectsTitle"
+    >
+      <h2 id="filteredProjectsTitle" class="sr-only">Résultats des projets</h2>
+      <div class="content"></div>
+    </section>
 
     <div v-if="pending" class="loading">Chargement des projets...</div>
 
@@ -29,7 +44,7 @@ console.log("Projets data:", projets.value[0]);
         </p>
         <div class="metadata">
           <span v-if="projet.date" class="date">
-            {{ formatDate(projet.date) }}
+            {{ projet.date }}
           </span>
           <span v-if="projet.category" class="category">
             {{ projet.category }}
@@ -46,17 +61,17 @@ console.log("Projets data:", projets.value[0]);
 </template>
 
 <style scoped>
+section.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5rem;
+}
+
 .projets-page {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-}
-
-h1 {
-  text-align: center;
-  margin-bottom: 3rem;
-  color: #333;
-  font-size: 2.5rem;
 }
 
 .loading,
@@ -82,7 +97,9 @@ h1 {
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .projet-card:hover {
