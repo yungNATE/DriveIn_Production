@@ -15,6 +15,7 @@ export default defineContentConfig({
         partner: z.array(z.string()),
         highlighted: z.string().optional(),
         tagIDs: z.array(z.string()),
+        weight: z.number().int(),
       }),
     }),
     partners: defineCollection({
