@@ -8,6 +8,17 @@ const {
   const data = await queryCollection(contentType).all();
   return flattenMeta(data);
 });
+
+const items = [
+  {
+    title: "First",
+    description: "The first item.",
+  },
+  {
+    title: "Second",
+    description: "The second item.",
+  },
+];
 </script>
 
 <template>
@@ -27,36 +38,28 @@ const {
       aria-labelledby="filteredProjectsTitle"
     >
       <h2 id="filteredProjectsTitle" class="sr-only">Résultats des projets</h2>
-      <div class="content"></div>
+      <masonry-wall
+        :items="projets"
+        :ssr-columns="1"
+        :column-width="300"
+        :gap="16"
+      >
+        <template #default="{ item, index }">
+          <GlowElement
+            :style="{
+              height: `${(index + 1) * 100 * Math.floor(Math.random() * 10)}px`,
+            }"
+          >
+            <p>{{ item.title }}</p>
+            <span>{{ item.presentation }}</span>
+            <img :src="item.cover" :alt="`Image de couverture ${item.title}`" />
+            <NuxtLink :to="item.path" class="read-more">
+              Lire la suite →
+            </NuxtLink>
+          </GlowElement>
+        </template>
+      </masonry-wall>
     </section>
-
-    <div v-if="pending" class="loading">Chargement des projets...</div>
-
-    <div v-else-if="error" class="error">
-      Erreur lors du chargement des projets
-    </div>
-
-    <div v-else-if="projets" class="projets-grid">
-      <article v-for="projet in projets" :key="projet._id" class="projet-card">
-        <h2>{{ projet.title || "Projet sans titre" }}</h2>
-        <p v-if="projet.description" class="description">
-          {{ projet.description }}
-        </p>
-        <div class="metadata">
-          <span v-if="projet.date" class="date">
-            {{ projet.date }}
-          </span>
-          <span v-if="projet.category" class="category">
-            {{ projet.category }}
-          </span>
-        </div>
-        <NuxtLink :to="projet.path" class="read-more">
-          Lire la suite →
-        </NuxtLink>
-      </article>
-    </div>
-
-    <div v-else class="no-projects">Aucun projet trouvé.</div>
   </div>
 </template>
 
@@ -66,6 +69,32 @@ section.header {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 5rem;
+}
+
+section#filteredProjects {
+  :deep(.masonry-item) {
+    > div {
+      position: relative;
+      width: 100%;
+
+      > * {
+        position: relative;
+        z-index: 2;
+      }
+
+      img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        object-fit: cover;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+      }
+    }
+  }
 }
 
 .projets-page {
