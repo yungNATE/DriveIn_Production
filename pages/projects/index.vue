@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { getAllTags, type ProjectTag } from "@/lib/tags";
+
 const contentType = "projects";
 const {
   data: projets,
@@ -9,16 +11,37 @@ const {
   return flattenMeta(data);
 });
 
-const items = [
-  {
-    title: "First",
-    description: "The first item.",
-  },
-  {
-    title: "Second",
-    description: "The second item.",
-  },
-];
+// Tri les projets par rapport à la propriété 'weight', plus le weight est gros, plus il apparaît en premier
+projets.value?.sort((a, b) => (b.weight || 0) - (a.weight || 0));
+
+// Tags (shared util)
+const { data: allTags } = await useAsyncData<ProjectTag[]>("allTags", () =>
+  getAllTags()
+);
+
+// Fast lookup map for tags by id
+const tagsById = computed<Record<string, ProjectTag>>(() => {
+  const map: Record<string, ProjectTag> = {};
+  for (const t of allTags.value || []) map[t.id] = t;
+  return map;
+});
+
+// Helper to get full tag objects for a given project item
+function getTagsFor(item: any): ProjectTag[] {
+  const ids: string[] = item?.tagIDs || [];
+  const map = tagsById.value;
+  return ids.map((id) => map[id]).filter(Boolean) as ProjectTag[];
+}
+
+// Store natural heights per cover to set container height dynamically
+const coverHeights = ref<Record<string, number>>({});
+
+function onImgLoad(src: string, e: Event) {
+  const img = e.target as HTMLImageElement | null;
+  if (!img) return;
+  // Save natural image height; fall back handled in template
+  coverHeights.value[src] = img.naturalHeight || coverHeights.value[src] || 700;
+}
 </script>
 
 <template>
@@ -39,23 +62,52 @@ const items = [
     >
       <h2 id="filteredProjectsTitle" class="sr-only">Résultats des projets</h2>
       <masonry-wall
-        :items="projets"
-        :ssr-columns="1"
-        :column-width="300"
-        :gap="16"
+        :items="projets || []"
+        :gap="30"
+        :min-columns="1"
+        :max-columns="3"
       >
         <template #default="{ item, index }">
           <GlowElement
             :style="{
-              height: `${(index + 1) * 100 * Math.floor(Math.random() * 10)}px`,
+              height: `${coverHeights[item.cover] || 700}px`,
             }"
           >
-            <p>{{ item.title }}</p>
-            <span>{{ item.presentation }}</span>
-            <img :src="item.cover" :alt="`Image de couverture ${item.title}`" />
-            <NuxtLink :to="item.path" class="read-more">
-              Lire la suite →
-            </NuxtLink>
+            <div class="top tags">
+              <Tag
+                v-for="tag in getTagsFor(item)"
+                :key="tag.id"
+                :tag="tag"
+                class="inactive"
+              />
+            </div>
+
+            <div class="middle">
+              <template
+                v-for="label in [`Découvrir le projet ${item.title}`]"
+                :key="label"
+              >
+                <NuxtLink
+                  :to="item.path"
+                  :title="label"
+                  :aria-label="label"
+                  class="read-more"
+                >
+                  {{ label }}
+                </NuxtLink>
+              </template>
+              <NuxtImg
+                :src="item.cover"
+                :alt="`Image de couverture ${item.title}`"
+                class="projectCoverImage"
+                loading="lazy"
+                @load="onImgLoad(item.cover, $event)"
+              />
+            </div>
+
+            <div class="bottom">
+              <p class="projectTitle h2">{{ item.title }}</p>
+            </div>
           </GlowElement>
         </template>
       </masonry-wall>
@@ -72,17 +124,54 @@ section.header {
 }
 
 section#filteredProjects {
+  width: 70%;
+  margin-left: auto;
   :deep(.masonry-item) {
     > div {
       position: relative;
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 25px;
 
-      > * {
+      > *:not(.middle) {
         position: relative;
         z-index: 2;
       }
 
-      img {
+      .projectTitle {
+        position: relative;
+        bottom: -20px;
+        opacity: 0;
+        transition:
+          bottom 0.3s ease,
+          opacity 0.3s ease;
+      }
+      &:hover .projectTitle {
+        bottom: 0;
+        opacity: 1;
+      }
+
+      .tags {
+        display: flex;
+        gap: 10px 10px;
+        flex-direction: column;
+        flex-wrap: wrap;
+        position: relative;
+        top: -20px;
+        opacity: 0;
+        transition:
+          top 0.3s ease,
+          opacity 0.3s ease;
+        max-height: 40%;
+      }
+      &:hover .tags {
+        top: 0;
+        opacity: 1;
+      }
+
+      .projectCoverImage {
         position: absolute;
         width: 100%;
         height: 100%;
@@ -92,91 +181,28 @@ section#filteredProjects {
         bottom: 0;
         right: 0;
         left: 0;
+        border-radius: 15px;
+        transition: filter 0.3s ease;
+      }
+      &:hover .projectCoverImage {
+        filter: brightness(0.5);
+      }
+
+      .read-more {
+        position: static;
+        font-size: 0;
+
+        &::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 3;
+        }
       }
     }
   }
-}
-
-.projets-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-.loading,
-.error,
-.no-projects {
-  text-align: center;
-  padding: 2rem;
-  font-size: 1.1rem;
-}
-
-.error {
-  color: #e74c3c;
-}
-
-.projets-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 2rem;
-}
-
-.projet-card {
-  background: white;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.projet-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-}
-
-.projet-card h2 {
-  margin: 0 0 1rem 0;
-  color: #007acc;
-  font-size: 1.4rem;
-}
-
-.description {
-  color: #666;
-  line-height: 1.6;
-  margin-bottom: 1rem;
-}
-
-.metadata {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-}
-
-.date {
-  color: #888;
-}
-
-.category {
-  background: #007acc;
-  color: white;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-}
-
-.read-more {
-  display: inline-block;
-  color: #007acc;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
-}
-
-.read-more:hover {
-  color: #005c99;
-  text-decoration: underline;
 }
 </style>
