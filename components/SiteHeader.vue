@@ -11,6 +11,8 @@ const iconWidth = computed(() => (isScrolled.value ? "50px" : "170px"));
 watch(isHeaderHidden, (hidden) => {
   if (hidden) menuOpen.value = false;
 });
+
+useHTMLRootElementScroll(menuOpen);
 </script>
 
 <template>
@@ -126,13 +128,13 @@ header {
     }
     // Animation croix
     span.open:nth-child(1) {
-      transform: translateY(8px) rotate(45deg);
+      transform: translateY(9px) rotate(45deg);
     }
     span.open:nth-child(2) {
       opacity: 0;
     }
     span.open:nth-child(3) {
-      transform: translateY(-8px) rotate(-45deg);
+      transform: translateY(-9px) rotate(-45deg);
     }
   }
 
@@ -150,7 +152,7 @@ header {
       left: 100%;
       width: 100%;
       height: 100vh;
-      background: rgba(black, 30%);
+      background: rgba(black, 90%);
       backdrop-filter: blur(30px);
       flex-direction: column;
       align-items: flex-start;
