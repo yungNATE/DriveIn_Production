@@ -10,9 +10,15 @@ html {
   scroll-behavior: smooth !important;
 }
 
-::-moz-selection,
+$selection-bg: rgba($secondary-color-light, 0.5);
 ::selection {
-  background: rgba($secondary-color-light, 0.5);
+  background: $selection-bg;
+}
+::-webkit-selection {
+  background: $selection-bg;
+}
+::-moz-selection {
+  background: $selection-bg;
 }
 
 body {
