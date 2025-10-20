@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
 import { useHeaderVisibility } from "@/composables/useHeaderVisibility";
+import { getAllTags, type ProjectTag } from "@/lib/tags";
 import { gsap } from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 
@@ -252,21 +253,8 @@ const {
 });
 
 // Tags from content/projects/tags.json
-type ProjectTag = {
-  id: string;
-  title: string;
-  description: string;
-  type: string;
-  hidden: boolean; // required by <Tag /> component
-};
 const { data: allTags } = await useAsyncData<ProjectTag[]>("allTags", () =>
-  import("@/content/projects/tags.json").then(
-    (mod) =>
-      (mod.default as any[]).map((t) => ({
-        hidden: false,
-        ...t,
-      })) as ProjectTag[]
-  )
+  getAllTags()
 );
 
 // Getting all highlighted projects
