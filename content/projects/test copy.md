@@ -1,9 +1,9 @@
 ---
-title: "Refonte site AXA"
+title: "Simple test"
 presentation: >
-  Ce projet consiste à refondre le site web d'AXA France afin d'améliorer l'expérience utilisateur.
+  Ce projet consiste à refondre le site web de Total énergie afin d'améliorer l'expérience utilisateur.
 
-cover: "/images/projects/aviva-assurance/cover2.jpg"
+cover: "/images/projects/aviva-assurance/cover.jpg"
 video: "dQw4w9WgXcQ"
 otherFormats:
   - "dQw4w9WgXcQ"
@@ -16,12 +16,13 @@ photos:
 partner:
   - Axa France
 
-highlighted: "communication"
+highlighted: "UX"
 
 tagIDs:
   - communication
   - UX
+  - institutionnelle
   - interview
 
-weight: 3
+weight: 0
 ---
