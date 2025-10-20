@@ -39,6 +39,7 @@ defineEmits(["select"]);
   padding: 3px 10px;
   width: fit-content;
   user-select: none;
+  border-radius: 5px;
 
   display: flex;
   gap: 5px;
@@ -62,7 +63,7 @@ defineEmits(["select"]);
     cursor: default;
 
     svg {
-      opacity: 0;
+      display: none;
     }
   }
 }
