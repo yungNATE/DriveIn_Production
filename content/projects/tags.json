@@ -24,6 +24,12 @@
     "type": "theme"
   },
   {
+    "id": "empty",
+    "title": "Vide",
+    "description": "Tag vide pour tests",
+    "type": "theme"
+  },
+  {
     "id": "360",
     "title": "360°",
     "description": "Les vidéos en 360° permettent une immersion totale dans l'environnement filmé",

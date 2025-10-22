@@ -22,6 +22,7 @@ tagIDs:
   - communication
   - UX
   - interview
+  - video
 
 weight: 3
 ---

@@ -23,6 +23,7 @@ tagIDs:
   - UX
   - institutionnelle
   - interview
+  - video
 
 weight: 2
 ---
