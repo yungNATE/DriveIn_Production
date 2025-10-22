@@ -18,6 +18,18 @@ projets.value?.sort((a, b) => (b.weight || 0) - (a.weight || 0));
 const { data: allTags } = await useAsyncData<ProjectTag[]>("allTags", () =>
   getAllTags()
 );
+const FORMAT_NAME = "format";
+const formatTags = computed(
+  () => allTags.value?.filter((t) => t.type === FORMAT_NAME) || []
+);
+const THEME_NAME = "theme";
+const themeTags = computed(
+  () => allTags.value?.filter((t) => t.type === THEME_NAME) || []
+);
+const TECHNIQUE_NAME = "technique";
+const techniqueTags = computed(
+  () => allTags.value?.filter((t) => t.type === TECHNIQUE_NAME) || []
+);
 
 // Fast lookup map for tags by id
 const tagsById = computed<Record<string, ProjectTag>>(() => {
@@ -40,8 +52,72 @@ function onImgLoad(src: string, e: Event) {
   const img = e.target as HTMLImageElement | null;
   if (!img) return;
   // Save natural image height; fall back handled in template
-  coverHeights.value[src] = img.naturalHeight || coverHeights.value[src] || 700;
+  const MAX_HEIGHT = 700;
+  coverHeights.value[src] = Math.min(
+    img.naturalHeight || coverHeights.value[src] || MAX_HEIGHT,
+    MAX_HEIGHT
+  );
 }
+
+// ----------------------------
+// Filters state & logic
+// ----------------------------
+// Always exactly one format selected; default to "video"
+const selectedFormatId = ref<string>("video");
+// Multiple selections allowed; start empty
+const selectedThemeIds = ref<string[]>([]);
+const selectedTechniqueIds = ref<string[]>([]);
+
+// Handlers
+function handleSelectFormat(tagId: string) {
+  // Enforce exactly one selected; ignore attempts to deselect
+  if (tagId && tagId !== selectedFormatId.value) {
+    selectedFormatId.value = tagId;
+  }
+}
+function handleToggleTheme(tagId: string) {
+  const arr = selectedThemeIds.value;
+  const idx = arr.indexOf(tagId);
+  if (idx === -1) selectedThemeIds.value = [...arr, tagId];
+  else selectedThemeIds.value = arr.filter((id) => id !== tagId);
+}
+function handleToggleTechnique(tagId: string) {
+  const arr = selectedTechniqueIds.value;
+  const idx = arr.indexOf(tagId);
+  if (idx === -1) selectedTechniqueIds.value = [...arr, tagId];
+  else selectedTechniqueIds.value = arr.filter((id) => id !== tagId);
+}
+
+// Apply filtering (AND logic):
+// - project must include the selected format
+// - and include all selected themes (if any)
+// - and include all selected techniques (if any)
+const filteredProjets = computed(() => {
+  const items = projets.value || [];
+  const formatId = selectedFormatId.value;
+  const themeIds = selectedThemeIds.value;
+  const techniqueIds = selectedTechniqueIds.value;
+
+  return items.filter((p: any) => {
+    const tags: string[] = p?.tagIDs || [];
+    // Format must always match (exactly one selected)
+    if (!tags.includes(formatId)) return false;
+
+    // Union logic for theme/technique selections
+    const hasTheme = themeIds.length
+      ? themeIds.some((id) => tags.includes(id))
+      : false;
+    const hasTechnique = techniqueIds.length
+      ? techniqueIds.some((id) => tags.includes(id))
+      : false;
+
+    // If no theme/technique filter selected, accept all (for the format)
+    if (!themeIds.length && !techniqueIds.length) return true;
+
+    // Otherwise accept if it matches ANY selected tag across theme OR technique
+    return hasTheme || hasTechnique;
+  });
+});
 </script>
 
 <template>
@@ -53,64 +129,130 @@ function onImgLoad(src: string, e: Event) {
       <Button to="/contact">Prendre rendez-vous →</Button>
     </section>
 
-    <section class="filter" aria-controls="filteredProjects"></section>
-
-    <section
-      id="filteredProjects"
-      aria-live="polite"
-      aria-labelledby="filteredProjectsTitle"
-    >
-      <h2 id="filteredProjectsTitle" class="sr-only">Résultats des projets</h2>
-      <masonry-wall
-        :items="projets || []"
-        :gap="30"
-        :min-columns="1"
-        :max-columns="3"
+    <section class="projects container">
+      <section
+        class="filter"
+        role="region"
+        aria-controls="filteredProjects"
+        aria-labelledby="filtersTitle"
       >
-        <template #default="{ item, index }">
-          <GlowElement
-            :style="{
-              height: `${coverHeights[item.cover] || 700}px`,
-            }"
-          >
-            <div class="top tags">
+        <h2 id="filtersTitle" class="sr-only">Filtres des projets</h2>
+
+        <fieldset class="formatFilter">
+          <legend>Format</legend>
+          <ul role="group" aria-label="Choix du format du contenu">
+            <li v-for="formatTag in formatTags" :data-format="FORMAT_NAME">
               <Tag
-                v-for="tag in getTagsFor(item)"
-                :key="tag.id"
-                :tag="tag"
-                class="inactive"
+                :tag="formatTag"
+                class="filterable"
+                :class="{ selected: selectedFormatId === formatTag.id }"
+                @select="handleSelectFormat"
               />
-            </div>
+            </li>
+          </ul>
+        </fieldset>
 
-            <div class="middle">
-              <template
-                v-for="label in [`Découvrir le projet ${item.title}`]"
-                :key="label"
-              >
-                <NuxtLink
-                  :to="item.path"
-                  :title="label"
-                  :aria-label="label"
-                  class="read-more"
+        <fieldset class="themeFilter">
+          <legend>Thématique</legend>
+          <ul role="group" aria-label="Choix de la thématique du contenu">
+            <li v-for="themeTag in themeTags" :data-format="THEME_NAME">
+              <Tag
+                :tag="themeTag"
+                class="filterable"
+                :class="{ selected: selectedThemeIds.includes(themeTag.id) }"
+                @select="handleToggleTheme"
+              />
+            </li>
+          </ul>
+        </fieldset>
+
+        <fieldset class="techniqueFilter">
+          <legend>Technique</legend>
+          <ul
+            role="group"
+            aria-label="Choix de la technique utilisée pour réaliser le contenu"
+          >
+            <li
+              v-for="techniqueTag in techniqueTags"
+              :data-format="TECHNIQUE_NAME"
+            >
+              <Tag
+                :tag="techniqueTag"
+                class="filterable"
+                :class="{
+                  selected: selectedTechniqueIds.includes(techniqueTag.id),
+                }"
+                @select="handleToggleTechnique"
+              />
+            </li>
+          </ul>
+        </fieldset>
+      </section>
+
+      <section
+        id="filteredProjects"
+        aria-live="polite"
+        aria-labelledby="filteredProjectsTitle"
+      >
+        <h2 id="filteredProjectsTitle" class="sr-only">
+          Résultats des projets
+        </h2>
+        <masonry-wall
+          v-if="filteredProjets.length"
+          :items="filteredProjets || []"
+          :gap="30"
+          :min-columns="1"
+          :max-columns="3"
+        >
+          <template #default="{ item, index }">
+            <GlowElement
+              :style="{
+                height: `${coverHeights[item.cover] || 700}px`,
+              }"
+            >
+              <div class="top tags">
+                <Tag
+                  v-for="tag in getTagsFor(item)"
+                  :key="tag.id"
+                  :tag="tag"
+                  class="inactive"
+                />
+              </div>
+
+              <div class="middle">
+                <template
+                  v-for="label in [`Découvrir le projet ${item.title}`]"
+                  :key="label"
                 >
-                  {{ label }}
-                </NuxtLink>
-              </template>
-              <NuxtImg
-                :src="item.cover"
-                :alt="`Image de couverture ${item.title}`"
-                class="projectCoverImage"
-                loading="lazy"
-                @load="onImgLoad(item.cover, $event)"
-              />
-            </div>
+                  <NuxtLink
+                    :to="item.path"
+                    :title="label"
+                    :aria-label="label"
+                    class="read-more"
+                  >
+                    {{ label }}
+                  </NuxtLink>
+                </template>
+                <div class="imgWrapper">
+                  <NuxtImg
+                    :src="item.cover"
+                    :alt="`Image de couverture ${item.title}`"
+                    class="projectCoverImage"
+                    loading="lazy"
+                    @load="onImgLoad(item.cover, $event)"
+                  />
+                </div>
+              </div>
 
-            <div class="bottom">
-              <p class="projectTitle h2">{{ item.title }}</p>
-            </div>
-          </GlowElement>
-        </template>
-      </masonry-wall>
+              <div class="bottom">
+                <p class="projectTitle h2">{{ item.title }}</p>
+              </div>
+            </GlowElement>
+          </template>
+        </masonry-wall>
+
+        <div v-else>Aucun projet ne correspond aux filtres sélectionnés.</div>
+      </section>
     </section>
   </div>
 </template>
@@ -123,9 +265,14 @@ section.header {
   margin-bottom: 5rem;
 }
 
+section.projects {
+  display: flex;
+  gap: 50px;
+}
+
 section#filteredProjects {
-  width: 70%;
-  margin-left: auto;
+  flex: 1 0 auto;
+
   :deep(.masonry-item) {
     > div {
       position: relative;
@@ -155,37 +302,54 @@ section#filteredProjects {
 
       .tags {
         display: flex;
-        gap: 10px 10px;
+        gap: 10px 25px;
         flex-direction: column;
         flex-wrap: wrap;
         position: relative;
+        align-content: baseline;
         top: -20px;
         opacity: 0;
         transition:
           top 0.3s ease,
           opacity 0.3s ease;
-        max-height: 40%;
+        max-height: 60%;
       }
       &:hover .tags {
         top: 0;
         opacity: 1;
       }
 
-      .projectCoverImage {
+      .imgWrapper {
         position: absolute;
         width: 100%;
         height: 100%;
-        z-index: 1;
-        object-fit: cover;
         top: 0;
-        bottom: 0;
-        right: 0;
         left: 0;
-        border-radius: 15px;
-        transition: filter 0.3s ease;
+        overflow: hidden;
+
+        .projectCoverImage {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          z-index: 1;
+          object-fit: cover;
+          top: 0;
+          bottom: 0;
+          right: 0;
+          left: 0;
+          border-radius: 15px;
+          transition:
+            filter 0.3s ease,
+            transform 0.5s ease;
+        }
       }
-      &:hover .projectCoverImage {
-        filter: brightness(0.5);
+      &:hover {
+        .imgWrapper {
+          .projectCoverImage {
+            filter: brightness(0.65);
+            transform: scale(1.015);
+          }
+        }
       }
 
       .read-more {
