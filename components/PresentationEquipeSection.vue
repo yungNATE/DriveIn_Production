@@ -1,8 +1,3 @@
-<script setup lang="ts">
-// Section Présentation extraite de la page d'accueil.
-// (Aucune logique locale pour l'instant.)
-</script>
-
 <template>
   <section class="presentation" id="presentation">
     <div class="container content">
