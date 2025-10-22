@@ -10,7 +10,7 @@
         playsinline
         loop
       ></video>
-      <h2 class="loader-title">{{ targetTitle }}</h2>
+      <span class="loader-title h2">{{ targetTitle }}</span>
     </div>
   </transition>
 </template>
@@ -86,7 +86,7 @@ router.afterEach(() => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: white;
+  background-color: black;
   z-index: 9999;
 
   display: flex;
@@ -116,10 +116,6 @@ router.afterEach(() => {
 /* Titre sous la vidéo */
 .loader-title {
   margin-top: 1rem;
-  color: black;
-  font-size: 1.2rem;
-  font-weight: 600;
-  text-align: center;
-  user-select: none;
+  color: white;
 }
 </style>
