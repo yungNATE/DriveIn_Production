@@ -3,7 +3,7 @@ import { getAllTags, type ProjectTag } from "@/lib/tags";
 
 const contentType = "projects";
 const {
-  data: projets,
+  data: projects,
   pending,
   error,
 } = await useAsyncData(contentType, async () => {
@@ -12,7 +12,7 @@ const {
 });
 
 // Tri les projets par rapport à la propriété 'weight', plus le weight est gros, plus il apparaît en premier
-projets.value?.sort((a, b) => (b.weight || 0) - (a.weight || 0));
+projects.value?.sort((a, b) => (b.weight || 0) - (a.weight || 0));
 
 // Tags (shared util)
 const { data: allTags } = await useAsyncData<ProjectTag[]>("allTags", () =>
@@ -92,8 +92,8 @@ function handleToggleTechnique(tagId: string) {
 // - project must include the selected format
 // - and include all selected themes (if any)
 // - and include all selected techniques (if any)
-const filteredProjets = computed(() => {
-  const items = projets.value || [];
+const filteredProjects = computed(() => {
+  const items = projects.value || [];
   const formatId = selectedFormatId.value;
   const themeIds = selectedThemeIds.value;
   const techniqueIds = selectedTechniqueIds.value;
@@ -121,7 +121,7 @@ const filteredProjets = computed(() => {
 </script>
 
 <template>
-  <div class="projets-page">
+  <div class="projects-page">
     <h1 class="sr-only">Les projets de nos clients - DriveIn Production !</h1>
 
     <section class="header">
@@ -198,8 +198,8 @@ const filteredProjets = computed(() => {
           Résultats des projets
         </h2>
         <masonry-wall
-          v-if="filteredProjets.length"
-          :items="filteredProjets || []"
+          v-if="filteredProjects.length"
+          :items="filteredProjects || []"
           :gap="30"
           :min-columns="1"
           :max-columns="3"
