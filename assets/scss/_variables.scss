@@ -1,4 +1,7 @@
 @use "sass:meta";
+@use "sass:math";
+@use "sass:map";
+@use "sass:list";
 
 // styles/_variables.scss
 $header-height: 90px;
@@ -37,8 +40,8 @@ $index-sectionHero-breakpoint: 1650;
 }
 
 // Glow mixin
-@mixin glow-discret($color, $blur: 5px) {
-  filter: drop-shadow(0 0 $blur rgba($color, 0.5));
+@mixin glow-discret($glowColor, $blur: 5px) {
+  filter: drop-shadow(0 0 $blur rgba($glowColor, 0.5));
 }
 
 // Utils mixins
@@ -53,20 +56,20 @@ $index-sectionHero-breakpoint: 1650;
   $conditions: ();
 
   @each $bp in $breakpoints {
-    @if map-has-key($bp-map, $bp) {
-      $conditions: append($conditions, map-get($bp-map, $bp), comma);
+    @if map.has-key($bp-map, $bp) {
+      $conditions: list.append($conditions, map.get($bp-map, $bp), comma);
     } @else if meta.type-of($bp) == "number" {
-      @if unitless($bp) {
-        $conditions: append($conditions, "(max-width: #{$bp}px)", comma);
+      @if math.is-unitless($bp) {
+        $conditions: list.append($conditions, "(max-width: #{$bp}px)", comma);
       } @else {
-        $conditions: append($conditions, "(max-width: #{$bp})", comma);
+        $conditions: list.append($conditions, "(max-width: #{$bp})", comma);
       }
     } @else {
-      @warn "Breakpoint '#{$bp}' not recognized. Available: #{map-keys($bp-map)}";
+      @warn "Breakpoint '#{$bp}' not recognized. Available: #{map.keys($bp-map)}";
     }
   }
 
-  @if length($conditions) > 0 {
+  @if list.length($conditions) > 0 {
     @media #{$conditions} {
       @content;
     }

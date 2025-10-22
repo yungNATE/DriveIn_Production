@@ -268,6 +268,8 @@ watch(expanded, () => {
 </template>
 
 <style lang="scss" scoped>
+@use "sass:color";
+
 div.googleComments {
   padding-block: 120px 80px;
   position: relative;
@@ -360,7 +362,7 @@ div.googleComments {
               transition: color 0.25s;
               &:hover,
               &:focus-visible {
-                color: lighten($primary-color-light, 10%);
+                color: color.scale($primary-color-light, $lightness: 20%);
               }
             }
           }
