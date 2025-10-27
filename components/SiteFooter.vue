@@ -15,14 +15,12 @@ const currentYear = new Date().getFullYear();
       <nav class="container-small">
         <ul class="footer-links classic-pages unstyled">
           <li><SpecialLink to="/">Accueil</SpecialLink></li>
-          <li><SpecialLink to="/sitemap">Plan du site</SpecialLink></li>
+          <li><SpecialLink to="/">Plan du site</SpecialLink></li>
           <li>
-            <SpecialLink to="/mentions-legales">Mentions légales</SpecialLink>
+            <SpecialLink to="/">Mentions légales</SpecialLink>
           </li>
           <li>
-            <SpecialLink to="/politique-de-confidentialite"
-              >Politique de confidentialité</SpecialLink
-            >
+            <SpecialLink to="/">Politique de confidentialité</SpecialLink>
           </li>
         </ul>
         <ul class="footer-links special-pages unstyled">
