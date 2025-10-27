@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-05-15",
   devtools: { enabled: false },
   modules: ["@nuxt/content", "@nuxt/fonts", "@nuxt/scripts", "@nuxt/image"],
-  ssr: false,
+  ssr: true,
   nitro: {
     preset: "static",
   },
