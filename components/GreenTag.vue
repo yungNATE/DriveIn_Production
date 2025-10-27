@@ -21,14 +21,13 @@ const index = (i: number) => {
   return i + 1;
 };
 
-const images = Array.from(
-  { length: actions.length },
-  (_, i) =>
-    new URL(
-      `../assets/icones/greenTag/greenTag${index(i)}.png`,
-      import.meta.url
-    ).href
+const modules = import.meta.glob<string>(
+  "../assets/icones/greenTag/greenTag*.png",
+  { eager: true, import: "default" }
 );
+const images = Object.keys(modules)
+  .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+  .map((k) => modules[k] as string);
 </script>
 
 <template>
@@ -117,6 +116,10 @@ const images = Array.from(
 
           h3 {
             max-width: 225px;
+          }
+
+          img {
+            width: 50px;
           }
         }
       }
