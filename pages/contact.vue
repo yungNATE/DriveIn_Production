@@ -1,9 +1,260 @@
-<template>
-  <h1>Nous contacter - DriveIn Production !</h1>
-</template>
-
-<script setup>
+<script setup lang="ts">
 definePageMeta({
   title: "Contact",
 });
 </script>
+
+<template>
+  <div class="content container">
+    <section class="title">
+      <h1>Envoyez-nous un petit mot.</h1>
+      <p>On adore lire vos projets, même les plus fous !</p>
+    </section>
+
+    <section class="form">
+      <form
+        name="contact"
+        method="POST"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        action="/merci"
+      >
+        <input type="hidden" name="form-name" value="contact" />
+        <p style="display: none">
+          <label>Ne pas remplir: <input name="bot-field" /></label>
+        </p>
+
+        <!-- Nom & Prénom côte à côte -->
+        <div class="two-cols">
+          <div class="field">
+            <input id="nom" name="nom" type="text" placeholder=" " />
+            <label for="nom" class="field__label">Nom</label>
+          </div>
+          <div class="field">
+            <input id="prenom" name="prenom" type="text" placeholder=" " />
+            <label for="prenom" class="field__label">Prénom</label>
+          </div>
+        </div>
+
+        <!-- Objet de la demande -->
+        <div class="field field--select">
+          <span class="select-caret" aria-hidden="true"></span>
+          <select id="objet" name="objet" required>
+            <option value="" disabled selected hidden></option>
+            <option>Idée de projet</option>
+            <option>Prise d'informations</option>
+            <option>Devis / Budget</option>
+            <option>Tournage / Captation</option>
+            <option>Post-production / Montage</option>
+            <option>Motion design / Animation</option>
+            <option>Diffusion / Live / Streaming</option>
+            <option>Autre</option>
+          </select>
+          <label for="objet" class="field__label">Objet de la demande</label>
+        </div>
+
+        <!-- Email -->
+        <div class="field">
+          <input
+            id="email"
+            name="email"
+            type="text"
+            inputmode="email"
+            placeholder=" "
+          />
+          <label for="email" class="field__label">Email</label>
+        </div>
+
+        <!-- Téléphone -->
+        <div class="field">
+          <input
+            id="telephone"
+            name="telephone"
+            type="tel"
+            inputmode="tel"
+            placeholder=" "
+          />
+          <label for="telephone" class="field__label">N° de téléphone</label>
+        </div>
+
+        <!-- Message -->
+        <div class="field">
+          <textarea
+            id="message"
+            name="message"
+            rows="6"
+            placeholder=" "
+          ></textarea>
+          <label for="message" class="field__label">Message</label>
+        </div>
+
+        <!-- Submit -->
+        <div class="actions">
+          <button type="submit" class="submit">Nous contacter</button>
+        </div>
+      </form>
+    </section>
+  </div>
+</template>
+
+<style scoped lang="scss">
+.content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 50px;
+}
+
+.form form,
+.two-cols {
+  gap: 30px;
+}
+
+.form form {
+  display: flex;
+  flex-direction: column;
+}
+
+.two-cols {
+  display: flex;
+  width: 100%;
+
+  .field {
+    flex: 1 1 0;
+  }
+}
+
+.field {
+  position: relative;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2); /* 20% blanc */
+  border: 1px solid rgba(255, 255, 255, 0.5); /* 50% blanc */
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 16px;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.field select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-left: 30px;
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 140px;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Faux placeholder accessible - label flottant */
+.field__label {
+  position: absolute;
+  left: 7px;
+  bottom: calc(100% - 12px);
+  transform: translate(var(--label-x, 8px), 100%);
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.85);
+  pointer-events: none;
+  transition:
+    bottom 0.2s ease,
+    transform 0.2s ease,
+    font-size 0.2s ease,
+    opacity 0.2s ease;
+}
+
+/* Remonter le label quand il y a du contenu */
+.field:focus-within .field__label,
+.field input:not(:placeholder-shown) + .field__label,
+.field textarea:not(:placeholder-shown) + .field__label,
+.field select:valid + .field__label {
+  bottom: 100%;
+  transform: translate(var(--label-x, 8px), 0);
+  font-size: 12px;
+}
+
+.actions {
+  margin-top: 10px;
+}
+
+.submit {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 12px 20px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.submit:hover,
+.submit:focus {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #fff;
+}
+
+/* Caret pour le select (positionné à gauche) */
+.field--select {
+  position: relative;
+}
+
+/* Décalage X du label pour le select afin d'éviter le caret */
+.field--select {
+  --label-x: 36px; /* aligne avec padding-left du select */
+}
+
+.field--select .select-caret {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+}
+
+/* petit triangle pointant vers le bas */
+.field--select .select-caret::before {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid rgba(255, 255, 255, 0.85);
+}
+
+/* Style des options du select */
+.field select option {
+  background: #000; /* fond noir */
+  color: #fff; /* texte blanc */
+}
+
+.field select option:hover {
+  background: $primary-color-light; /* hover */
+}
+
+/* Au cas où le navigateur n'applique pas :hover, garder la sélection visible */
+.field select option:checked,
+.field select option:focus,
+.field select option:active {
+  background: $primary-color-light;
+}
+</style>
