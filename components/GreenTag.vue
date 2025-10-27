@@ -33,7 +33,7 @@ const images = Array.from(
 
 <template>
   <div class="greenTag">
-    <h2>Une société engagé</h2>
+    <h2>Une société engagée</h2>
     <div class="actions">
       <div v-for="(action, i) in actions" :key="i" class="action">
         <span class="h1">{{ index(i) }}.</span>
