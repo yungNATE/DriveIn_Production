@@ -56,7 +56,8 @@ defineProps({
     z-index: 2;
   }
 
-  &:hover {
+  &:hover,
+  &:focus {
     color: rgba(255, 255, 255, 1);
     text-decoration: none;
 
