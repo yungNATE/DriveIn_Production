@@ -1,5 +1,10 @@
 <script lang="ts" setup>
-import { getAllTags, type ProjectTag } from "@/lib/tags";
+import {
+  getAllTags,
+  mapTagsById,
+  getTagsFor,
+  type ProjectTag,
+} from "@/lib/tags";
 
 const contentType = "projects";
 const {
@@ -32,18 +37,12 @@ const techniqueTags = computed(
 );
 
 // Fast lookup map for tags by id
-const tagsById = computed<Record<string, ProjectTag>>(() => {
-  const map: Record<string, ProjectTag> = {};
-  for (const t of allTags.value || []) map[t.id] = t;
-  return map;
-});
+const tagsById = computed<Record<string, ProjectTag>>(() =>
+  mapTagsById(allTags.value)
+);
 
-// Helper to get full tag objects for a given project item
-function getTagsFor(item: any): ProjectTag[] {
-  const ids: string[] = item?.tagIDs || [];
-  const map = tagsById.value;
-  return ids.map((id) => map[id]).filter(Boolean) as ProjectTag[];
-}
+// Local wrapper to use in template without passing the map every time
+const getTagsForItem = (item: any) => getTagsFor(item, tagsById.value);
 
 // Store natural heights per cover to set container height dynamically
 const coverHeights = ref<Record<string, number>>({});
@@ -212,7 +211,7 @@ const filteredProjects = computed(() => {
             >
               <div class="top tags">
                 <Tag
-                  v-for="tag in getTagsFor(item)"
+                  v-for="tag in getTagsForItem(item)"
                   :key="tag.id"
                   :tag="tag"
                   class="inactive"

@@ -18,3 +18,25 @@ export async function getAllTags(): Promise<ProjectTag[]> {
   const raw = (mod?.default ?? []) as any[];
   return raw.map((t) => ({ hidden: false, ...t })) as ProjectTag[];
 }
+
+/**
+ * Build a fast lookup map of tags by id.
+ */
+export function mapTagsById(
+  all: ProjectTag[] | undefined | null
+): Record<string, ProjectTag> {
+  const map: Record<string, ProjectTag> = {};
+  for (const t of all || []) map[t.id] = t;
+  return map;
+}
+
+/**
+ * Get full tag objects for a given content item using its tagIDs.
+ */
+export function getTagsFor(
+  item: { tagIDs?: string[] } | null | undefined,
+  tagsById: Record<string, ProjectTag>
+): ProjectTag[] {
+  const ids: string[] = (item?.tagIDs as string[]) || [];
+  return ids.map((id) => tagsById[id]).filter(Boolean) as ProjectTag[];
+}

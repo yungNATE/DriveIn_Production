@@ -1,217 +1,224 @@
 <script lang="ts" setup>
-// Récupération du slug depuis la route
+import {
+  getAllTags,
+  mapTagsById,
+  getTagsFor,
+  type ProjectTag,
+} from "@/lib/tags";
+
 const route = useRoute();
 const slug = route.params.slug as string;
 
-const { data, pending, refresh } = await useAsyncData(() =>
-  queryCollection("content")
-    .path("/projets/" + slug)
-    .first()
+const collection = "projects";
+const { data: project, pending } = await useAsyncData(route.path, () => {
+  return queryCollection(collection).path(`/${collection}/${slug}`).first();
+});
+
+// Load all tags once (shared key across app)
+const { data: allTags } = await useAsyncData<ProjectTag[]>("allTags", () =>
+  getAllTags()
 );
 
-const projet = computed(() => {
-  if (!data.value) return {};
+// Build lookup map and project tags list
+const tagsById = computed<Record<string, ProjectTag>>(() =>
+  mapTagsById(allTags.value)
+);
+const projectTags = computed<ProjectTag[]>(() =>
+  getTagsFor(project.value as any, tagsById.value)
+);
 
-  const content = data.value as any;
-
-  return {
-    ...content, // titre, etc. au niveau racine
-    ...content.meta, // présentation, types, etc. depuis meta
-  };
+// Lightbox state for photos gallery
+const lightboxVisible = ref(false);
+const lightboxIndex = ref(0);
+const lightboxImgs = computed<string[]>(() => {
+  const photos = (project.value as any)?.photos as
+    | Array<string | { src: string; title?: string }>
+    | undefined;
+  if (!photos) return [];
+  // VueEasyLightbox accepts string[] or {src,title}[]
+  // We pass string[] here
+  return photos
+    .map((p: any) => (typeof p === "string" ? p : p?.src))
+    .filter(Boolean);
 });
+
+const openLightbox = (index: number) => {
+  lightboxIndex.value = index;
+  lightboxVisible.value = true;
+};
+const onLightboxHide = () => {
+  lightboxVisible.value = false;
+};
 </script>
 
 <template>
-  <div v-if="pending" class="loading">Chargement du projet...</div>
+  <div class="content container">
+    <section class="description">
+      <h1>{{ project?.title }}</h1>
+      <div class="tags">
+        <Tag
+          v-for="tag in projectTags"
+          :key="tag.id"
+          :tag="tag"
+          class="inactive"
+        />
+      </div>
+      <p class="h3">{{ project?.presentation }}</p>
+    </section>
 
-  <div v-else-if="!projet.title" class="error">
-    Projet non trouvé.
-    <button @click="() => refresh()">Réessayer</button>
-  </div>
+    <section class="media">
+      <div class="mediaSection video">
+        <h2 class="h3">Le film</h2>
 
-  <div v-else class="projet-detail">
-    <article class="projet">
-      <!-- Titre principal -->
-      <header class="projet-header">
-        <h1>{{ projet.title }}</h1>
-      </header>
+        <GlowElement class="video">
+          <ScriptYouTubePlayer
+            video-id="jDQtxlRUf54"
+            :width="600"
+            :height="400"
+            class="video-player"
+          ></ScriptYouTubePlayer>
+        </GlowElement>
+      </div>
 
-      <!-- Présentation -->
-      <section class="presentation">
-        <p>{{ projet.presentation }}</p>
-      </section>
+      <div class="mediaSection otherFormats">
+        <h2 class="h3">Les formats dérivés</h2>
 
-      <!-- Types -->
-      <section v-if="projet.types && projet.types.length" class="types">
-        <h3>Types</h3>
-        <div class="types-list">
-          <span v-for="type in projet.types" :key="type" class="type-badge">
-            {{ type }}
-          </span>
+        <div class="videos">
+          <GlowElement
+            class="otherFormats"
+            v-for="formatVideoID in project?.otherFormats"
+          >
+            <ScriptYouTubePlayer
+              :video-id="formatVideoID"
+              :width="600"
+              :height="400"
+              class="video-player"
+            ></ScriptYouTubePlayer>
+          </GlowElement>
         </div>
-      </section>
+      </div>
 
-      <!-- Vidéo -->
-      <section v-if="projet.video" class="video">
-        <h3>Vidéo</h3>
-        <div class="video-container">
-          <iframe
-            :src="projet.video"
-            frameborder="0"
-            allowfullscreen
-            title="Vidéo du projet"
-          ></iframe>
+      <div class="mediaSection photos">
+        <h2 class="h3">Galerie photo</h2>
+
+        <div class="galery">
+          <GlowElement
+            class="photo"
+            v-for="(photoPath, idx) in project?.photos"
+            :key="photoPath || idx"
+            @click="() => openLightbox(idx)"
+          >
+            <NuxtImg
+              :src="photoPath"
+              :alt="
+                project?.title
+                  ? `Photo du tournage ${project.title}`
+                  : 'Photo du tournage'
+              "
+              class="photo-image"
+            />
+          </GlowElement>
         </div>
-      </section>
 
-      <!-- Client -->
-      <section v-if="projet.client && projet.client.length" class="client">
-        <h3>Client{{ projet.client.length > 1 ? "s" : "" }}</h3>
-        <ul class="client-list">
-          <li v-for="clientName in projet.client" :key="clientName">
-            {{ clientName }}
-          </li>
-        </ul>
-      </section>
-
-      <!-- Tags -->
-      <section v-if="projet.tags && projet.tags.length" class="tags">
-        <h3>Tags</h3>
-        <div class="tags-list">
-          <span v-for="tag in projet.tags" :key="tag" class="tag">
-            #{{ tag }}
-          </span>
-        </div>
-      </section>
-    </article>
+        <!-- Lightbox (client-only) -->
+        <ClientOnly>
+          <VueEasyLightbox
+            :visible="lightboxVisible"
+            :imgs="lightboxImgs"
+            :index="lightboxIndex"
+            @hide="onLightboxHide"
+          />
+        </ClientOnly>
+      </div>
+    </section>
   </div>
 </template>
 
-<style scoped>
-.projet-detail {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-.loading,
-.error {
-  text-align: center;
-  padding: 2rem;
-  font-size: 1.2rem;
-}
-
-.error {
-  color: #e74c3c;
-}
-
-.projet-header {
-  margin-bottom: 2rem;
-  border-bottom: 2px solid #eee;
-  padding-bottom: 1rem;
-}
-
-.projet-header h1 {
-  font-size: 2.5rem;
-  color: #2c3e50;
-  margin: 0;
-}
-
-.presentation {
-  margin-bottom: 2rem;
-}
-
-.presentation p {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  color: #555;
-}
-
-section {
-  margin-bottom: 2rem;
-}
-
-section h2,
-section h3 {
-  color: #2c3e50;
-  margin-bottom: 1rem;
-}
-
-section h2 {
-  font-size: 1.8rem;
-}
-
-section h3 {
-  font-size: 1.4rem;
-}
-
-.types-list,
-.tags-list {
+<style lang="scss" scoped>
+div.content {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  margin-top: 150px;
+  gap: 30px;
+
+  padding-inline: 50px;
+}
+section.description {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
+  max-width: 700px;
+
+  position: sticky;
+  top: calc(10px + $header-height);
+  height: fit-content;
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 35px;
+  }
 }
 
-.type-badge {
-  background: #3498db;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  text-transform: capitalize;
+section.media {
+  flex: 2;
+  max-width: 1000px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 100px;
+
+  text-align: center;
+
+  .mediaSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+
+    &.otherFormats {
+      .videos {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+        justify-content: center;
+      }
+    }
+
+    &.photos {
+      .galery {
+        width: 100%;
+
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 30px;
+        justify-items: center;
+
+        .photo {
+          max-width: 200px;
+          aspect-ratio: 1 / 1;
+          cursor: pointer;
+
+          .photo-image {
+            width: 100%;
+            border-radius: 10px;
+          }
+        }
+      }
+    }
+  }
 }
 
-.tag {
-  background: #f8f9fa;
-  color: #495057;
-  padding: 0.3rem 0.8rem;
-  border-radius: 15px;
-  font-size: 0.85rem;
-  border: 1px solid #dee2e6;
-}
-
-.video-container {
-  position: relative;
+:deep(.mediaSection .glowElement) {
   width: 100%;
-  height: 0;
-  padding-bottom: 56.25%; /* Ratio 16:9 */
 }
-
-.video-container iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 8px;
+:deep(.mediaSection .glowElement.video) {
+  max-width: 550px;
 }
-
-.client-list {
-  list-style: none;
-  padding: 0;
-}
-
-.client-list li {
-  background: #f8f9fa;
-  padding: 0.8rem;
-  margin-bottom: 0.5rem;
-  border-radius: 5px;
-  border-left: 4px solid #28a745;
-  font-weight: 500;
-}
-
-@media (max-width: 768px) {
-  .projet-detail {
-    padding: 1rem;
-  }
-
-  .projet-header h1 {
-    font-size: 2rem;
-  }
-
-  .types-list,
-  .tags-list {
-    justify-content: center;
-  }
+:deep(.mediaSection .glowElement.otherFormats) {
+  max-width: 220px;
 }
 </style>
