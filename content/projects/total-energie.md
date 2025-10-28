@@ -9,9 +9,9 @@ otherFormats:
   - "dQw4w9WgXcQ"
   - "dQw4w9WgXcQ"
 photos:
-  - "/images/projects/aviva-assurance/photo1.jpg"
-  - "/images/projects/aviva-assurance/photo2.jpg"
-  - "/images/projects/aviva-assurance/photo3.jpg"
+  - "/images/projects/aviva-assurance/cover.jpg"
+  - "/images/projects/aviva-assurance/cover2.jpg"
+  - "/images/projects/aviva-assurance/cover.jpg"
 
 partner:
   - Axa France
