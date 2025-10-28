@@ -8,6 +8,12 @@ const shoudlDisplayGreentag = computed(() => {
   const slug = route.path.replaceAll("/", "");
   return displayGreentagPaths.includes(slug);
 });
+
+const notDisplayContactCTAPaths = ["contact", "merci"];
+const shouldDisplayContactCTA = computed(() => {
+  const slug = route.path.replaceAll("/", "");
+  return !notDisplayContactCTAPaths.includes(slug);
+});
 </script>
 
 <template>
@@ -16,7 +22,7 @@ const shoudlDisplayGreentag = computed(() => {
 
     <section class="upperFooter">
       <GreenTag v-if="shoudlDisplayGreentag"></GreenTag>
-      <ContactCTA></ContactCTA>
+      <ContactCTA v-if="shouldDisplayContactCTA"></ContactCTA>
     </section>
 
     <section class="footerContent">

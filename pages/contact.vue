@@ -102,6 +102,8 @@ definePageMeta({
   display: flex;
   flex-wrap: wrap;
   gap: 50px;
+
+  margin-block: 50px;
 }
 
 .form form,
