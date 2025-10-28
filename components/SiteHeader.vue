@@ -40,7 +40,7 @@ useHTMLRootElementScroll(menuOpen);
           <li><SpecialLink to="/about">L'agence</SpecialLink></li>
           <li><SpecialLink to="/projects/">Réalisations</SpecialLink></li>
         </ul>
-        <Button to="/contact">Nous contacter</Button>
+        <Button to="/contact">Nous contacter →</Button>
         <RSLinks></RSLinks>
       </div>
     </nav>
