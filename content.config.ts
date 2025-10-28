@@ -4,7 +4,7 @@ export default defineContentConfig({
   collections: {
     projects: defineCollection({
       source: "projects/*.md",
-      type: "data",
+      type: "page",
       schema: z.object({
         title: z.string(),
         presentation: z.string(),
