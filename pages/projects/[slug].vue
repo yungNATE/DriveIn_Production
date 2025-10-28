@@ -132,10 +132,14 @@ const onLightboxHide = () => {
       </div>
     </section>
   </div>
+
+  <div class="container">
+    <Button to="/projects">Découvrir les autres projets →</Button>
+  </div>
 </template>
 
 <style lang="scss" scoped>
-div.content {
+div.container {
   display: flex;
   flex-wrap: wrap;
   margin-top: 150px;

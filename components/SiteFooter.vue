@@ -1,5 +1,13 @@
 <script setup>
 const currentYear = new Date().getFullYear();
+
+// Display only on "/", "/about", "/projects"
+const displayGreentagPaths = ["", "about", "projects"];
+const route = useRoute();
+const shoudlDisplayGreentag = computed(() => {
+  const slug = route.path.replaceAll("/", "");
+  return displayGreentagPaths.includes(slug);
+});
 </script>
 
 <template>
@@ -7,7 +15,7 @@ const currentYear = new Date().getFullYear();
     <section class="comment"></section>
 
     <section class="upperFooter">
-      <GreenTag></GreenTag>
+      <GreenTag v-if="shoudlDisplayGreentag"></GreenTag>
       <ContactCTA></ContactCTA>
     </section>
 

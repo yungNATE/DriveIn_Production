@@ -1,5 +1,16 @@
 <script setup lang="ts">
 const { isScrolled, y } = useScrollState();
+const { isHeaderHidden } = useHeaderVisibility();
+const route = useRoute();
+
+// Guard against leaking hidden state across pages (e.g., after leaving home pin section)
+watch(
+  () => route.fullPath,
+  () => {
+    isHeaderHidden.value = false;
+  },
+  { immediate: true }
+);
 </script>
 
 <template>

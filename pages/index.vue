@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, onBeforeUnmount, computed } from "vue";
 import { useHeaderVisibility } from "@/composables/useHeaderVisibility";
 import { getAllTags, type ProjectTag } from "@/lib/tags";
 import { gsap } from "gsap";
@@ -240,6 +240,18 @@ onMounted(async () => {
 
   // Lancer le préchargement tout à la fin du montage pour ne pas bloquer les animations initiales
   preloadEtapesImages();
+});
+
+// Cleanup when leaving the home page to avoid leaking header hidden state or active triggers
+onBeforeUnmount(() => {
+  try {
+    if (etapesScrollTrigger) {
+      etapesScrollTrigger.kill();
+      etapesScrollTrigger = null;
+    }
+  } catch {}
+  // Always show header again when leaving this page
+  isHeaderHidden.value = false;
 });
 
 // Partenaires

@@ -253,6 +253,8 @@ const filteredProjects = computed(() => {
         <div v-else>Aucun projet ne correspond aux filtres sélectionnés.</div>
       </section>
     </section>
+
+    <GoogleComments></GoogleComments>
   </div>
 </template>
 
@@ -325,6 +327,7 @@ section#filteredProjects {
         top: 0;
         left: 0;
         overflow: hidden;
+        border-radius: 15px;
 
         .projectCoverImage {
           position: absolute;
@@ -336,7 +339,6 @@ section#filteredProjects {
           bottom: 0;
           right: 0;
           left: 0;
-          border-radius: 15px;
           transition:
             filter 0.3s ease,
             transform 0.5s ease;
