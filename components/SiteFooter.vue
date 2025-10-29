@@ -54,7 +54,9 @@ const shouldDisplayContactCTA = computed(() => {
         alt="Lien vers l'accueil du site"
         target="_self"
       />
-      <p>© {{ currentYear }} DriveIn Production. Tous droits réservés.</p>
+      <p class="copyright">
+        © {{ currentYear }} DriveIn Production. Tous droits réservés.
+      </p>
     </section>
   </footer>
 </template>
@@ -109,6 +111,10 @@ footer {
       .special-pages {
         align-items: flex-end;
       }
+    }
+
+    .copyright {
+      text-align: center;
     }
   }
 }

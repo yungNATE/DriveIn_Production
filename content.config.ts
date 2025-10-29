@@ -39,11 +39,11 @@ export default defineContentConfig({
     }),
     conseils: defineCollection({
       source: "conseils/*.md",
-      type: "data",
+      type: "page",
       schema: z.object({
-        title: z.string(),
-        description: z.string(),
-        img: z.string(),
+        question: z.string(),
+        description: z.string().optional(),
+        img: z.string().optional(),
       }),
     }),
     googleComments: defineCollection({

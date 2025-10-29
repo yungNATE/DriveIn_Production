@@ -210,7 +210,7 @@ const activeVideoUrl = computed(() =>
     </div>
   </section>
 
-  <section class="workMethod">
+  <section class="workMethod" id="processus-creatif">
     <h2>Une méthode de travail bien rôdée</h2>
     <div class="work-swiper container">
       <swiper-container
@@ -292,7 +292,8 @@ section.hero {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  height: $heroBanner-fullHeight;
+  min-height: $heroBanner-fullHeight;
+  height: 100%;
   padding: 50px;
 
   &::before {
@@ -315,12 +316,19 @@ section.hero {
         justify-content: space-between;
         align-items: center;
         margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 30px;
+
+        @include mediaquery(500) {
+          flex-direction: column;
+          align-items: flex-start;
+        }
       }
     }
 
     .photo {
       :deep(img) {
-        max-width: 600px;
+        max-width: 500px;
         width: 100%;
         aspect-ratio: 2/1.15;
         object-fit: cover;
@@ -336,6 +344,7 @@ section.history {
   justify-content: center;
   gap: 50px;
   margin-block: 100px;
+  margin-inline: 50px;
 
   .accordion {
     max-width: 350px;
@@ -416,9 +425,7 @@ section.workMethod {
       rgba(255, 255, 255, 0) 70%
     );
   }
-}
 
-section.workMethod {
   h2 {
     text-align: center;
   }
@@ -450,6 +457,7 @@ section.theyChoseUs {
   justify-content: center;
   gap: 60px;
   margin-block: 120px;
+  margin-inline: 50px;
 
   .testimonial-visual {
     display: flex;

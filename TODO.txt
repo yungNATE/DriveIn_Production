@@ -1,0 +1,8 @@
+. /projects : filtre 
+. /projects : Responsive 
+. /contact : bouton formulaire
+. Renomer les URL en français
+. Liens footer
+. titres des pages
+. 404, pages annexes
+. /#nos-conseils (mobile) : au swipe, changer de conseils

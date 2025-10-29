@@ -505,10 +505,15 @@ definePageMeta({
           :key="currentAdvice?.id"
           :src="currentAdvice?.img"
           :alt="currentAdvice?.question || ''"
-          :customClass="undefined"
+          customClass="adviceText"
         >
           <h3>{{ currentAdvice?.question }}</h3>
-          <p>{{ currentAdvice?.description }}</p>
+          <p>
+            {{ $truncate(currentAdvice?.description, 250, "...") }}
+            <SpecialLink :to="currentAdvice?.path" class="gold"
+              >En savoir plus →</SpecialLink
+            >
+          </p>
         </BlocImgText>
       </Transition>
       <div class="swiper">
@@ -909,6 +914,12 @@ section.advices {
     display: flex;
     flex-direction: column;
     gap: 100px;
+
+    :deep(.adviceText .text > p) {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
 
     .swiper {
       swiper-container {

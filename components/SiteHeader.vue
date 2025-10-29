@@ -37,6 +37,7 @@ useHTMLRootElementScroll(menuOpen);
       </button>
       <div class="menu-links" :class="{ open: menuOpen }">
         <ul class="special-links">
+          <li class="mobile-only"><SpecialLink to="/">Accueil</SpecialLink></li>
           <li><SpecialLink to="/about">L'agence</SpecialLink></li>
           <li><SpecialLink to="/projects/">Réalisations</SpecialLink></li>
         </ul>
@@ -86,6 +87,7 @@ header {
     gap: 4rem;
     flex-wrap: wrap;
     padding: 1rem;
+    width: calc(100vw - 1rem);
   }
 
   .menu-links {
@@ -102,6 +104,11 @@ header {
     gap: 1rem;
     margin: 0;
     padding: 0;
+  }
+
+  // Utility: visible only on mobile viewport
+  .mobile-only {
+    display: none;
   }
 
   // Burger icon styles
@@ -139,7 +146,7 @@ header {
   }
 
   // Responsive styles
-  @include mediaquery(900) {
+  @include mediaquery(950) {
     nav {
       gap: 1rem;
     }
@@ -172,6 +179,9 @@ header {
         flex-direction: column;
         gap: 1.5rem;
         align-items: center;
+      }
+      .mobile-only {
+        display: block;
       }
     }
   }

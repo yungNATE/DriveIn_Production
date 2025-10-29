@@ -52,6 +52,7 @@ const images = Object.keys(modules)
 .greenTag {
   background-color: black;
   padding-block: 100px;
+  padding-inline: 30px;
   position: relative;
 
   display: flex;
@@ -120,6 +121,7 @@ const images = Object.keys(modules)
 
           img {
             width: 50px;
+            object-fit: contain;
           }
         }
       }
