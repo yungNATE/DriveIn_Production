@@ -4,9 +4,8 @@
     <p>
       Votre message a bien été envoyé. Nous vous répondrons dès que possible.
     </p>
-    <p>
-      <SpecialLink to="/contact">Retour au formulaire</SpecialLink>
-      |
+    <p class="return">
+      <SpecialLink to="/nous_contacter">Retour au formulaire</SpecialLink>
       <SpecialLink to="/">Aller à l’accueil</SpecialLink>
     </p>
   </main>
@@ -29,5 +28,12 @@ definePageMeta({
   max-width: 720px;
   margin: 3rem auto;
   padding: 0 1rem;
+}
+
+.return {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex: wrap;
 }
 </style>

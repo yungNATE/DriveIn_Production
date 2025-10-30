@@ -1,4 +1,9 @@
 <script lang="ts" setup>
+// Meta
+definePageMeta({
+  title: "Nos projets",
+});
+
 import {
   getAllTags,
   mapTagsById,
@@ -6,9 +11,9 @@ import {
   type ProjectTag,
 } from "@/lib/tags";
 
-const contentType = "projects";
+const contentType = "nos_projets";
 const {
-  data: projects,
+  data: nos_projets,
   pending,
   error,
 } = await useAsyncData(contentType, async () => {
@@ -17,7 +22,7 @@ const {
 });
 
 // Tri les projets par rapport à la propriété 'weight', plus le weight est gros, plus il apparaît en premier
-projects.value?.sort((a, b) => (b.weight || 0) - (a.weight || 0));
+nos_projets.value?.sort((a, b) => (b.weight || 0) - (a.weight || 0));
 
 // Tags (shared util)
 const { data: allTags } = await useAsyncData<ProjectTag[]>("allTags", () =>
@@ -92,7 +97,7 @@ function handleToggleTechnique(tagId: string) {
 // - and include all selected themes (if any)
 // - and include all selected techniques (if any)
 const filteredProjects = computed(() => {
-  const items = projects.value || [];
+  const items = nos_projets.value || [];
   const formatId = selectedFormatId.value;
   const themeIds = selectedThemeIds.value;
   const techniqueIds = selectedTechniqueIds.value;
@@ -120,17 +125,17 @@ const filteredProjects = computed(() => {
 </script>
 
 <template>
-  <div class="projects-page">
+  <div class="nos_projets-page">
     <h1 class="sr-only">Les projets de nos clients - DriveIn Production !</h1>
 
-    <section class="header">
+    <section class="header container">
       <h1>Nos réalisations</h1>
-      <Button to="/contact">Prendre rendez-vous →</Button>
+      <Button to="/nous_contacter">Prendre rendez-vous →</Button>
     </section>
 
-    <section class="projects container">
+    <section class="nos_projets container">
       <section
-        class="filter"
+        class="filters"
         role="region"
         aria-controls="filteredProjects"
         aria-labelledby="filtersTitle"
@@ -138,8 +143,13 @@ const filteredProjects = computed(() => {
         <h2 id="filtersTitle" class="sr-only">Filtres des projets</h2>
 
         <fieldset class="formatFilter">
-          <legend>Format</legend>
-          <ul role="group" aria-label="Choix du format du contenu">
+          <legend class="sr-only">Format</legend>
+          <span class="filterTitle h3">Les vidéos Drive-In</span>
+          <ul
+            role="group"
+            aria-label="Choix du format du contenu"
+            class="unstyled"
+          >
             <li v-for="formatTag in formatTags" :data-format="FORMAT_NAME">
               <Tag
                 :tag="formatTag"
@@ -152,8 +162,13 @@ const filteredProjects = computed(() => {
         </fieldset>
 
         <fieldset class="themeFilter">
-          <legend>Thématique</legend>
-          <ul role="group" aria-label="Choix de la thématique du contenu">
+          <legend class="sr-only">Thématique</legend>
+          <span class="filterTitle h3">Thématique</span>
+          <ul
+            role="group"
+            aria-label="Choix de la thématique du contenu"
+            class="unstyled"
+          >
             <li v-for="themeTag in themeTags" :data-format="THEME_NAME">
               <Tag
                 :tag="themeTag"
@@ -166,10 +181,12 @@ const filteredProjects = computed(() => {
         </fieldset>
 
         <fieldset class="techniqueFilter">
-          <legend>Technique</legend>
+          <legend class="sr-only">Technique</legend>
+          <span class="filterTitle h3">Technique</span>
           <ul
             role="group"
             aria-label="Choix de la technique utilisée pour réaliser le contenu"
+            class="unstyled"
           >
             <li
               v-for="techniqueTag in techniqueTags"
@@ -258,17 +275,119 @@ const filteredProjects = computed(() => {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+// DRY helper for card hover appearance
+@mixin card-hover-state {
+  .projectTitle {
+    bottom: 0;
+    opacity: 1;
+  }
+
+  .tags {
+    top: 0;
+    opacity: 1;
+  }
+
+  .imgWrapper {
+    .projectCoverImage {
+      filter: brightness(0.65);
+      transform: scale(1.015);
+    }
+  }
+}
+
 section.header {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 5rem;
+  gap: 30px;
+  padding-inline: clamp(20px, 1vw, 50px);
 }
 
-section.projects {
+section.nos_projets {
+  $breakpoint1: 1000;
   display: flex;
   gap: 50px;
+
+  @include mediaquery($breakpoint1) {
+    flex-direction: column;
+  }
+
+  .filters {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+
+    @include mediaquery($breakpoint1) {
+      justify-content: space-between;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    fieldset {
+      border-radius: 12px;
+      border: none;
+      background-color: black;
+      padding: 32px;
+      width: 410px;
+
+      &.formatFilter {
+        @include glow-discret(white);
+        .filterTitle {
+          color: white;
+        }
+
+        @include mediaquery($breakpoint1) {
+          width: 100%;
+        }
+
+        ul {
+          @include glow-discret(white);
+          background-color: black;
+          padding: 30px;
+          border-radius: 999px;
+
+          display: flex;
+          justify-content: center;
+
+          :deep(.tag) {
+            border-radius: 999px;
+            padding: 10px;
+
+            &:not(.selected) {
+              filter: none;
+            }
+          }
+        }
+      }
+      &.themeFilter {
+        @include glow-discret($primary-color-light);
+        .filterTitle {
+          color: $primary-color-light;
+        }
+      }
+      &.techniqueFilter {
+        @include glow-discret($secondary-color-dark);
+        .filterTitle {
+          color: $secondary-color-dark;
+        }
+      }
+
+      ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      .filterTitle {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 15px;
+      }
+    }
+  }
 }
 
 section#filteredProjects {
@@ -296,9 +415,8 @@ section#filteredProjects {
           bottom 0.3s ease,
           opacity 0.3s ease;
       }
-      &:hover .projectTitle {
-        bottom: 0;
-        opacity: 1;
+      &:hover {
+        @include card-hover-state;
       }
 
       .tags {
@@ -314,10 +432,6 @@ section#filteredProjects {
           top 0.3s ease,
           opacity 0.3s ease;
         max-height: 60%;
-      }
-      &:hover .tags {
-        top: 0;
-        opacity: 1;
       }
 
       .imgWrapper {
@@ -344,14 +458,7 @@ section#filteredProjects {
             transform 0.5s ease;
         }
       }
-      &:hover {
-        .imgWrapper {
-          .projectCoverImage {
-            filter: brightness(0.65);
-            transform: scale(1.015);
-          }
-        }
-      }
+      // Other hover transitions handled by mixin
 
       .read-more {
         position: static;
@@ -366,6 +473,17 @@ section#filteredProjects {
           height: 100%;
           z-index: 3;
         }
+      }
+    }
+  }
+}
+
+// On touch devices (no hover available), apply hover effects by default
+@media (hover: none) and (pointer: coarse) {
+  section#filteredProjects {
+    :deep(.masonry-item) {
+      > div {
+        @include card-hover-state;
       }
     }
   }

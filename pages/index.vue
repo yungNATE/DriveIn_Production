@@ -264,21 +264,23 @@ const {
   return flattenMeta(data);
 });
 
-// Tags from content/projects/tags.json
+// Tags from content/notre_agence/tags.json
 const { data: allTags } = await useAsyncData<ProjectTag[]>("allTags", () =>
   getAllTags()
 );
 
-// Getting all highlighted projects
+// Getting all highlighted projects from content/nos_projets
 const { data: highlightedProjects } = await useAsyncData(
-  "projects",
+  "highlighted_projects",
   async () => {
-    const data = await queryCollection("projects")
+    const data = await queryCollection("nos_projets")
       .where("highlighted", "IS NOT NULL")
       .all();
     return flattenMeta(data);
   }
 );
+console.log(unref(highlightedProjects));
+
 const currentHighlightedProject = computed(() => {
   if (!highlightedProjects.value || highlightedProjects.value.length === 0)
     return null;
@@ -369,7 +371,7 @@ definePageMeta({
             >vos <span class="underlined underlined-blue">émotions</span></span
           >.
         </p>
-        <Button to="/contact">Prendre rendez-vous →</Button>
+        <Button to="/nous_contacter">Prendre rendez-vous →</Button>
       </div>
     </div>
     <div class="scroll-down-wrapper">
@@ -428,7 +430,7 @@ definePageMeta({
         />
       </div>
       <p class="tagDescription">{{ selectedTag?.description }}</p>
-      <Button to="/projects/" :class="'discret'"
+      <Button to="/notre_agence/" :class="'discret'"
         >Voir toutes les réalisations →</Button
       >
     </div>
@@ -577,7 +579,7 @@ definePageMeta({
 
 <style lang="scss" scoped>
 section.hero {
-  padding-inline: 50px;
+  padding-inline: clamp(20px, 1vw, 50px);
   padding-block: 50px;
   display: flex;
   justify-content: space-between;

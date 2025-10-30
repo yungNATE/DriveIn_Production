@@ -1,8 +1,8 @@
-. /projects : filtre 
-. /projects : Responsive 
-. /contact : bouton formulaire
-. Renomer les URL en français
+. /projects : filtre OK
+. /projects : Responsive OK
+. /contact : bouton formulaire OK
+. Renomer les URL en français OK
 . Liens footer
 . titres des pages
-. 404, pages annexes
+. 404, pages annexes OK
 . /#nos-conseils (mobile) : au swipe, changer de conseils

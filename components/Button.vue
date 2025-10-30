@@ -1,13 +1,16 @@
 <script lang="ts" setup>
 const props = defineProps<{
-  to: string | Record<string, any>;
+  to?: string | Record<string, any>;
 }>();
 </script>
 
 <template>
-  <NuxtLink :to="to" class="btn h3" v-bind="$attrs">
+  <NuxtLink v-if="to" :to="to" class="btn h3" v-bind="$attrs">
     <slot />
   </NuxtLink>
+  <button v-else class="btn h3" type="button" v-bind="$attrs">
+    <slot />
+  </button>
 </template>
 
 <style lang="scss" scoped>
@@ -23,11 +26,13 @@ const props = defineProps<{
   height: fit-content;
   width: fit-content;
   white-space: nowrap;
+  border: none;
 
   &:hover {
     color: rgba(255, 255, 255, 1);
     text-decoration: none;
     filter: drop-shadow(0 0 8px $secondary-color-dark);
+    cursor: pointer;
   }
 
   &.discret {

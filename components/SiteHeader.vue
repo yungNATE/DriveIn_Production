@@ -4,6 +4,7 @@ import { useHeaderVisibility } from "@/composables/useHeaderVisibility";
 const menuOpen = ref(false);
 const { isScrolled } = useScrollState();
 const { isHeaderHidden } = useHeaderVisibility();
+const route = useRoute();
 
 const iconWidth = computed(() => (isScrolled.value ? "50px" : "170px"));
 
@@ -11,6 +12,14 @@ const iconWidth = computed(() => (isScrolled.value ? "50px" : "170px"));
 watch(isHeaderHidden, (hidden) => {
   if (hidden) menuOpen.value = false;
 });
+
+// Close mobile menu after route changes (post-navigation)
+watch(
+  () => route.fullPath,
+  () => {
+    if (menuOpen.value) menuOpen.value = false;
+  }
+);
 
 useHTMLRootElementScroll(menuOpen);
 </script>
@@ -38,10 +47,10 @@ useHTMLRootElementScroll(menuOpen);
       <div class="menu-links" :class="{ open: menuOpen }">
         <ul class="special-links">
           <li class="mobile-only"><SpecialLink to="/">Accueil</SpecialLink></li>
-          <li><SpecialLink to="/about">L'agence</SpecialLink></li>
-          <li><SpecialLink to="/projects/">Réalisations</SpecialLink></li>
+          <li><SpecialLink to="/notre_agence">L'agence</SpecialLink></li>
+          <li><SpecialLink to="/nos_projets/">Réalisations</SpecialLink></li>
         </ul>
-        <Button to="/contact">Nous contacter →</Button>
+        <Button to="/nous_contacter">Nous contacter →</Button>
         <RSLinks></RSLinks>
       </div>
     </nav>

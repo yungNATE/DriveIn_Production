@@ -9,7 +9,7 @@ import {
 const route = useRoute();
 const slug = route.params.slug as string;
 
-const collection = "projects";
+const collection = "nos_projets";
 const { data: project, pending } = await useAsyncData(route.path, () => {
   return queryCollection(collection).path(`/${collection}/${slug}`).first();
 });
@@ -134,7 +134,7 @@ const onLightboxHide = () => {
   </div>
 
   <div class="container">
-    <Button to="/projects">Découvrir les autres projets →</Button>
+    <Button to="/nos_projets">Découvrir les autres projets →</Button>
   </div>
 </template>
 
@@ -145,7 +145,7 @@ div.container {
   margin-top: 150px;
   gap: 30px;
 
-  padding-inline: 50px;
+  padding-inline: clamp(20px, 1vw, 50px);
 }
 section.description {
   flex: 1;

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  title: "Contact",
+  title: "Nous contacter",
 });
 </script>
 
@@ -27,11 +27,17 @@ definePageMeta({
         <!-- Nom & Prénom côte à côte -->
         <div class="two-cols">
           <div class="field">
-            <input id="nom" name="nom" type="text" placeholder=" " />
+            <input required id="nom" name="nom" type="text" placeholder=" " />
             <label for="nom" class="field__label">Nom</label>
           </div>
           <div class="field">
-            <input id="prenom" name="prenom" type="text" placeholder=" " />
+            <input
+              required
+              id="prenom"
+              name="prenom"
+              type="text"
+              placeholder=" "
+            />
             <label for="prenom" class="field__label">Prénom</label>
           </div>
         </div>
@@ -56,6 +62,7 @@ definePageMeta({
         <!-- Email -->
         <div class="field">
           <input
+            required
             id="email"
             name="email"
             type="text"
@@ -68,6 +75,7 @@ definePageMeta({
         <!-- Téléphone -->
         <div class="field">
           <input
+            required
             id="telephone"
             name="telephone"
             type="tel"
@@ -80,6 +88,7 @@ definePageMeta({
         <!-- Message -->
         <div class="field">
           <textarea
+            required
             id="message"
             name="message"
             rows="6"
@@ -90,7 +99,7 @@ definePageMeta({
 
         <!-- Submit -->
         <div class="actions">
-          <button type="submit" class="submit">Nous contacter</button>
+          <Button type="submit" class="submit">Nous contacter</Button>
         </div>
       </form>
     </section>
@@ -103,7 +112,7 @@ definePageMeta({
   flex-wrap: wrap;
   gap: 50px;
 
-  margin-block: 50px;
+  margin-block: 100px 50px;
 }
 
 .form form,
@@ -193,25 +202,9 @@ definePageMeta({
 .actions {
   margin-top: 10px;
 }
-
 .submit {
-  background: transparent;
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  padding: 12px 20px;
-  border-radius: 999px;
-  cursor: pointer;
-  transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease;
+  width: 100%;
 }
-
-.submit:hover,
-.submit:focus {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: #fff;
-}
-
 /* Caret pour le select (positionné à gauche) */
 .field--select {
   position: relative;

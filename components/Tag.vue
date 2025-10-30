@@ -31,6 +31,8 @@ defineEmits(["select"]);
 </template>
 
 <style lang="scss" scoped>
+@use "sass:color";
+
 .tag {
   cursor: pointer;
   color: white;
@@ -42,13 +44,16 @@ defineEmits(["select"]);
   border-radius: 5px;
 
   display: flex;
-  gap: 5px;
+  gap: 7px;
   align-items: center;
 
   svg {
     width: 10px;
     height: 10px;
-    fill: $primary-color-light;
+
+    path {
+      fill: rgba($primary-color-light, 0.3);
+    }
   }
 
   &.selected {
