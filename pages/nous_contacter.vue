@@ -182,6 +182,7 @@ definePageMeta({
   font-size: 16px;
   color: rgba(255, 255, 255, 0.85);
   pointer-events: none;
+  z-index: 1; /* s'assure que le label est au-dessus du champ */
   transition:
     bottom 0.2s ease,
     transform 0.2s ease,
@@ -191,9 +192,19 @@ definePageMeta({
 
 /* Remonter le label quand il y a du contenu */
 .field:focus-within .field__label,
+/* Focus direct (fallback si :focus-within pas supporté) */
+.field input:focus + .field__label,
+.field textarea:focus + .field__label,
+.field select:focus + .field__label,
+/* Champs remplis (placeholder invisible) */
 .field input:not(:placeholder-shown) + .field__label,
 .field textarea:not(:placeholder-shown) + .field__label,
-.field select:valid + .field__label {
+/* Champs requis valides (utile si pas de placeholder) */
+.field input:required:valid + .field__label,
+.field textarea:required:valid + .field__label,
+.field select:required:valid + .field__label,
+/* Remplissage navigateur (autofill) */
+.field input:-webkit-autofill + .field__label {
   bottom: 100%;
   transform: translate(var(--label-x, 8px), 0);
   font-size: 12px;

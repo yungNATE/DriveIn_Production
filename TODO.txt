@@ -6,3 +6,5 @@
 . titres des pages
 . 404, pages annexes OK
 . /#nos-conseils (mobile) : au swipe, changer de conseils
+- bug étoiles commentaires
+- /notre_agence (Ils nous ont choisis ) : photo en sticky
