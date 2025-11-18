@@ -108,18 +108,32 @@ onMounted(() => {
   if (props.animated) {
     // Prepare timeline (will set initial widths)
     buildTimeline();
-    observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting && e.intersectionRatio >= 0.6) {
-            playTimeline();
-            observer?.disconnect();
-          }
-        });
-      },
-      { threshold: [0, 0.25, 0.5, 0.6, 0.75, 1] }
-    );
-    if (rootEl.value) observer.observe(rootEl.value);
+    nextTick(() => {
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              playTimeline();
+              observer?.disconnect();
+            }
+          });
+        },
+        { threshold: [0], rootMargin: "0px 0px -20% 0px" }
+      );
+      if (rootEl.value) observer.observe(rootEl.value);
+
+      // If already on-screen at mount, trigger immediately
+      const rect = rootEl.value?.getBoundingClientRect();
+      if (
+        rect &&
+        rect.top < window.innerHeight &&
+        rect.bottom > 0 &&
+        !played.value
+      ) {
+        playTimeline();
+        observer?.disconnect();
+      }
+    });
   } else {
     // If not animated, set final widths directly
     fractions.value.forEach((f, i) => {
@@ -169,7 +183,7 @@ watch(fractions, () => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       :data-fraction="f"
-      ref="svgRefs"
+      :ref="(el) => (svgRefs[i] = el as SVGSVGElement | null)"
     >
       <defs>
         <clipPath :id="`clip-${i}-${instanceId}`">
@@ -195,7 +209,7 @@ watch(fractions, () => {
         d="M11.16 3.26c.26-.79 1.38-.79 1.64 0l1.72 5.24c.11.32.41.54.75.54h5.51c.83 0 1.18 1.06.51 1.54l-4.46 3.24a.9.9 0 0 0-.33 1.01l1.72 5.24c.26.79-.64 1.45-1.31.96l-4.46-3.24a.9.9 0 0 0-1.06 0L7.45 21.8c-.67.49-1.57-.17-1.31-.96l1.72-5.24a.9.9 0 0 0-.33-1.01L3.07 10.6c-.67-.49-.32-1.54.51-1.54h5.51c.34 0 .64-.22.75-.54l1.72-5.24Z"
         stroke="none"
         :fill="color"
-        :style="{ clipPath: `url(#clip-${i}-${instanceId})` }"
+        :clip-path="`url(#clip-${i}-${instanceId})`"
         class="fillPart"
       />
     </svg>

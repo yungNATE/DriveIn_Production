@@ -222,8 +222,10 @@ const filteredProjects = computed(() => {
         >
           <template #default="{ item, index }">
             <GlowElement
+              class="card"
               :style="{
                 height: `${coverHeights[item.cover] || 700}px`,
+                '--stagger': `${index * 500}ms`,
               }"
             >
               <div class="top tags">
@@ -276,8 +278,25 @@ const filteredProjects = computed(() => {
 </template>
 
 <style scoped lang="scss">
+@keyframes card-bounce-in {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.985);
+  }
+  55% {
+    opacity: 1;
+    transform: translateY(-8px) scale(1.015);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 // DRY helper for card hover appearance
 @mixin card-hover-state {
+  transform: scale(1.03);
+
   .projectTitle {
     bottom: 0;
     opacity: 1;
@@ -395,12 +414,20 @@ section#filteredProjects {
 
   :deep(.masonry-item) {
     > div {
+      &.card {
+        animation: card-bounce-in-f34d0a03 500ms ease both;
+        animation-delay: var(--stagger, 0ms);
+        will-change: transform, opacity;
+      }
       position: relative;
-      width: 100%;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       padding: 25px;
+      transition:
+        transform 0.3s ease,
+        filter 200ms ease,
+        color 200ms ease;
 
       > *:not(.middle) {
         position: relative;
@@ -474,6 +501,14 @@ section#filteredProjects {
           z-index: 3;
         }
       }
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  section#filteredProjects {
+    :deep(.masonry-item) > div.card {
+      animation: none !important;
     }
   }
 }
