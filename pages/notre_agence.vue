@@ -246,6 +246,7 @@ const activeVideoUrl = computed(() =>
           <ArrowGlow orientation="right"></ArrowGlow>
         </button>
       </div>
+      <span class="bigNumber"> .{{ String(workMethodOpenIndex + 1) }} </span>
     </div>
   </section>
 
@@ -394,6 +395,7 @@ section.workMethod {
   background-color: black;
   padding-block: 100px;
   position: relative;
+  overflow: hidden;
 
   display: flex;
   flex-direction: column;
@@ -446,6 +448,36 @@ section.workMethod {
       align-items: center;
       justify-content: center; /* Centrage des flèches sous le swiper */
       gap: 40px;
+    }
+
+    .bigNumber {
+      position: absolute;
+      top: 108%;
+      left: 16%;
+      transform: translate(-50%, -80%);
+      font-size: 26rem;
+      font-weight: 800;
+      color: rgba(255, 255, 255, 0.16);
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+      pointer-events: none;
+
+      @include mediaquery(930) {
+        top: 97%;
+        left: 16%;
+        font-size: 9rem;
+      }
+      @include mediaquery(525) {
+        position: static;
+        left: unset;
+        display: block;
+        transform: unset;
+        text-align: center;
+        font-size: 4rem;
+        margin-top: 50px;
+        color: rgba(255, 255, 255, 0.479);
+      }
     }
   }
 }
