@@ -417,7 +417,7 @@ section#filteredProjects {
     }
     > div {
       &.card {
-        animation: card-bounce-in-f34d0a03 500ms ease both;
+        animation: card-bounce-in 500ms ease both;
         animation-delay: var(--stagger, 0ms);
         will-change: transform, opacity;
       }
