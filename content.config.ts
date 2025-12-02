@@ -63,6 +63,8 @@ export default defineContentConfig({
         header: z.string(),
         content: z.string(),
         customHtml: z.string().optional(),
+        open: z.boolean().optional(),
+        date: z.string(),
       }),
     }),
     workMethod: defineCollection({

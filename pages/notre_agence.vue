@@ -2,26 +2,31 @@
 import ImgGlow from "~/components/ImgGlow.vue";
 import type { AccordionPanel } from "~/components/Accordion.vue";
 
-// Charger les panneaux d'historique via Nuxt Content, comme dans index.vue
+// Charger les panneaux d'historique via Nuxt Content et trier par date croissante
 const { data: agencyStory } = await useAsyncData("agencyStory", async () => {
-  const data = await queryCollection("agencyStory").all();
+  const data = await queryCollection("agencyStory").order("date", "ASC").all();
   return flattenMeta(data);
 });
 
 // Mapper le contenu vers le format attendu par <Accordion /> et assurer un tableau non nul
 const accordionPanels = computed<AccordionPanel[]>(() => {
   const items = (agencyStory.value as any[]) || [];
-  return (
-    items
-      .map((i) => ({
-        header: i.header,
-        content: i.content,
-        customHtml: i.customHtml,
-        open: !!i.open,
-      }))
-      // Maintenir un ordre cohérent: par date si présente dans customHtml ou par chemin
-      .sort((a, b) => (a.header || "").localeCompare(b.header || ""))
-  );
+  return items
+    .slice()
+    .sort((a, b) => {
+      const dateA = Number.parseInt(String(a?.date ?? ""), 10);
+      const dateB = Number.parseInt(String(b?.date ?? ""), 10);
+      if (!Number.isNaN(dateA) && !Number.isNaN(dateB)) {
+        return dateA - dateB;
+      }
+      return String(a?.date ?? "").localeCompare(String(b?.date ?? ""));
+    })
+    .map((i, idx) => ({
+      header: i.header,
+      content: i.content,
+      customHtml: i.customHtml,
+      open: idx === 0,
+    }));
 });
 
 // Récupération de la méthode de travail (workMethod)
