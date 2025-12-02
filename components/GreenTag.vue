@@ -1,4 +1,14 @@
 <script lang="ts" setup>
+import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
+
+type GsapModule = typeof import("gsap");
+type GsapCore = GsapModule extends { gsap: infer T }
+  ? T
+  : GsapModule extends { default: infer D }
+    ? D
+    : never;
+type GsapTimeline = ReturnType<GsapCore["timeline"]>;
+
 const actions = [
   {
     title: "Partenaires locaux et déplacements optimisés",
@@ -28,17 +38,128 @@ const modules = import.meta.glob<string>(
 const images = Object.keys(modules)
   .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
   .map((k) => modules[k] as string);
+
+const sectionRef = ref<HTMLElement | null>(null);
+const iconRefs = ref<HTMLImageElement[]>([]);
+
+let observer: IntersectionObserver | null = null;
+let timeline: GsapTimeline | null = null;
+let gsapInstance: GsapCore | null = null;
+
+const getGsapInstance = async (): Promise<GSAP> => {
+  if (gsapInstance) {
+    return gsapInstance;
+  }
+
+  const module = await import("gsap");
+  const gsap = module.gsap ?? module.default;
+  gsapInstance = gsap;
+
+  return gsapInstance;
+};
+
+const disposeTimeline = () => {
+  if (timeline) {
+    timeline.kill();
+    timeline = null;
+  }
+};
+
+const playIconAnimations = async () => {
+  const icons = iconRefs.value;
+  if (!icons.length) {
+    return;
+  }
+
+  const gsap = await getGsapInstance();
+
+  disposeTimeline();
+  timeline = gsap.timeline({ defaults: { ease: "power1.out" } });
+
+  gsap.set(icons, { transformOrigin: "50% 50%" });
+
+  const [first, second, third] = icons;
+
+  if (first) {
+    timeline
+      .to(first, { yPercent: -20, duration: 0.4 })
+      .to(first, { yPercent: 10, duration: 0.3, ease: "power1.inOut" })
+      .to(first, { yPercent: 0, duration: 0.3 });
+  }
+
+  if (second) {
+    if (first) {
+      timeline.to({}, { duration: 0.5, ease: "none" });
+    }
+
+    timeline.to(second, {
+      keyframes: [
+        { xPercent: -6, rotation: -10, duration: 0.08 },
+        { xPercent: 6, rotation: 8, duration: 0.08 },
+        { xPercent: -4, rotation: -6, duration: 0.08 },
+        { xPercent: 4, rotation: 6, duration: 0.08 },
+        { xPercent: -2, rotation: -4, duration: 0.08 },
+        { xPercent: 0, rotation: 0, duration: 0.12 },
+      ],
+      ease: "power1.inOut",
+    });
+  }
+
+  if (third) {
+    if (second || first) {
+      timeline.to({}, { duration: 1, ease: "none" });
+    }
+
+    timeline
+      .fromTo(
+        third,
+        { rotate: 0 },
+        { rotate: 360, duration: 0.8, ease: "power2.out" }
+      )
+      .set(third, { rotate: 0 });
+  }
+};
+
+onMounted(async () => {
+  await nextTick();
+
+  if (!sectionRef.value) {
+    return;
+  }
+
+  observer = new IntersectionObserver(
+    async (entries) => {
+      const entry = entries.find((item) => item.target === sectionRef.value);
+
+      if (entry?.isIntersecting) {
+        observer?.disconnect();
+        await nextTick();
+        await playIconAnimations();
+      }
+    },
+    {
+      threshold: 0.3,
+    }
+  );
+
+  observer.observe(sectionRef.value);
+});
+
+onBeforeUnmount(() => {
+  observer?.disconnect();
+  disposeTimeline();
+});
 </script>
 
 <template>
-  <div class="greenTag">
+  <div ref="sectionRef" class="greenTag">
     <h2>Une société engagée</h2>
     <div class="actions">
       <div v-for="(action, i) in actions" :key="i" class="action">
         <span class="h1">{{ index(i) }}.</span>
         <div class="content">
           <div class="title">
-            <img :src="images[i]" alt="Action icon" />
+            <img ref="iconRefs" :src="images[i]" alt="Action icon" />
             <h3>{{ action.title }}</h3>
           </div>
           <p>{{ action.description }}</p>
