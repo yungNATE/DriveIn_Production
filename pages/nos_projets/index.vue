@@ -21,6 +21,8 @@ const {
   return flattenMeta(data);
 });
 
+const { $img } = useNuxtApp();
+
 // Tri les projets par rapport à la propriété 'weight', plus le weight est gros, plus il apparaît en premier
 nos_projets.value?.sort((a, b) => (b.weight || 0) - (a.weight || 0));
 
@@ -50,17 +52,73 @@ const tagsById = computed<Record<string, ProjectTag>>(() =>
 const getTagsForItem = (item: any) => getTagsFor(item, tagsById.value);
 
 // Store natural heights per cover to set container height dynamically
+const MAX_COVER_HEIGHT = 700;
 const coverHeights = ref<Record<string, number>>({});
+const loadedCovers = ref<Record<string, boolean>>({});
+const preloadingCovers = new Set<string>(); // prevent duplicate preload work client-side
+
+function updateCoverHeight(src: string, height?: number | null) {
+  if (!src) return;
+  if (typeof height !== "number" || Number.isNaN(height)) {
+    height = coverHeights.value[src];
+  }
+  const safeHeight = Math.min(height || MAX_COVER_HEIGHT, MAX_COVER_HEIGHT);
+  coverHeights.value = { ...coverHeights.value, [src]: safeHeight };
+}
+
+function markCoverReady(src: string, height?: number | null) {
+  if (!src) return;
+  updateCoverHeight(src, height);
+  if (loadedCovers.value[src]) return;
+  loadedCovers.value = { ...loadedCovers.value, [src]: true };
+}
+
+function preloadCover(src: string) {
+  if (!process.client || !src) return;
+  if (loadedCovers.value[src] || preloadingCovers.has(src)) return;
+  preloadingCovers.add(src);
+
+  const resolvedSrc = typeof $img === "function" ? $img(src) : src;
+
+  const img = new Image();
+  img.decoding = "async";
+  img.loading = "eager";
+  img.onload = () => {
+    markCoverReady(src, img.naturalHeight);
+    preloadingCovers.delete(src);
+  };
+  img.onerror = () => {
+    preloadingCovers.delete(src);
+  };
+  img.src = resolvedSrc;
+
+  if (img.complete) {
+    markCoverReady(src, img.naturalHeight);
+    preloadingCovers.delete(src);
+  }
+}
+
+const isCoverReady = (src: string) => Boolean(loadedCovers.value[src]);
+
+if (process.client) {
+  // Preload every cover from the filtered list before triggering the card animation
+  watch(
+    () => filteredProjects.value.map((project: any) => project.cover),
+    (covers) => {
+      covers.forEach((cover) => preloadCover(cover));
+    },
+    { immediate: true }
+  );
+}
 
 function onImgLoad(src: string, e: Event) {
   const img = e.target as HTMLImageElement | null;
-  if (!img) return;
+  if (!img) {
+    markCoverReady(src);
+    return;
+  }
   // Save natural image height; fall back handled in template
-  const MAX_HEIGHT = 700;
-  coverHeights.value[src] = Math.min(
-    img.naturalHeight || coverHeights.value[src] || MAX_HEIGHT,
-    MAX_HEIGHT
-  );
+  markCoverReady(src, img.naturalHeight);
 }
 
 // ----------------------------
@@ -222,9 +280,9 @@ const filteredProjects = computed(() => {
         >
           <template #default="{ item, index }">
             <GlowElement
-              class="card"
+              :class="['card', { ready: isCoverReady(item.cover) }]"
               :style="{
-                height: `${coverHeights[item.cover] || 700}px`,
+                height: `${coverHeights[item.cover] || MAX_COVER_HEIGHT}px`,
                 '--stagger': `${index * 500}ms`,
               }"
             >
@@ -417,9 +475,17 @@ section#filteredProjects {
     }
     > div {
       &.card {
+        opacity: 0;
+        transform: translateY(12px) scale(0.985);
+        animation: none;
+        will-change: transform, opacity;
+      }
+
+      &.card.ready {
+        opacity: 1;
+        transform: none;
         animation: card-bounce-in 500ms ease both;
         animation-delay: var(--stagger, 0ms);
-        will-change: transform, opacity;
       }
       position: relative;
       display: flex;
@@ -509,8 +575,10 @@ section#filteredProjects {
 
 @media (prefers-reduced-motion: reduce) {
   section#filteredProjects {
-    :deep(.masonry-item) > div.card {
+    :deep(.masonry-item) > div.card.ready {
       animation: none !important;
+      opacity: 1;
+      transform: none;
     }
   }
 }
