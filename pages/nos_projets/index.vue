@@ -295,8 +295,6 @@ const filteredProjects = computed(() => {
 
 // DRY helper for card hover appearance
 @mixin card-hover-state {
-  transform: scale(1.03);
-
   .projectTitle {
     bottom: 0;
     opacity: 1;
@@ -413,6 +411,10 @@ section#filteredProjects {
   flex: 1 0 auto;
 
   :deep(.masonry-item) {
+    transition: 0.3s;
+    &:hover {
+      transform: scale(1.03);
+    }
     > div {
       &.card {
         animation: card-bounce-in-f34d0a03 500ms ease both;
