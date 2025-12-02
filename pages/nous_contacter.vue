@@ -2,6 +2,50 @@
 definePageMeta({
   title: "Nous contacter",
 });
+
+const router = useRouter();
+
+const bannedWords = [
+  "stage",
+  "stages",
+  "stagiaire",
+  "stagiaires",
+  "alternance",
+  "alternances",
+  "alternant",
+  "alternante",
+  "alternants",
+  "apprentissage",
+  "apprenti",
+  "apprentie",
+  "apprentis",
+  "apprenties",
+  "apprentice",
+  "apprentices",
+  "apprenticeship",
+  "apprenticeships",
+  "intern",
+  "internship",
+  "internships",
+];
+
+const containsBannedWord = (value: string) => {
+  const normalizedValue = value.toLowerCase();
+  return bannedWords.some((word) => normalizedValue.includes(word));
+};
+
+const handleSubmit = (event: Event) => {
+  const target = event.target;
+  if (!(target instanceof HTMLFormElement)) {
+    return;
+  }
+
+  const message = new FormData(target).get("message")?.toString() ?? "";
+  if (containsBannedWord(message)) {
+    event.preventDefault();
+    router.push("/merci");
+  }
+};
 </script>
 
 <template>
@@ -9,6 +53,10 @@ definePageMeta({
     <section class="title">
       <h1>Envoyez-nous un petit mot.</h1>
       <p>On adore lire vos projets, même les plus fous !</p>
+      <p class="sub-text">
+        Nous ne sommes cependant pas en recherche de stagiaires ou d'alternants
+        pour le moment. Bon courage dans vos recherche. 😉
+      </p>
     </section>
 
     <section class="form">
@@ -17,6 +65,7 @@ definePageMeta({
         method="POST"
         data-netlify="true"
         netlify-honeypot="bot-field"
+        @submit="handleSubmit"
         action="/merci"
       >
         <input type="hidden" name="form-name" value="contact" />
@@ -111,6 +160,7 @@ definePageMeta({
   display: flex;
   flex-wrap: wrap;
   gap: 50px;
+  justify-content: center;
 
   margin-block: 100px 50px;
 }
@@ -262,5 +312,16 @@ definePageMeta({
 .field select option:focus,
 .field select option:active {
   background: $primary-color-light;
+}
+
+.title {
+  display: flex;
+  flex-direction: column;
+  max-width: 700px;
+}
+
+.sub-text {
+  margin-top: auto;
+  color: #ffda00;
 }
 </style>
