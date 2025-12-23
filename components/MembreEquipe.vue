@@ -26,9 +26,5 @@ div {
 }
 :deep(.bloc-img-text) {
   max-width: 700px;
-
-  img {
-    max-height: 200px;
-  }
 }
 </style>
