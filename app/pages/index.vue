@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted, onBeforeUnmount, computed } from "vue";
-import { useHeaderVisibility } from "@/composables/useHeaderVisibility";
-import { getAllTags, type ProjectTag } from "@/lib/tags";
+import { useHeaderVisibility } from "~/composables/useHeaderVisibility";
+import { getAllTags, type ProjectTag } from "~~/lib/tags";
 import { gsap } from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 
@@ -290,7 +290,7 @@ const currentHighlightedProject = computed(() => {
 });
 
 const selectedTag = ref<ProjectTag | null>(
-  allTags.value ? allTags.value[0] : null
+  allTags.value?.[0] ?? null
 );
 
 function handleTagSelect(tagId: string) {
@@ -333,6 +333,9 @@ const { data: advices } = await useAsyncData("conseils", async () => {
   const data = await queryCollection("conseils").all();
   return flattenMeta(data);
 });
+
+type TruncateFn = (input: unknown, limit?: number, ellipsis?: string) => string;
+const truncate = useNuxtApp().$truncate as TruncateFn;
 
 const currentAdvice = ref(advices.value ? advices.value[0] : null); // defaults to first advice
 
@@ -517,7 +520,7 @@ definePageMeta({
         >
           <h3>{{ currentAdvice?.question }}</h3>
           <p>
-            {{ $truncate(currentAdvice?.description, 250, "...") }}
+            {{ truncate(currentAdvice?.description, 250, "...") }}
             <SpecialLink :to="currentAdvice?.path" class="gold"
               >En savoir plus →</SpecialLink
             >

@@ -55,7 +55,7 @@ const handleSubmit = (event: Event) => {
       <p>On adore lire vos projets, même les plus fous !</p>
       <p class="sub-text">
         Nous ne sommes cependant pas en recherche de stagiaires ou d'alternants
-        pour le moment. Bon courage dans vos recherche. 😉
+        pour le moment. Bon courage dans vos recherches. 😉
       </p>
     </section>
 

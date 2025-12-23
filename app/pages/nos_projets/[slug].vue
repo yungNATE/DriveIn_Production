@@ -4,7 +4,7 @@ import {
   mapTagsById,
   getTagsFor,
   type ProjectTag,
-} from "@/lib/tags";
+} from "~~/lib/tags";
 
 const route = useRoute();
 const slug = route.params.slug as string;

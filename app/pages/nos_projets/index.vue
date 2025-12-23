@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-// Meta
-definePageMeta({
-  title: "Nos projets",
-});
-
+import { flattenMeta } from "~/utils/flattenMeta";
 import {
   getAllTags,
   mapTagsById,
   getTagsFor,
   type ProjectTag,
-} from "@/lib/tags";
+} from "~~/lib/tags";
+
+definePageMeta({
+  title: "Nos projets",
+});
 
 const contentType = "nos_projets";
 const {
@@ -57,70 +57,6 @@ const coverHeights = ref<Record<string, number>>({});
 const loadedCovers = ref<Record<string, boolean>>({});
 const preloadingCovers = new Set<string>(); // prevent duplicate preload work client-side
 
-function updateCoverHeight(src: string, height?: number | null) {
-  if (!src) return;
-  if (typeof height !== "number" || Number.isNaN(height)) {
-    height = coverHeights.value[src];
-  }
-  const safeHeight = Math.min(height || MAX_COVER_HEIGHT, MAX_COVER_HEIGHT);
-  coverHeights.value = { ...coverHeights.value, [src]: safeHeight };
-}
-
-function markCoverReady(src: string, height?: number | null) {
-  if (!src) return;
-  updateCoverHeight(src, height);
-  if (loadedCovers.value[src]) return;
-  loadedCovers.value = { ...loadedCovers.value, [src]: true };
-}
-
-function preloadCover(src: string) {
-  if (!process.client || !src) return;
-  if (loadedCovers.value[src] || preloadingCovers.has(src)) return;
-  preloadingCovers.add(src);
-
-  const resolvedSrc = typeof $img === "function" ? $img(src) : src;
-
-  const img = new Image();
-  img.decoding = "async";
-  img.loading = "eager";
-  img.onload = () => {
-    markCoverReady(src, img.naturalHeight);
-    preloadingCovers.delete(src);
-  };
-  img.onerror = () => {
-    preloadingCovers.delete(src);
-  };
-  img.src = resolvedSrc;
-
-  if (img.complete) {
-    markCoverReady(src, img.naturalHeight);
-    preloadingCovers.delete(src);
-  }
-}
-
-const isCoverReady = (src: string) => Boolean(loadedCovers.value[src]);
-
-if (process.client) {
-  // Preload every cover from the filtered list before triggering the card animation
-  watch(
-    () => filteredProjects.value.map((project: any) => project.cover),
-    (covers) => {
-      covers.forEach((cover) => preloadCover(cover));
-    },
-    { immediate: true }
-  );
-}
-
-function onImgLoad(src: string, e: Event) {
-  const img = e.target as HTMLImageElement | null;
-  if (!img) {
-    markCoverReady(src);
-    return;
-  }
-  // Save natural image height; fall back handled in template
-  markCoverReady(src, img.naturalHeight);
-}
-
 // ----------------------------
 // Filters state & logic
 // ----------------------------
@@ -129,26 +65,6 @@ const selectedFormatId = ref<string>("video");
 // Multiple selections allowed; start empty
 const selectedThemeIds = ref<string[]>([]);
 const selectedTechniqueIds = ref<string[]>([]);
-
-// Handlers
-function handleSelectFormat(tagId: string) {
-  // Enforce exactly one selected; ignore attempts to deselect
-  if (tagId && tagId !== selectedFormatId.value) {
-    selectedFormatId.value = tagId;
-  }
-}
-function handleToggleTheme(tagId: string) {
-  const arr = selectedThemeIds.value;
-  const idx = arr.indexOf(tagId);
-  if (idx === -1) selectedThemeIds.value = [...arr, tagId];
-  else selectedThemeIds.value = arr.filter((id) => id !== tagId);
-}
-function handleToggleTechnique(tagId: string) {
-  const arr = selectedTechniqueIds.value;
-  const idx = arr.indexOf(tagId);
-  if (idx === -1) selectedTechniqueIds.value = [...arr, tagId];
-  else selectedTechniqueIds.value = arr.filter((id) => id !== tagId);
-}
 
 // Apply filtering (AND logic):
 // - project must include the selected format
@@ -180,6 +96,90 @@ const filteredProjects = computed(() => {
     return hasTheme || hasTechnique;
   });
 });
+
+// Handlers
+function handleSelectFormat(tagId: string) {
+  // Enforce exactly one selected; ignore attempts to deselect
+  if (tagId && tagId !== selectedFormatId.value) {
+    selectedFormatId.value = tagId;
+  }
+}
+function handleToggleTheme(tagId: string) {
+  const arr = selectedThemeIds.value;
+  const idx = arr.indexOf(tagId);
+  if (idx === -1) selectedThemeIds.value = [...arr, tagId];
+  else selectedThemeIds.value = arr.filter((id) => id !== tagId);
+}
+function handleToggleTechnique(tagId: string) {
+  const arr = selectedTechniqueIds.value;
+  const idx = arr.indexOf(tagId);
+  if (idx === -1) selectedTechniqueIds.value = [...arr, tagId];
+  else selectedTechniqueIds.value = arr.filter((id) => id !== tagId);
+}
+
+function updateCoverHeight(src: string, height?: number | null) {
+  if (!src) return;
+  if (typeof height !== "number" || Number.isNaN(height)) {
+    height = coverHeights.value[src];
+  }
+  const safeHeight = Math.min(height || MAX_COVER_HEIGHT, MAX_COVER_HEIGHT);
+  coverHeights.value = { ...coverHeights.value, [src]: safeHeight };
+}
+
+function markCoverReady(src: string, height?: number | null) {
+  if (!src) return;
+  updateCoverHeight(src, height);
+  if (loadedCovers.value[src]) return;
+  loadedCovers.value = { ...loadedCovers.value, [src]: true };
+}
+
+function preloadCover(src: string) {
+  if (!import.meta.client || !src) return;
+  if (loadedCovers.value[src] || preloadingCovers.has(src)) return;
+  preloadingCovers.add(src);
+
+  const resolvedSrc = typeof $img === "function" ? $img(src) : src;
+
+  const img = new Image();
+  img.decoding = "async";
+  img.loading = "eager";
+  img.onload = () => {
+    markCoverReady(src, img.naturalHeight);
+    preloadingCovers.delete(src);
+  };
+  img.onerror = () => {
+    preloadingCovers.delete(src);
+  };
+  img.src = resolvedSrc;
+
+  if (img.complete) {
+    markCoverReady(src, img.naturalHeight);
+    preloadingCovers.delete(src);
+  }
+}
+
+const isCoverReady = (src: string) => Boolean(loadedCovers.value[src]);
+
+if (import.meta.client) {
+  // Preload every cover from the filtered list before triggering the card animation
+  watch(
+    () => filteredProjects.value.map((project: any) => project.cover),
+    (covers) => {
+      covers.forEach((cover) => preloadCover(cover));
+    },
+    { immediate: true }
+  );
+}
+
+function onImgLoad(src: string, e: Event) {
+  const img = e.target as HTMLImageElement | null;
+  if (!img) {
+    markCoverReady(src);
+    return;
+  }
+  // Save natural image height; fall back handled in template
+  markCoverReady(src, img.naturalHeight);
+}
 </script>
 
 <template>
@@ -275,6 +275,7 @@ const filteredProjects = computed(() => {
           v-if="filteredProjects.length"
           :items="filteredProjects || []"
           :gap="30"
+          :column-width="300"
           :min-columns="1"
           :max-columns="3"
         >
@@ -466,10 +467,11 @@ section.nos_projets {
 }
 
 section#filteredProjects {
-  flex: 1 0 auto;
+  width: 100%;
 
   :deep(.masonry-item) {
     transition: 0.3s;
+
     &:hover {
       transform: scale(1.03);
     }

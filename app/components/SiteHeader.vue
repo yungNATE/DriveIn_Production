@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch, onMounted, onBeforeUnmount } from "vue";
-import { useHeaderVisibility } from "@/composables/useHeaderVisibility";
+import { useHeaderVisibility } from "~/composables/useHeaderVisibility";
 const menuOpen = ref(false);
 const { isScrolled } = useScrollState();
 const isMobile = ref(false);

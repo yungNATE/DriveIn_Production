@@ -14,7 +14,7 @@ export type ProjectTag = {
  * Works in both server and client via dynamic import handled by Vite/Nuxt.
  */
 export async function getAllTags(): Promise<ProjectTag[]> {
-  const mod: any = await import("@/content/nos_projets/tags.json");
+  const mod: any = await import("~~/content/nos_projets/tags.json");
   const raw = (mod?.default ?? []) as any[];
   return raw.map((t) => ({ hidden: false, ...t })) as ProjectTag[];
 }
