@@ -76,9 +76,8 @@ onMounted(async () => {
   const swiperEl = swiperRef.value;
   if (swiperEl) {
     if (swiperEl) {
-      const { injectSwiperPaginationCurrentStyle } = await import(
-        "@/utils/inject-swiper-style.js"
-      );
+      const { injectSwiperPaginationCurrentStyle } =
+        await import("@/utils/inject-swiper-style.js");
       injectSwiperPaginationCurrentStyle(swiperEl);
     }
   }
@@ -289,9 +288,7 @@ const currentHighlightedProject = computed(() => {
   return highlightedProjects.value.find((p) => p.highlighted === id) || null;
 });
 
-const selectedTag = ref<ProjectTag | null>(
-  allTags.value?.[0] ?? null
-);
+const selectedTag = ref<ProjectTag | null>(allTags.value?.[0] ?? null);
 
 function handleTagSelect(tagId: string) {
   if (!allTags.value) return;
@@ -736,12 +733,11 @@ section.hero {
 
 section.partners {
   display: flex;
-  margin-top: 50px;
   align-items: center;
   gap: 10px;
   justify-content: flex-start;
   margin-inline: 15px;
-  margin-bottom: 200px;
+  margin-bottom: 230px;
 
   @include mediaquery("tablet", "mobile") {
     flex-direction: column;
@@ -778,16 +774,23 @@ section.partners {
     }
 
     swiper-slide {
-      width: 75px;
       margin-inline: 30px;
       display: flex;
       align-items: center;
       justify-content: center;
       height: auto;
+      width: auto;
+      min-width: 125px;
+      max-width: 250px;
 
-      img {
-        display: block;
+      p {
         width: 100%;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
       }
     }
   }
