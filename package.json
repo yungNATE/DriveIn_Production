@@ -4,11 +4,12 @@
   "type": "module",
   "scripts": {
     "dev": "nuxt dev --inspect",
-    "clean": "rimraf .nuxt .output",
+    "clean": "rimraf .nuxt .output && npm cache clean --force",
     "build": "npm run clean && nuxi generate",
     "preview": "npm run build && nuxi preview",
     "deploy_test": "nuxi generate && netlify deploy --alias=test --dir=.output/public",
-    "deploy": "nuxi generate && netlify deploy --prod --dir=.output/public"
+    "deploy": "nuxi generate && netlify deploy --prod --dir=.output/public",
+    "update": "nuxt upgrade --channel=v3"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.11.0",
@@ -31,7 +32,7 @@
     "@nuxtjs/i18n": "^9.5.4",
     "@types/youtube": "^0.1.2",
     "netlify-cli": "^21.5.0",
-    "nuxt": "^3.17.4",
+    "nuxt": "^3.17.7",
     "rimraf": "^6.0.1",
     "sass": "^1.89.2",
     "swiper": "^11.2.10"
