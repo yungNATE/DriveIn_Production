@@ -55,7 +55,7 @@ const handleSubmit = (event: Event) => {
       <p>On adore lire vos projets, même les plus fous !</p>
       <p class="sub-text">
         Nous ne sommes cependant pas en recherche de stagiaires ou d'alternants
-        pour le moment. Bon courage dans vos recherches. 😉
+        pour le moment.<br />Bon courage dans vos recherches. 😉
       </p>
     </section>
 
@@ -318,10 +318,32 @@ const handleSubmit = (event: Event) => {
   display: flex;
   flex-direction: column;
   max-width: 700px;
-}
+  position: relative;
 
-.sub-text {
-  margin-top: auto;
-  color: #ffda00;
+  .sub-text {
+    color: #ffda00;
+    background: black;
+    display: block;
+    max-width: 426px;
+    border-radius: 19px;
+    padding: 23px 40px;
+    transform: rotate(-5deg);
+    margin-top: 15px;
+    margin-left: auto;
+    @include glow-discret($primary-color-light);
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: -11px;
+      left: 81px;
+      display: block;
+      width: 31px;
+      height: 31px;
+      background-color: black;
+      transform: rotate(45deg);
+      z-index: -1;
+    }
+  }
 }
 </style>
