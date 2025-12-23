@@ -1,11 +1,26 @@
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, watch, onMounted, onBeforeUnmount } from "vue";
 import { useHeaderVisibility } from "@/composables/useHeaderVisibility";
 const menuOpen = ref(false);
 const { isScrolled } = useScrollState();
-const isMobile = computed(() => window.innerWidth <= 950);
+const isMobile = ref(false);
 const { isHeaderHidden } = useHeaderVisibility();
 const route = useRoute();
+
+const updateIsMobile = () => {
+  if (typeof window === "undefined") return;
+  isMobile.value = window.innerWidth <= 950;
+};
+
+onMounted(() => {
+  updateIsMobile();
+  window.addEventListener("resize", updateIsMobile);
+});
+
+onBeforeUnmount(() => {
+  if (typeof window === "undefined") return;
+  window.removeEventListener("resize", updateIsMobile);
+});
 
 // Close menu automatically if header becomes hidden (avoid off-canvas lingering)
 watch(isHeaderHidden, (hidden) => {
