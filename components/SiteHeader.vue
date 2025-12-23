@@ -3,10 +3,9 @@ import { ref, computed, watch } from "vue";
 import { useHeaderVisibility } from "@/composables/useHeaderVisibility";
 const menuOpen = ref(false);
 const { isScrolled } = useScrollState();
+const isMobile = computed(() => window.innerWidth <= 950);
 const { isHeaderHidden } = useHeaderVisibility();
 const route = useRoute();
-
-const iconWidth = computed(() => (isScrolled.value ? "50px" : "170px"));
 
 // Close menu automatically if header becomes hidden (avoid off-canvas lingering)
 watch(isHeaderHidden, (hidden) => {
@@ -32,7 +31,7 @@ useHTMLRootElementScroll(menuOpen);
         icon="driveInProductionIcone"
         alt="Lien vers l'accueil du site"
         target="_self"
-        :size="isScrolled ? '95px' : '170px'"
+        :size="!isScrolled && !isMobile ? '170px' : '95px'"
       />
       <!-- Burger icon visible en mobile -->
       <button
