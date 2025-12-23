@@ -547,7 +547,10 @@ definePageMeta({
           <swiper-slide
             v-for="advice in advices"
             :key="advice._id"
-            class="swiper-slide"
+            :class="[
+              'swiper-slide',
+              { 'swiper-slide-current': currentAdvice?.id === advice.id },
+            ]"
           >
             <div class="question">
               <button
@@ -981,12 +984,18 @@ section.advices {
       swiper-container {
         width: 100%;
 
-        swiper-slide button {
-          background: black;
-          @include glow-discret($primary-color-light);
-          padding: 20px;
-          margin: 5px;
-          border-radius: 12px;
+        .swiper-slide {
+          button {
+            background: black;
+            @include glow-discret($primary-color-light);
+            padding: 20px;
+            margin: 5px;
+            border-radius: 12px;
+          }
+
+          &.swiper-slide-current button {
+            @include glow-discret($secondary-color-dark);
+          }
         }
 
         &::part(container) {
