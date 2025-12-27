@@ -410,7 +410,7 @@ definePageMeta({
 
   <section class="realisations container">
     <div class="controles">
-      <h3>Quelques réalisations</h3>
+      <h2>Quelques réalisations</h2>
       <p>
         Un aperçu de ce que nos précédentes collaborations ont permis
         d'accomplir.
@@ -755,7 +755,7 @@ section.realisations {
     align-items: flex-start;
     justify-content: flex-start;
     gap: 20px;
-    max-width: 300px;
+    max-width: 350px;
 
     @include mediaquery("tablet", "mobile") {
       max-width: 550px;
