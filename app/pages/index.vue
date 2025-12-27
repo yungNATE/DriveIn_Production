@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, onBeforeUnmount, computed } from "vue";
+import { ref, onMounted, onBeforeUnmount, computed, unref } from "vue";
 import { useHeaderVisibility } from "~/composables/useHeaderVisibility";
 import { getAllTags, type ProjectTag } from "~~/lib/tags";
 import { gsap } from "gsap";
@@ -278,7 +278,6 @@ const { data: highlightedProjects } = await useAsyncData(
     return flattenMeta(data);
   }
 );
-console.log(unref(highlightedProjects));
 
 const currentHighlightedProject = computed(() => {
   if (!highlightedProjects.value || highlightedProjects.value.length === 0)
@@ -351,16 +350,10 @@ definePageMeta({
   <section class="hero invisible">
     <div class="top">
       <div class="video-player-wrapper">
-        <ScriptYouTubePlayer video-id="U15KM30-ugY" class="video-player"
-          ><template #awaitingLoad>
-            <div class="youtube-logo-wrapper">
-              <svg height="48" width="68" viewBox="0 0 68 48" version="1.1">
-                <path
-                  d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z"
-                />
-                <path d="M 45,24 27,14 27,34" fill="#fff" />
-              </svg></div></template
-        ></ScriptYouTubePlayer>
+        <ScriptYouTubePlayerWithPlayButton
+          video-id="U15KM30-ugY"
+          class="video-player"
+        />
       </div>
       <div class="text">
         <h1 class="sr-only">DriveIn Production</h1>
@@ -661,61 +654,6 @@ section.hero {
       aspect-ratio: 16 / 9;
       display: block;
       border-radius: 20px;
-
-      .video-player {
-        width: 100% !important;
-        height: auto !important;
-        max-width: 600px !important;
-        aspect-ratio: 16 / 9;
-
-        filter: drop-shadow(0 0 25px rgba($primary-color-light, 0.5));
-        transition: 0.3s;
-        border-radius: 20px;
-        overflow: hidden;
-
-        &:hover {
-          filter: drop-shadow(0 0 25px $secondary-color-dark);
-        }
-
-        &:deep(iframe) {
-          position: absolute;
-          inset: 0;
-          width: 100% !important;
-          height: 100% !important;
-        }
-      }
-
-      .youtube-logo-wrapper {
-        position: absolute;
-        inset: 0;
-        background: #000a;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        &:deep(svg path:first-of-type) {
-          fill: $secondary-color-light;
-          transition:
-            fill 0.2s ease,
-            transform 0.2s ease;
-          transform-origin: center;
-        }
-
-        &:deep(svg path:nth-of-type(2)) {
-          transition: transform 0.2s ease;
-          transform-origin: center;
-        }
-
-        &:hover {
-          &:deep(svg path:first-of-type) {
-            fill: rgba($secondary-color-dark, 0.3);
-            transform: scale(0.9);
-          }
-          &:deep(svg path:nth-of-type(2)) {
-            transform: scale(1.1);
-          }
-        }
-      }
     }
   }
 
@@ -783,15 +721,17 @@ section.partners {
       justify-content: center;
       height: auto;
       width: auto;
-      min-width: 125px;
-      max-width: 250px;
 
       p {
         width: 100%;
+        display: flex;
+        justify-content: center;
 
         img {
-          width: 100%;
-          height: 100%;
+          max-width: 125px;
+          max-width: 250px;
+          max-height: 80px;
+          height: auto;
           object-fit: contain;
         }
       }

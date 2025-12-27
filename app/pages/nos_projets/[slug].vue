@@ -71,12 +71,12 @@ const onLightboxHide = () => {
         <h2 class="h3">Le film</h2>
 
         <GlowElement class="video">
-          <ScriptYouTubePlayer
+          <ScriptYouTubePlayerWithPlayButton
             video-id="jDQtxlRUf54"
             :width="600"
             :height="400"
             class="video-player"
-          ></ScriptYouTubePlayer>
+          />
         </GlowElement>
       </div>
 
@@ -88,12 +88,12 @@ const onLightboxHide = () => {
             class="otherFormats"
             v-for="formatVideoID in project?.otherFormats"
           >
-            <ScriptYouTubePlayer
+            <ScriptYouTubePlayerWithPlayButton
               :video-id="formatVideoID"
               :width="600"
               :height="400"
               class="video-player"
-            ></ScriptYouTubePlayer>
+            />
           </GlowElement>
         </div>
       </div>

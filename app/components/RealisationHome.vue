@@ -63,10 +63,10 @@ const { data: partners } = await useAsyncData(
         />
       </div>
     </div>
-    <ScriptYouTubePlayer
+    <ScriptYouTubePlayerWithPlayButton
       :video-id="project.video"
       class="video-player"
-    ></ScriptYouTubePlayer>
+    />
   </div>
 </template>
 
