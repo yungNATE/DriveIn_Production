@@ -42,6 +42,7 @@ defineEmits(["select"]);
   width: fit-content;
   user-select: none;
   border-radius: 5px;
+  transition: filter 0.3s ease;
 
   display: flex;
   gap: 7px;
@@ -56,6 +57,13 @@ defineEmits(["select"]);
     }
   }
 
+  &:not(.inactive):hover {
+    @include glow-discret($secondary-color-dark);
+    svg path {
+      fill: $secondary-color-dark;
+    }
+  }
+
   &.selected {
     @include glow-discret($secondary-color-dark);
     svg {
@@ -66,6 +74,7 @@ defineEmits(["select"]);
   &.inactive {
     user-select: text;
     cursor: default;
+    filter: none;
 
     svg {
       display: none;
