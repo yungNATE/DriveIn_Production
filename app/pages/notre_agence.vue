@@ -262,7 +262,14 @@ const activeVideoUrl = computed(() =>
           :src="activeVideoUrl"
           title="Témoignage client"
           frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allow="
+            accelerometer;
+            autoplay;
+            clipboard-write;
+            encrypted-media;
+            gyroscope;
+            picture-in-picture;
+          "
           allowfullscreen
         ></iframe>
       </div>
@@ -302,6 +309,10 @@ section.hero {
   height: 100%;
   padding: 50px;
 
+  @include mediaquery("mobile") {
+    padding: 0;
+  }
+
   &::before {
     content: "";
   }
@@ -310,6 +321,7 @@ section.hero {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
+    align-items: center;
     gap: 50px;
     margin-bottom: 40px;
 
@@ -321,13 +333,13 @@ section.hero {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 2rem;
+        margin-block: 3rem 5rem;
         flex-wrap: wrap;
         gap: 30px;
 
         @include mediaquery(500) {
           flex-direction: column;
-          align-items: flex-start;
+          align-items: center;
         }
       }
     }

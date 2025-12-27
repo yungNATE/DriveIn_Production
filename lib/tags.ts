@@ -7,6 +7,7 @@ export type ProjectTag = {
   description: string;
   type: string;
   hidden: boolean; // required by <Tag /> component
+  associatedIcon?: string;
 };
 
 /**

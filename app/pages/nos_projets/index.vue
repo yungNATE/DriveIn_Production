@@ -62,6 +62,11 @@ const preloadingCovers = new Set<string>(); // prevent duplicate preload work cl
 // ----------------------------
 // Always exactly one format selected; default to "video"
 const selectedFormatId = ref<string>("video");
+const selectedFormatIcon = computed(() => {
+  const tag = formatTags.value.find((t) => t.id === selectedFormatId.value);
+  return tag?.associatedIcon || "";
+});
+
 // Multiple selections allowed; start empty
 const selectedThemeIds = ref<string[]>([]);
 const selectedTechniqueIds = ref<string[]>([]);
@@ -180,6 +185,8 @@ function onImgLoad(src: string, e: Event) {
   // Save natural image height; fall back handled in template
   markCoverReady(src, img.naturalHeight);
 }
+
+const switchFormat = ref(true);
 </script>
 
 <template>
@@ -201,65 +208,79 @@ function onImgLoad(src: string, e: Event) {
         <h2 id="filtersTitle" class="sr-only">Filtres des projets</h2>
 
         <fieldset class="formatFilter">
-          <legend class="sr-only">Format</legend>
-          <span class="filterTitle h3">Les vidéos Drive-In</span>
-          <ul
-            role="group"
-            aria-label="Choix du format du contenu"
-            class="unstyled"
-          >
-            <li v-for="formatTag in formatTags" :data-format="FORMAT_NAME">
-              <Tag
-                :tag="formatTag"
-                class="filterable"
-                :class="{ selected: selectedFormatId === formatTag.id }"
-                @select="handleSelectFormat"
-              />
-            </li>
-          </ul>
+          <div class="filterContainer">
+            <legend class="sr-only">Format</legend>
+            <span class="filterTitle h3">Les vidéos Drive-In</span>
+            <ul
+              role="group"
+              aria-label="Choix du format du contenu"
+              class="unstyled"
+            >
+              <li v-for="formatTag in formatTags" :data-format="FORMAT_NAME">
+                <Tag
+                  :tag="formatTag"
+                  class="filterable"
+                  :class="{ selected: selectedFormatId === formatTag.id }"
+                  @select="handleSelectFormat"
+                />
+              </li>
+            </ul>
+            <NuxtImg
+              v-if="selectedFormatIcon"
+              :src="selectedFormatIcon"
+              alt="Illustration représentant une vidéo"
+              width="200"
+              height="150"
+              class="formatIcon"
+            />
+          </div>
         </fieldset>
 
         <fieldset class="themeFilter">
-          <legend class="sr-only">Thématique</legend>
-          <span class="filterTitle h3">Thématique</span>
-          <ul
-            role="group"
-            aria-label="Choix de la thématique du contenu"
-            class="unstyled"
-          >
-            <li v-for="themeTag in themeTags" :data-format="THEME_NAME">
-              <Tag
-                :tag="themeTag"
-                class="filterable"
-                :class="{ selected: selectedThemeIds.includes(themeTag.id) }"
-                @select="handleToggleTheme"
-              />
-            </li>
-          </ul>
+          <div class="filterContainer">
+            <legend class="sr-only">Thématique</legend>
+            <span class="filterTitle h3">Thématique</span>
+            <ul
+              role="group"
+              aria-label="Choix de la thématique du contenu"
+              class="unstyled"
+            >
+              <li v-for="themeTag in themeTags" :data-format="THEME_NAME">
+                <Tag
+                  :tag="themeTag"
+                  class="filterable"
+                  :class="{ selected: selectedThemeIds.includes(themeTag.id) }"
+                  @select="handleToggleTheme"
+                />
+              </li>
+            </ul>
+          </div>
         </fieldset>
 
         <fieldset class="techniqueFilter">
-          <legend class="sr-only">Technique</legend>
-          <span class="filterTitle h3">Technique</span>
-          <ul
-            role="group"
-            aria-label="Choix de la technique utilisée pour réaliser le contenu"
-            class="unstyled"
-          >
-            <li
-              v-for="techniqueTag in techniqueTags"
-              :data-format="TECHNIQUE_NAME"
+          <div class="filterContainer">
+            <legend class="sr-only">Technique</legend>
+            <span class="filterTitle h3">Technique</span>
+            <ul
+              role="group"
+              aria-label="Choix de la technique utilisée pour réaliser le contenu"
+              class="unstyled"
             >
-              <Tag
-                :tag="techniqueTag"
-                class="filterable"
-                :class="{
-                  selected: selectedTechniqueIds.includes(techniqueTag.id),
-                }"
-                @select="handleToggleTechnique"
-              />
-            </li>
-          </ul>
+              <li
+                v-for="techniqueTag in techniqueTags"
+                :data-format="TECHNIQUE_NAME"
+              >
+                <Tag
+                  :tag="techniqueTag"
+                  class="filterable"
+                  :class="{
+                    selected: selectedTechniqueIds.includes(techniqueTag.id),
+                  }"
+                  @select="handleToggleTechnique"
+                />
+              </li>
+            </ul>
+          </div>
         </fieldset>
       </section>
 
@@ -377,9 +398,17 @@ section.header {
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 5rem;
+  margin-block: 3rem 5rem;
   gap: 30px;
-  padding-inline: clamp(20px, 1vw, 50px);
+
+  @include mediaquery("mobile") {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+section.formatFilterSection {
+  margin-bottom: 50px;
 }
 
 section.nos_projets {
@@ -397,77 +426,74 @@ section.nos_projets {
     gap: 30px;
 
     @include mediaquery($breakpoint1) {
-      justify-content: space-between;
+      justify-content: center;
       flex-direction: row;
       flex-wrap: wrap;
     }
+  }
+}
 
-    fieldset {
-      border-radius: 12px;
-      border: none;
-      background-color: black;
-      padding: 32px;
-      width: 410px;
+fieldset {
+  border: none;
 
-      &.formatFilter {
-        @include glow-discret(white);
-        .filterTitle {
-          color: white;
-        }
+  > .filterContainer {
+    border-radius: 12px;
+    background-color: black;
+    padding: 32px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
 
-        @include mediaquery($breakpoint1) {
-          width: 100%;
-        }
+  &.formatFilter {
+    @include glow-discret(white);
 
-        ul {
-          @include glow-discret(white);
-          background-color: black;
-          padding: 30px;
-          border-radius: 999px;
-
-          display: flex;
-          justify-content: center;
-
-          :deep(.tag) {
-            border-radius: 999px;
-            padding: 10px;
-
-            &:not(.selected) {
-              filter: none;
-            }
-          }
-        }
-      }
-      &.themeFilter {
-        @include glow-discret($primary-color-light);
-        .filterTitle {
-          color: $primary-color-light;
-        }
-      }
-      &.techniqueFilter {
-        @include glow-discret($secondary-color-dark);
-        .filterTitle {
-          color: $secondary-color-dark;
-        }
-      }
-
-      ul {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 15px;
-      }
-
-      .filterTitle {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 15px;
-      }
+    .filterTitle {
+      color: white;
     }
+
+    .formatIcon {
+      position: absolute;
+      right: 20px;
+      top: -10px;
+      opacity: 0.1;
+      pointer-events: none;
+      transform: rotate(-23deg);
+    }
+  }
+
+  &.themeFilter {
+    @include glow-discret($primary-color-light);
+    .filterTitle {
+      color: $primary-color-light;
+    }
+  }
+
+  &.techniqueFilter {
+    @include glow-discret($secondary-color-dark);
+    .filterTitle {
+      color: $secondary-color-dark;
+    }
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .filterTitle {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 15px;
   }
 }
 
 section#filteredProjects {
   width: 100%;
+  margin-bottom: 200px;
 
   :deep(.masonry-item) {
     transition: 0.3s;

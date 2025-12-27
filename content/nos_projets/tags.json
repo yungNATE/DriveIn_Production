@@ -37,14 +37,16 @@
   },
   {
     "id": "video",
-    "title": "Vidéo",
+    "title": "Les vidéos",
     "description": "Projets vidéo",
-    "type": "format"
+    "type": "format",
+    "associatedIcon": "/images/icones/icon-video.svg"
   },
   {
     "id": "photo",
-    "title": "Photographie",
+    "title": "Les photographies",
     "description": "Projets photo",
-    "type": "format"
+    "type": "format",
+    "associatedIcon": "/images/icones/icon-photo.svg"
   }
 ]

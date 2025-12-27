@@ -64,7 +64,7 @@ useHTMLRootElementScroll(menuOpen);
           <li><SpecialLink to="/notre_agence">L'agence</SpecialLink></li>
           <li><SpecialLink to="/nos_projets/">Réalisations</SpecialLink></li>
         </ul>
-        <Button to="/nous_contacter">Nous contacter →</Button>
+        <Button class="h4" to="/nous_contacter">Nous contacter →</Button>
         <RSLinks></RSLinks>
       </div>
     </nav>

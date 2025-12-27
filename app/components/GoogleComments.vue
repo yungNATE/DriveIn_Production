@@ -271,7 +271,6 @@ watch(expanded, () => {
 @use "sass:color";
 
 div.googleComments {
-  padding-block: 120px 80px;
   position: relative;
 
   .header {

@@ -5,6 +5,7 @@ const props = defineProps<{
     title: string;
     isInactive?: boolean;
     hidden: boolean;
+    associatedIcon?: string;
   };
 }>();
 
@@ -53,6 +54,7 @@ defineEmits(["select"]);
     height: 10px;
 
     path {
+      transition: fill 0.3s ease;
       fill: rgba($primary-color-light, 0.3);
     }
   }
