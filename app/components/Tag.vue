@@ -75,6 +75,7 @@ defineEmits(["select"]);
     user-select: text;
     cursor: default;
     filter: none;
+    font-size: 0.8rem;
 
     svg {
       display: none;

@@ -380,7 +380,7 @@ definePageMeta({
   <PresentationEquipeSection />
 
   <section class="partners">
-    <h2>Ils nous font confiance</h2>
+    <h2 class="gold dark">Ils nous font confiance</h2>
     <swiper-container
       ref="swiperRef"
       slides-per-view="auto"
@@ -411,10 +411,7 @@ definePageMeta({
   <section class="realisations container">
     <div class="controles">
       <h2>Quelques réalisations</h2>
-      <p>
-        Un aperçu de ce que nos précédentes collaborations ont permis
-        d'accomplir.
-      </p>
+      <p>Découvrez le résultat de nos précédentes collaborations.</p>
       <div class="tags">
         <Tag
           v-for="tag in allTags"
@@ -758,7 +755,7 @@ section.realisations {
     max-width: 350px;
 
     @include mediaquery("tablet", "mobile") {
-      max-width: 550px;
+      max-width: 100%;
     }
   }
 
@@ -788,7 +785,7 @@ section.etapesProjet {
   min-height: 100vh;
   padding-block: 100px;
   position: relative;
-  margin-block: 200px;
+  margin-block: 300px;
   overflow: hidden;
 
   &::after {

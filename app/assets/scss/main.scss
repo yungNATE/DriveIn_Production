@@ -97,6 +97,10 @@ a:focus {
 // Couleurs
 .gold {
   color: $primary-color-light;
+
+  &.dark {
+    color: $secondary-color-light;
+  }
 }
 
 .blue {

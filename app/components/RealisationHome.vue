@@ -55,45 +55,74 @@ const partnersList = computed(() => partners.value ?? []);
           <i style="color: white" v-for="partner in partnersList">
             {{ partner.name }}
           </i>
-          <span v-if="partnersList.length > 0">,</span>
+          <span v-if="partnersList.length > 1">,</span>
         </h3>
         <p>{{ project.presentation }}</p>
 
-        <SpecialLink :to="project.path">Les coulisses du projet →</SpecialLink>
+        <div class="tags">
+          <Tag
+            v-for="tag in tags"
+            class="inactive"
+            :tag="tag"
+            isInactive="true"
+          />
+        </div>
       </div>
-      <div class="tags">
-        <Tag
-          v-for="tag in tags"
-          class="inactive"
-          :tag="tag"
-          isInactive="true"
-        />
-      </div>
+
+      <SpecialLink class="desktop" :to="project.path"
+        >Les coulisses du projet →</SpecialLink
+      >
     </div>
-    <ScriptYouTubePlayerWithPlayButton
-      :video-id="project.video"
-      color="white"
-    />
+    <div class="video-wrapper">
+      <ScriptYouTubePlayerWithPlayButton
+        :video-id="project.video"
+        color="white"
+      />
+      <SpecialLink class="mobile" :to="project.path"
+        >Les coulisses du projet →</SpecialLink
+      >
+    </div>
   </div>
 </template>
 
 <style lang="scss">
+.realisationHomeWrapper {
+  width: 100%;
+}
+
 .realisationAccueil {
   padding: 30px;
   border-radius: 8px;
   background: black;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: fit-content;
-  max-width: 1000px;
+  width: 100%;
   @include glow-discret($primary-color-light);
   text-align: left;
 
   display: flex;
-  flex-wrap: wrap;
   gap: 50px;
 
-  @include mediaquery(1400) {
+  $firstBreakpoint: 1490px;
+
+  @include mediaquery($firstBreakpoint) {
     flex-direction: column;
+    padding-bottom: 50px;
+  }
+
+  .special_link {
+    &.mobile {
+      display: none;
+      font-size: 1.5rem;
+    }
+
+    @include mediaquery($firstBreakpoint) {
+      &.mobile {
+        display: block;
+      }
+      &.desktop {
+        display: none;
+      }
+    }
   }
 
   .text {
@@ -103,6 +132,10 @@ const partnersList = computed(() => partners.value ?? []);
     gap: 50px;
     max-width: 350px;
 
+    @include mediaquery($firstBreakpoint) {
+      max-width: 100%;
+    }
+
     .tags {
       display: flex;
       flex-wrap: wrap;
@@ -110,9 +143,16 @@ const partnersList = computed(() => partners.value ?? []);
     }
   }
 
-  .video-player {
-    max-width: 500px;
-    width: 100%;
+  .video-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
+    flex: 1;
+
+    .video-player {
+      width: 100%;
+    }
   }
 }
 </style>
