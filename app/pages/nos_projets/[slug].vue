@@ -75,7 +75,6 @@ const onLightboxHide = () => {
             video-id="jDQtxlRUf54"
             :width="600"
             :height="400"
-            class="video-player"
           />
         </GlowElement>
       </div>
@@ -92,7 +91,6 @@ const onLightboxHide = () => {
               :video-id="formatVideoID"
               :width="600"
               :height="400"
-              class="video-player"
             />
           </GlowElement>
         </div>

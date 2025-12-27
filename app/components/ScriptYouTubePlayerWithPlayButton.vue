@@ -1,27 +1,25 @@
 <script lang="ts" setup>
-import { useSlots } from "vue";
-
-type ScriptYouTubePlayerProps = InstanceType<
-  (typeof import("#components"))["ScriptYouTubePlayer"]
->["$props"];
-
-const props = defineProps<ScriptYouTubePlayerProps>();
-const slots = useSlots();
+let slots = useSlots();
+let props = defineProps<{
+  videoId: string;
+  color: "white";
+}>();
 </script>
 
 <template>
   <ScriptYouTubePlayer v-bind="props" class="video-player">
-    <template v-if="slots.placeholder" #placeholder>
-      <slot name="placeholder" />
+    <template v-if="slots.placeholder" #placeholder="slotProps">
+      <slot name="placeholder" v-bind="slotProps" />
     </template>
 
-    <template v-if="slots.loading" #loading>
-      <slot name="loading" />
+    <template v-if="slots.loading" #loading="slotProps">
+      <slot name="loading" v-bind="slotProps" />
     </template>
 
-    <template v-if="slots.awaitingLoad" #awaitingLoad>
-      <slot name="awaitingLoad" />
+    <template v-if="slots.awaitingLoad" #awaitingLoad="slotProps">
+      <slot name="awaitingLoad" v-bind="slotProps" />
     </template>
+
     <template v-else #awaitingLoad>
       <div class="youtube-logo-wrapper">
         <svg
@@ -39,8 +37,8 @@ const slots = useSlots();
       </div>
     </template>
 
-    <template v-if="slots.error" #error>
-      <slot name="error" />
+    <template v-if="slots.error" #error="slotProps">
+      <slot name="error" v-bind="slotProps" />
     </template>
 
     <slot />
