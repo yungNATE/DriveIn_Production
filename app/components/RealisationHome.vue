@@ -3,6 +3,7 @@ type Tag = {
   id: string;
   title: string;
   description: string;
+  hidden?: boolean;
 };
 
 const props = defineProps<{
@@ -25,7 +26,9 @@ const tags = computed(() => {
   const tagIds = props.project.tagIDs;
   const all = allTags.value ?? [];
 
-  return all.filter((tag) => tagIds.includes(tag.id));
+  return all
+    .filter((tag) => tagIds.includes(tag.id))
+    .map((tag) => ({ ...tag, hidden: tag.hidden ?? false }));
 });
 
 // Get partners description from partners content
@@ -38,6 +41,8 @@ const { data: partners } = await useAsyncData(
     return flattenMeta(data);
   }
 );
+
+const partnersList = computed(() => partners.value ?? []);
 </script>
 
 <template>
@@ -46,9 +51,11 @@ const { data: partners } = await useAsyncData(
       <div class="presentation">
         <h3>
           {{ project.title }}
-          <i style="color: white" v-for="partner in partners">
-            Pour {{ partner.name }}
+          Pour
+          <i style="color: white" v-for="partner in partnersList">
+            {{ partner.name }}
           </i>
+          <span v-if="partnersList.length > 0">,</span>
         </h3>
         <p>{{ project.presentation }}</p>
 
@@ -63,7 +70,10 @@ const { data: partners } = await useAsyncData(
         />
       </div>
     </div>
-    <ScriptYouTubePlayerWithPlayButton :video-id="project.video" />
+    <ScriptYouTubePlayerWithPlayButton
+      :video-id="project.video"
+      color="white"
+    />
   </div>
 </template>
 
@@ -103,11 +113,6 @@ const { data: partners } = await useAsyncData(
   .video-player {
     max-width: 500px;
     width: 100%;
-  }
-
-  // container break at 500px width
-  @container (max-width: 1500px) {
-    background-color: red !important;
   }
 }
 </style>
