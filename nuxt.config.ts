@@ -9,9 +9,22 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "nuxt-easy-lightbox",
   ],
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag) => tag.startsWith("swiper-"),
+    },
+  },
   ssr: true,
   nitro: {
     preset: "static",
+  },
+  runtimeConfig: {
+    public: {
+      particles: {
+        mode: "basic",
+        lazy: true,
+      },
+    },
   },
   css: [
     "@/assets/scss/main.scss",

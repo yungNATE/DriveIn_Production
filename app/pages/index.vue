@@ -439,7 +439,8 @@ definePageMeta({
   </section>
 
   <section class="etapesProjet" ref="sectionProjet">
-    <h2>Créons ensemble votre vidéo</h2>
+    <h2 class="h1">Créons ensemble votre vidéo</h2>
+    <HomeProjectStepParticles id="tsparticles"> </HomeProjectStepParticles>
     <div class="etapes container">
       <swiper-container
         direction="vertical"
@@ -457,8 +458,10 @@ definePageMeta({
           <div class="swiperSlideContent">
             <h3 class="h2">{{ etape.title }}</h3>
             <div class="description">
-              <img :src="etape.img" alt="" />
-              <p class="h3">{{ etape.description }}</p>
+              <div class="description-container">
+                <img :src="etape.img" alt="" />
+                <p class="h3">{{ etape.description }}</p>
+              </div>
             </div>
           </div>
         </swiper-slide>
@@ -825,6 +828,16 @@ section.etapesProjet {
     top: 100px;
     left: 50%;
     transform: translateX(-50%);
+    width: 100%;
+    text-align: center;
+
+    background: -webkit-linear-gradient(
+      45deg,
+      $primary-color-light,
+      $secondary-color-dark
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   .etapes {
@@ -848,13 +861,32 @@ section.etapesProjet {
         .description {
           display: flex;
           align-items: center;
-          gap: 20px;
+          gap: 40px;
           background-color: black;
           @include glow-discret(white);
           max-width: 400px;
-          padding: 15px;
-          border-radius: 12px;
           height: fit-content;
+          border-radius: 12px;
+
+          .description-container {
+            overflow: hidden;
+            position: relative;
+
+            padding: 15px 30px;
+            padding-left: 30%;
+
+            img {
+              max-width: 100px;
+              width: 100%;
+              height: auto;
+              object-fit: contain;
+              position: absolute;
+              left: -15px;
+              top: 50%;
+              transform: translateY(-50%);
+              opacity: 0.2;
+            }
+          }
         }
       }
     }
@@ -871,11 +903,27 @@ section.etapesProjet {
     bottom: -90px;
     right: -70px;
     pointer-events: none;
-    z-index: 2;
+    z-index: -1;
     opacity: 0.4;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(
+        ellipse at 50% 50%,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 1) 80%
+      );
+      pointer-events: none;
+      z-index: 1;
+    }
   }
   .dynamic-step-image {
-    width: clamp(50px, 65vw, 400px);
+    width: clamp(50px, 65vw, 1000px);
     height: auto;
     object-fit: contain;
     user-select: none;
