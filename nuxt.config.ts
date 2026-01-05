@@ -18,6 +18,7 @@ export default defineNuxtConfig({
   site: { url: "https://test--drivein-production.netlify.app/" },
   sitemap: {
     exclude: ["/merci", "/404", "/500", "/admin/**"],
+    zeroRuntime: true,
   },
   ssr: true,
   nitro: {
