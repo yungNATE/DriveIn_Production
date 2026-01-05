@@ -779,6 +779,10 @@ section.realisations {
   }
 }
 
+.pin-spacer {
+  margin: 20vw 0 !important;
+}
+
 section.etapesProjet {
   background: black;
   display: flex;
@@ -790,6 +794,7 @@ section.etapesProjet {
   position: relative;
   margin-block: 300px;
   overflow: hidden;
+  max-height: 100vh;
 
   &::after {
     content: ""; // For centering element
@@ -830,6 +835,7 @@ section.etapesProjet {
     transform: translateX(-50%);
     width: 100%;
     text-align: center;
+    z-index: 9;
 
     background: -webkit-linear-gradient(
       45deg,
@@ -879,6 +885,7 @@ section.etapesProjet {
               max-width: 100px;
               width: 100%;
               height: auto;
+              max-height: 90%;
               object-fit: contain;
               position: absolute;
               left: -15px;
@@ -902,6 +909,7 @@ section.etapesProjet {
     position: absolute;
     bottom: -90px;
     right: -70px;
+    right: -9%;
     pointer-events: none;
     z-index: -1;
     opacity: 0.4;
