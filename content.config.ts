@@ -1,23 +1,26 @@
 import { defineCollection, defineContentConfig, z } from "@nuxt/content";
+import { asSitemapCollection } from "@nuxtjs/sitemap/content";
 
 export default defineContentConfig({
   collections: {
-    nosProjets: defineCollection({
-      source: "nos-projets/*.md",
-      type: "page",
-      schema: z.object({
-        title: z.string(),
-        presentation: z.string(),
-        cover: z.string(),
-        video: z.string(),
-        otherFormats: z.array(z.string()).optional(),
-        photos: z.array(z.string()),
-        partner: z.array(z.string()),
-        highlighted: z.string().optional(),
-        tagIDs: z.array(z.string()),
-        weight: z.number().int(),
-      }),
-    }),
+    nosProjets: defineCollection(
+      asSitemapCollection({
+        source: "nos-projets/*.md",
+        type: "page",
+        schema: z.object({
+          title: z.string(),
+          presentation: z.string(),
+          cover: z.string(),
+          video: z.string(),
+          otherFormats: z.array(z.string()).optional(),
+          photos: z.array(z.string()),
+          partner: z.array(z.string()),
+          highlighted: z.string().optional(),
+          tagIDs: z.array(z.string()),
+          weight: z.number().int(),
+        }),
+      })
+    ),
     partners: defineCollection({
       source: "partners/*.md",
       type: "data",
@@ -37,15 +40,17 @@ export default defineContentConfig({
         bg: z.string(),
       }),
     }),
-    conseils: defineCollection({
-      source: "conseils/*.md",
-      type: "page",
-      schema: z.object({
-        question: z.string(),
-        description: z.string().optional(),
-        img: z.string().optional(),
-      }),
-    }),
+    conseils: defineCollection(
+      asSitemapCollection({
+        source: "conseils/*.md",
+        type: "page",
+        schema: z.object({
+          question: z.string(),
+          description: z.string().optional(),
+          img: z.string().optional(),
+        }),
+      })
+    ),
     googleComments: defineCollection({
       source: "googleComments/*.md",
       type: "data",

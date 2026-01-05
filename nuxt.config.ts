@@ -3,12 +3,12 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-05-15",
   devtools: { enabled: false },
   modules: [
-    "@nuxt/content",
     "@nuxt/fonts",
     "@nuxt/scripts",
     "@nuxt/image",
     "nuxt-easy-lightbox",
     "@nuxtjs/seo",
+    "@nuxt/content",
   ],
   vue: {
     compilerOptions: {
@@ -16,6 +16,9 @@ export default defineNuxtConfig({
     },
   },
   site: { url: "https://test--drivein-production.netlify.app/" },
+  sitemap: {
+    exclude: ["/merci", "/404", "/500", "/admin/**"],
+  },
   ssr: true,
   nitro: {
     preset: "static",
