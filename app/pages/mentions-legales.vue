@@ -158,50 +158,12 @@ const siteUrl = "https://drive-inproduction.com";
 
         <h2 class="h3">7. Gestion des données personnelles</h2>
         <p>
-          Le Client est informé des réglementations concernant la communication
-          marketing, la loi du 21 Juin 2014 pour la confiance dans l’Économie
-          Numérique, la Loi Informatique et Libertés du 06 Août 2004 ainsi que
-          du RGPD.
-        </p>
-
-        <h3 class="h4">7.1 Responsable du traitement</h3>
-        <p>
-          Pour les Données Personnelles collectées via le site, le responsable
-          du traitement est : DRIVE-IN PRODUCTION, représentée par Sacha
-          STADTFELD.
-        </p>
-
-        <h3 class="h4">7.2 Finalités des données collectées</h3>
-        <p>
-          DRIVE-IN PRODUCTION est susceptible de traiter tout ou partie des
-          données :
-        </p>
-        <ul class="list">
-          <li>
-            pour permettre la navigation sur le Site et la gestion des demandes
-            (ex : formulaire de contact) : Nom, prénom, Objet de la demande,
-            Email, Numéro de téléphone, Message
-          </li>
-        </ul>
-        <p>
-          DRIVE-IN PRODUCTION ne commercialise pas vos données personnelles.
-        </p>
-
-        <h3 class="h4">7.3 Droits des personnes</h3>
-        <p>
-          Conformément à la réglementation européenne en vigueur, les
-          Utilisateurs disposent notamment des droits d’accès, de rectification,
-          d’effacement, de limitation, d’opposition, de portabilité, et du droit
-          de retirer leur consentement.
-        </p>
-        <p>
-          Pour exercer ces droits, vous pouvez contacter : DRIVE-IN PRODUCTION —
-          DPO, Sacha STADTFELD — 24 RUE DE VERDUN 94220 CHARENTON-LE-PONT —
-          contact@drive-inproduction.com.
-        </p>
-        <p>
-          Les Utilisateurs peuvent déposer une réclamation auprès de la CNIL
-          (https://www.cnil.fr/fr/plaintes).
+          Les informations relatives au traitement des données personnelles
+          (données collectées, finalités, base légale, durées, droits) sont
+          détaillées dans la
+          <SpecialLink to="/politique-de-confidentialite"
+            >Politique de confidentialité</SpecialLink
+          >.
         </p>
 
         <h2 class="h3">8. Notification d’incident</h2>
@@ -224,6 +186,12 @@ const siteUrl = "https://drive-inproduction.com";
         </p>
         <p>
           <strong>Balises (tags) internet</strong> : Pas de mesure d'audience.
+        </p>
+        <p>
+          Pour plus d’informations sur la confidentialité, consultez la
+          <SpecialLink to="/politique-de-confidentialite"
+            >Politique de confidentialité</SpecialLink
+          >.
         </p>
 
         <h2 class="h3">10. Droit applicable et attribution de juridiction</h2>

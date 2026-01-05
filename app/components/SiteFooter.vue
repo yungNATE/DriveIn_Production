@@ -34,7 +34,9 @@ const shouldDisplayContactCTA = computed(() => {
             <SpecialLink to="/mentions-legales">Mentions légales</SpecialLink>
           </li>
           <li>
-            <SpecialLink to="/">Politique de confidentialité</SpecialLink>
+            <SpecialLink to="/politique-de-confidentialite"
+              >Politique de confidentialité</SpecialLink
+            >
           </li>
         </ul>
         <ul class="footer-links special-pages unstyled">
