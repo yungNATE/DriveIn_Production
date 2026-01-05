@@ -29,7 +29,7 @@ const shouldDisplayContactCTA = computed(() => {
       <nav class="container-small">
         <ul class="footer-links classic-pages unstyled">
           <li><SpecialLink to="/">Accueil</SpecialLink></li>
-          <li><SpecialLink to="/">Plan du site</SpecialLink></li>
+          <li><SpecialLink to="/sitemap.xml">Plan du site</SpecialLink></li>
           <li>
             <SpecialLink to="/">Mentions légales</SpecialLink>
           </li>

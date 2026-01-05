@@ -10,8 +10,9 @@ const route = useRoute();
 const slug = route.params.slug as string;
 
 const collection = "nosProjets";
+const collectionPath = "nos-projets";
 const { data: project, pending } = await useAsyncData(route.path, () => {
-  return queryCollection(collection).path(`/${collection}/${slug}`).first();
+  return queryCollection(collection).path(`/${collectionPath}/${slug}`).first();
 });
 
 // Load all tags once (shared key across app)
@@ -72,14 +73,13 @@ const onLightboxHide = () => {
 
         <GlowElement class="video">
           <ScriptYouTubePlayerWithPlayButton
-            video-id="jDQtxlRUf54"
-            :width="600"
-            :height="400"
+            v-if="project?.video"
+            :video-id="project?.video"
           />
         </GlowElement>
       </div>
 
-      <div class="mediaSection otherFormats">
+      <div v-if="project?.otherFormats" class="mediaSection otherFormats">
         <h2 class="h3">Les formats dérivés</h2>
 
         <div class="videos">
@@ -87,16 +87,12 @@ const onLightboxHide = () => {
             class="otherFormats"
             v-for="formatVideoID in project?.otherFormats"
           >
-            <ScriptYouTubePlayerWithPlayButton
-              :video-id="formatVideoID"
-              :width="600"
-              :height="400"
-            />
+            <ScriptYouTubePlayerWithPlayButton :video-id="formatVideoID" />
           </GlowElement>
         </div>
       </div>
 
-      <div class="mediaSection photos">
+      <div v-if="project?.photos" class="mediaSection photos">
         <h2 class="h3">Galerie photo</h2>
 
         <div class="galery">

@@ -2,7 +2,7 @@
 let slots = useSlots();
 let props = defineProps<{
   videoId: string;
-  color: "white";
+  color?: "white";
 }>();
 </script>
 

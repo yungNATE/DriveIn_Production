@@ -931,7 +931,7 @@ section.etapesProjet {
     }
   }
   .dynamic-step-image {
-    width: clamp(50px, 65vw, 1000px);
+    width: clamp(50px, 65vw, 700px);
     height: auto;
     object-fit: contain;
     user-select: none;
