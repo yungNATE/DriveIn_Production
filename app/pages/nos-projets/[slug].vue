@@ -9,7 +9,7 @@ import {
 const route = useRoute();
 const slug = route.params.slug as string;
 
-const collection = "nos-projets";
+const collection = "nosProjets";
 const { data: project, pending } = await useAsyncData(route.path, () => {
   return queryCollection(collection).path(`/${collection}/${slug}`).first();
 });

@@ -263,7 +263,7 @@ const {
   return flattenMeta(data);
 });
 
-// Tags from content/notre-agence/tags.json
+// Tags for nosProjets
 const { data: allTags } = await useAsyncData<ProjectTag[]>("allTags", () =>
   getAllTags()
 );
@@ -272,7 +272,7 @@ const { data: allTags } = await useAsyncData<ProjectTag[]>("allTags", () =>
 const { data: highlightedProjects } = await useAsyncData(
   "highlighted_projects",
   async () => {
-    const data = await queryCollection("nos-projets")
+    const data = await queryCollection("nosProjets")
       .where("highlighted", "IS NOT NULL")
       .all();
     return flattenMeta(data);
@@ -423,7 +423,7 @@ definePageMeta({
         />
       </div>
       <p class="tagDescription">{{ selectedTag?.description }}</p>
-      <Button to="/notre-agence/" :class="'discret'"
+      <Button to="/notre-agence" :class="'discret'"
         >Voir toutes les réalisations →</Button
       >
     </div>

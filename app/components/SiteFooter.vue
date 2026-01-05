@@ -39,7 +39,7 @@ const shouldDisplayContactCTA = computed(() => {
         </ul>
         <ul class="footer-links special-pages unstyled">
           <li><SpecialLink to="/notre-agence">L'agence</SpecialLink></li>
-          <li><SpecialLink to="/notre-agence/">Réalisations</SpecialLink></li>
+          <li><SpecialLink to="/notre-agence">Réalisations</SpecialLink></li>
           <li><SpecialLink to="/#nos-conseils">Nos conseils</SpecialLink></li>
           <li>
             <SpecialLink to="/notre-agence#processus-creatif"
