@@ -11,9 +11,9 @@ definePageMeta({
   title: "Nos projets",
 });
 
-const contentType = "nos-projets";
+const contentType = "nosProjets";
 const {
-  data: nos-projets,
+  data: nosProjets,
   pending,
   error,
 } = await useAsyncData(contentType, async () => {
@@ -24,7 +24,7 @@ const {
 const { $img } = useNuxtApp();
 
 // Tri les projets par rapport à la propriété 'weight', plus le weight est gros, plus il apparaît en premier
-nos-projets.value?.sort((a, b) => (b.weight || 0) - (a.weight || 0));
+nosProjets.value?.sort((a, b) => (b.weight || 0) - (a.weight || 0));
 
 // Tags (shared util)
 const { data: allTags } = await useAsyncData<ProjectTag[]>("allTags", () =>
@@ -76,7 +76,7 @@ const selectedTechniqueIds = ref<string[]>([]);
 // - and include all selected themes (if any)
 // - and include all selected techniques (if any)
 const filteredProjects = computed(() => {
-  const items = nos-projets.value || [];
+  const items = nosProjets.value || [];
   const formatId = selectedFormatId.value;
   const themeIds = selectedThemeIds.value;
   const techniqueIds = selectedTechniqueIds.value;
