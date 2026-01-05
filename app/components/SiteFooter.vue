@@ -31,7 +31,7 @@ const shouldDisplayContactCTA = computed(() => {
           <li><SpecialLink to="/">Accueil</SpecialLink></li>
           <li><SpecialLink to="/plan-du-site">Plan du site</SpecialLink></li>
           <li>
-            <SpecialLink to="/">Mentions légales</SpecialLink>
+            <SpecialLink to="/mentions-legales">Mentions légales</SpecialLink>
           </li>
           <li>
             <SpecialLink to="/">Politique de confidentialité</SpecialLink>
