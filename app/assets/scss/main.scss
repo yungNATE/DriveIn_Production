@@ -13,12 +13,15 @@ html {
 $selection-bg: rgba($secondary-color-light, 0.5);
 ::selection {
   background: $selection-bg;
+  color: white;
 }
 ::-webkit-selection {
   background: $selection-bg;
+  color: white;
 }
 ::-moz-selection {
   background: $selection-bg;
+  color: white;
 }
 
 body {
