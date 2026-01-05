@@ -5,7 +5,7 @@
       Votre message a bien été envoyé. Nous vous répondrons dès que possible.
     </p>
     <p class="return">
-      <SpecialLink to="/nous_contacter">Retour au formulaire</SpecialLink>
+      <SpecialLink to="/nous-contacter">Retour au formulaire</SpecialLink>
       <SpecialLink to="/">Aller à l’accueil</SpecialLink>
     </p>
   </main>

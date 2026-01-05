@@ -61,10 +61,10 @@ useHTMLRootElementScroll(menuOpen);
       <div class="menu-links" :class="{ open: menuOpen }">
         <ul class="special-links">
           <li class="mobile-only"><SpecialLink to="/">Accueil</SpecialLink></li>
-          <li><SpecialLink to="/notre_agence">L'agence</SpecialLink></li>
-          <li><SpecialLink to="/nos_projets/">Réalisations</SpecialLink></li>
+          <li><SpecialLink to="/notre-agence">L'agence</SpecialLink></li>
+          <li><SpecialLink to="/nos-projets/">Réalisations</SpecialLink></li>
         </ul>
-        <Button class="h4" to="/nous_contacter">Nous contacter →</Button>
+        <Button class="h4" to="/nous-contacter">Nous contacter →</Button>
         <RSLinks></RSLinks>
       </div>
     </nav>

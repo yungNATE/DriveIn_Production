@@ -11,9 +11,9 @@ definePageMeta({
   title: "Nos projets",
 });
 
-const contentType = "nos_projets";
+const contentType = "nos-projets";
 const {
-  data: nos_projets,
+  data: nos-projets,
   pending,
   error,
 } = await useAsyncData(contentType, async () => {
@@ -24,7 +24,7 @@ const {
 const { $img } = useNuxtApp();
 
 // Tri les projets par rapport à la propriété 'weight', plus le weight est gros, plus il apparaît en premier
-nos_projets.value?.sort((a, b) => (b.weight || 0) - (a.weight || 0));
+nos-projets.value?.sort((a, b) => (b.weight || 0) - (a.weight || 0));
 
 // Tags (shared util)
 const { data: allTags } = await useAsyncData<ProjectTag[]>("allTags", () =>
@@ -76,7 +76,7 @@ const selectedTechniqueIds = ref<string[]>([]);
 // - and include all selected themes (if any)
 // - and include all selected techniques (if any)
 const filteredProjects = computed(() => {
-  const items = nos_projets.value || [];
+  const items = nos-projets.value || [];
   const formatId = selectedFormatId.value;
   const themeIds = selectedThemeIds.value;
   const techniqueIds = selectedTechniqueIds.value;
@@ -190,15 +190,15 @@ const switchFormat = ref(true);
 </script>
 
 <template>
-  <div class="nos_projets-page">
+  <div class="nos-projets-page">
     <h1 class="sr-only">Les projets de nos clients - DriveIn Production !</h1>
 
     <section class="header container">
       <h1>Nos réalisations</h1>
-      <Button to="/nous_contacter">Prendre rendez-vous →</Button>
+      <Button to="/nous-contacter">Prendre rendez-vous →</Button>
     </section>
 
-    <section class="nos_projets container">
+    <section class="nos-projets container">
       <section
         class="filters"
         role="region"
@@ -411,7 +411,7 @@ section.formatFilterSection {
   margin-bottom: 50px;
 }
 
-section.nos_projets {
+section.nos-projets {
   $breakpoint1: 1000;
   display: flex;
   gap: 50px;

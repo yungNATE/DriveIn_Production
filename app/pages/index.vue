@@ -263,16 +263,16 @@ const {
   return flattenMeta(data);
 });
 
-// Tags from content/notre_agence/tags.json
+// Tags from content/notre-agence/tags.json
 const { data: allTags } = await useAsyncData<ProjectTag[]>("allTags", () =>
   getAllTags()
 );
 
-// Getting all highlighted projects from content/nos_projets
+// Getting all highlighted projects from content/nos-projets
 const { data: highlightedProjects } = await useAsyncData(
   "highlighted_projects",
   async () => {
-    const data = await queryCollection("nos_projets")
+    const data = await queryCollection("nos-projets")
       .where("highlighted", "IS NOT NULL")
       .all();
     return flattenMeta(data);
@@ -365,7 +365,7 @@ definePageMeta({
             >vos <span class="underlined underlined-blue">émotions</span></span
           >.
         </p>
-        <Button to="/nous_contacter" class="header-cta"
+        <Button to="/nous-contacter" class="header-cta"
           >Prendre rendez-vous →</Button
         >
       </div>
@@ -423,7 +423,7 @@ definePageMeta({
         />
       </div>
       <p class="tagDescription">{{ selectedTag?.description }}</p>
-      <Button to="/notre_agence/" :class="'discret'"
+      <Button to="/notre-agence/" :class="'discret'"
         >Voir toutes les réalisations →</Button
       >
     </div>

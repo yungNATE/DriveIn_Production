@@ -1,7 +1,7 @@
 <template>
   <div class="contactCTA">
     <h2>Envie de sauter le pas ?</h2>
-    <Button to="/nous_contacter">Nous contacter →</Button>
+    <Button to="/nous-contacter">Nous contacter →</Button>
   </div>
 </template>
 

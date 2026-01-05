@@ -158,7 +158,7 @@ const activeVideoUrl = computed(() =>
       <div class="text">
         <div class="header">
           <p class="h1">L'agence</p>
-          <Button to="/nous_contacter">Nous contacter →</Button>
+          <Button to="/nous-contacter">Nous contacter →</Button>
         </div>
         <p>
           DriveIn Production est une société de création vidéo sur mesure, au

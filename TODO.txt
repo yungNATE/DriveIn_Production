@@ -1,10 +1,2 @@
-. /projects : filtre OK
-. /projects : Responsive OK
-. /contact : bouton formulaire OK
-. Renomer les URL en français OK
 . Liens footer
 . titres des pages
-. 404, pages annexes OK
-. /#nos-conseils (mobile) : au swipe, changer de conseils
-- bug étoiles commentaires
-- /notre_agence (Ils nous ont choisis ) : photo en sticky

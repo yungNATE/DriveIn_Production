@@ -9,7 +9,7 @@ import {
 const route = useRoute();
 const slug = route.params.slug as string;
 
-const collection = "nos_projets";
+const collection = "nos-projets";
 const { data: project, pending } = await useAsyncData(route.path, () => {
   return queryCollection(collection).path(`/${collection}/${slug}`).first();
 });
@@ -132,7 +132,7 @@ const onLightboxHide = () => {
   </div>
 
   <div class="container">
-    <Button to="/nos_projets">Découvrir les autres projets →</Button>
+    <Button to="/nos-projets">Découvrir les autres projets →</Button>
   </div>
 </template>
 

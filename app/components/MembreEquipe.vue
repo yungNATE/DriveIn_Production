@@ -6,14 +6,14 @@ const props = defineProps<{
 }>();
 
 const route = useRoute();
-const isAboutPage = computed(() => route.path === "/notre_agence");
+const isAboutPage = computed(() => route.path === "/notre-agence");
 </script>
 
 <template>
   <div>
     <BlocImgText :src="src" :alt="alt" :customClass="customClass">
       <slot />
-      <SpecialLink to="/notre_agence" v-if="!isAboutPage"
+      <SpecialLink to="/notre-agence" v-if="!isAboutPage"
         >Découvrir l’agence →</SpecialLink
       >
     </BlocImgText>

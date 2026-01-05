@@ -1,15 +1,15 @@
 <script setup>
 const currentYear = new Date().getFullYear();
 
-// Display only on "/", "/notre_agence", "/notre_agence"
-const displayGreentagPaths = ["", "notre_agence", "notre_agence"];
+// Display only on "/", "/notre-agence", "/notre-agence"
+const displayGreentagPaths = ["", "notre-agence", "notre-agence"];
 const route = useRoute();
 const shoudlDisplayGreentag = computed(() => {
   const slug = route.path.replaceAll("/", "");
   return displayGreentagPaths.includes(slug);
 });
 
-const notDisplayContactCTAPaths = ["nous_contacter", "merci"];
+const notDisplayContactCTAPaths = ["nous-contacter", "merci"];
 const shouldDisplayContactCTA = computed(() => {
   const slug = route.path.replaceAll("/", "");
   return !notDisplayContactCTAPaths.includes(slug);
@@ -38,11 +38,11 @@ const shouldDisplayContactCTA = computed(() => {
           </li>
         </ul>
         <ul class="footer-links special-pages unstyled">
-          <li><SpecialLink to="/notre_agence">L'agence</SpecialLink></li>
-          <li><SpecialLink to="/notre_agence/">Réalisations</SpecialLink></li>
+          <li><SpecialLink to="/notre-agence">L'agence</SpecialLink></li>
+          <li><SpecialLink to="/notre-agence/">Réalisations</SpecialLink></li>
           <li><SpecialLink to="/#nos-conseils">Nos conseils</SpecialLink></li>
           <li>
-            <SpecialLink to="/notre_agence#processus-creatif"
+            <SpecialLink to="/notre-agence#processus-creatif"
               >Processus créatif</SpecialLink
             >
           </li>
