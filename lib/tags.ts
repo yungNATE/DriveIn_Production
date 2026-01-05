@@ -1,5 +1,5 @@
-// Shared tags utilities for nos_projets
-// Provides a single source to load and type tags from content/nos_projets/tags.json
+// Shared tags utilities for nos-projets
+// Provides a single source to load and type tags from content/nos-projets/tags.json
 
 export type ProjectTag = {
   id: string;
@@ -11,11 +11,11 @@ export type ProjectTag = {
 };
 
 /**
- * Load all tags from content/nos_projets/tags.json and ensure `hidden` exists.
+ * Load all tags from content/nos-projets/tags.json and ensure `hidden` exists.
  * Works in both server and client via dynamic import handled by Vite/Nuxt.
  */
 export async function getAllTags(): Promise<ProjectTag[]> {
-  const mod: any = await import("~~/content/nos_projets/tags.json");
+  const mod: any = await import("~~/content/nos-projets/tags.json");
   const raw = (mod?.default ?? []) as any[];
   return raw.map((t) => ({ hidden: false, ...t })) as ProjectTag[];
 }

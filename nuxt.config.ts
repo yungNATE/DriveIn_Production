@@ -8,12 +8,14 @@ export default defineNuxtConfig({
     "@nuxt/scripts",
     "@nuxt/image",
     "nuxt-easy-lightbox",
+    "@nuxtjs/seo",
   ],
   vue: {
     compilerOptions: {
       isCustomElement: (tag) => tag.startsWith("swiper-"),
     },
   },
+  site: { url: "https://test--drivein-production.netlify.app/" },
   ssr: true,
   nitro: {
     preset: "static",
