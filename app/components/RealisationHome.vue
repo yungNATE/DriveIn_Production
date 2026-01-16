@@ -112,7 +112,7 @@ const partnersList = computed(() => partners.value ?? []);
   .special_link {
     &.mobile {
       display: none;
-      font-size: 1.5rem;
+      font-size: 1rem;
     }
 
     @include mediaquery($firstBreakpoint) {
