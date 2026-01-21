@@ -953,7 +953,6 @@ section.advices {
     }
     p {
       max-width: 600px;
-      color: #666;
     }
   }
 
