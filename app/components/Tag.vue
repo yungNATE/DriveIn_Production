@@ -9,11 +9,13 @@ const props = defineProps<{
   };
 }>();
 
-defineEmits(["select"]);
+defineEmits<{
+  select: [id: string, title: string];
+}>();
 </script>
 
 <template>
-  <span class="tag" @click="$emit('select', tag.id)">
+  <span class="tag" @click="$emit('select', tag.id, tag.title)">
     <span>#{{ tag.title }}</span>
     <span v-if="tag.isInactive == true">isInative</span>
     <svg

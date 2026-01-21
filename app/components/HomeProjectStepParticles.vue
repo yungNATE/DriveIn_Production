@@ -48,9 +48,3 @@ const onLoad = (container: Container) => {
   setTimeout(() => container.play(), 2000);
 };
 </script>
-
-<style>
-p {
-  color: #656565;
-}
-</style>

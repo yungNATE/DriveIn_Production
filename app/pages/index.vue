@@ -771,7 +771,6 @@ section.realisations {
 
   .tagDescription {
     margin-bottom: 20px;
-    color: #666;
   }
 
   .button {

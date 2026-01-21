@@ -62,6 +62,10 @@ const preloadingCovers = new Set<string>(); // prevent duplicate preload work cl
 // ----------------------------
 // Always exactly one format selected; default to "video"
 const selectedFormatId = ref<string>("video");
+const currentFormatTitle = computed(() => {
+  const tag = formatTags.value.find((t) => t.id === selectedFormatId.value);
+  return tag?.title || "Les vidéos";
+});
 const selectedFormatIcon = computed(() => {
   const tag = formatTags.value.find((t) => t.id === selectedFormatId.value);
   return tag?.associatedIcon || "";
@@ -103,7 +107,7 @@ const filteredProjects = computed(() => {
 });
 
 // Handlers
-function handleSelectFormat(tagId: string) {
+function handleSelectFormat(tagId: string, _tagTitle?: string) {
   // Enforce exactly one selected; ignore attempts to deselect
   if (tagId && tagId !== selectedFormatId.value) {
     selectedFormatId.value = tagId;
@@ -210,7 +214,7 @@ const switchFormat = ref(true);
         <fieldset class="formatFilter">
           <div class="filterContainer">
             <legend class="sr-only">Format</legend>
-            <span class="filterTitle h3">Les vidéos Drive-In</span>
+            <span class="filterTitle h3">{{ currentFormatTitle }} Drive-In</span>
             <ul
               role="group"
               aria-label="Choix du format du contenu"
@@ -426,7 +430,6 @@ section.nos-projets {
     gap: 30px;
 
     @include mediaquery($breakpoint1) {
-      justify-content: center;
       flex-direction: row;
       flex-wrap: wrap;
     }
