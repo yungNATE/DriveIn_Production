@@ -1,15 +1,24 @@
 <script lang="ts" setup>
-const props = defineProps<{
-  to?: string | Record<string, any>;
-}>();
+const props = withDefaults(
+  defineProps<{
+    to?: string | Record<string, any>;
+    title: string;
+    disableArrow?: boolean;
+  }>(),
+  {
+    disableArrow: false,
+  },
+);
 </script>
 
 <template>
-  <NuxtLink v-if="to" :to="to" class="btn h3" v-bind="$attrs">
-    <slot />
+  <NuxtLink v-if="to" :to="to" class="btn" :title="title">
+    <span class="content"><slot /></span>
+    <span v-if="!disableArrow"> →</span>
   </NuxtLink>
-  <button v-else class="btn h3" type="button" v-bind="$attrs">
-    <slot />
+  <button v-else class="btn" :title="title">
+    <span class="content"><slot /></span>
+    <span v-if="!disableArrow"> →</span>
   </button>
 </template>
 
@@ -18,29 +27,53 @@ const props = defineProps<{
   position: relative;
   color: rgba(255, 255, 255, 0.75);
   transition: 0.3s;
-  background-color: black;
   padding: 0.5rem 2rem;
   border-radius: 7px;
-  filter: drop-shadow(0 0 8px $primary-color-light);
   text-decoration: none;
   height: fit-content;
   width: fit-content;
-  white-space: nowrap;
   border: none;
+  border: 1px solid #ffffff5c;
+  overflow: hidden;
+  background: transparent;
+
+  &:before {
+    --position: -25%;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 150%;
+    height: 100%;
+    transform: translateX(var(--position));
+    background:
+      linear-gradient(
+        140deg,
+        rgba(0, 0, 0, 0) 0%,
+        rgb(17, 17, 17) 50%,
+        rgba(0, 0, 0, 0) 100%
+      ),
+      black;
+    transition: transform 0.3s;
+  }
+
+  &:hover:before {
+    --position: 0%;
+  }
 
   &:hover {
     color: rgba(255, 255, 255, 1);
     text-decoration: none;
-    filter: drop-shadow(0 0 8px $secondary-color-dark);
     cursor: pointer;
   }
+}
 
-  &.discret {
-    @include glow-discret($primary-color-light);
+:deep(span) {
+  position: relative;
+  width: 100%;
 
-    &:hover {
-      @include glow-discret($secondary-color-dark);
-    }
+  .content {
+    display: flex;
   }
 }
 </style>

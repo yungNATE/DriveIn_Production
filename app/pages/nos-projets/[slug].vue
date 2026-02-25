@@ -17,15 +17,15 @@ const { data: project, pending } = await useAsyncData(route.path, () => {
 
 // Load all tags once (shared key across app)
 const { data: allTags } = await useAsyncData<ProjectTag[]>("allTags", () =>
-  getAllTags()
+  getAllTags(),
 );
 
 // Build lookup map and project tags list
 const tagsById = computed<Record<string, ProjectTag>>(() =>
-  mapTagsById(allTags.value)
+  mapTagsById(allTags.value),
 );
 const projectTags = computed<ProjectTag[]>(() =>
-  getTagsFor(project.value as any, tagsById.value)
+  getTagsFor(project.value as any, tagsById.value),
 );
 
 // Lightbox state for photos gallery
@@ -56,14 +56,6 @@ const onLightboxHide = () => {
   <div class="content container">
     <section class="description">
       <h1>{{ project?.title }}</h1>
-      <div class="tags">
-        <Tag
-          v-for="tag in projectTags"
-          :key="tag.id"
-          :tag="tag"
-          class="inactive"
-        />
-      </div>
       <p class="h3">{{ project?.presentation }}</p>
     </section>
 
@@ -71,32 +63,32 @@ const onLightboxHide = () => {
       <div class="mediaSection video">
         <h2 class="h3">Le film</h2>
 
-        <GlowElement class="video">
+        <div class="content video">
           <ScriptYouTubePlayerWithPlayButton
             v-if="project?.video"
             :video-id="project?.video"
           />
-        </GlowElement>
+        </div>
       </div>
 
       <div v-if="project?.otherFormats" class="mediaSection otherFormats">
         <h2 class="h3">Les formats dérivés</h2>
 
-        <div class="videos">
-          <GlowElement
+        <div class="content videos">
+          <div
             class="otherFormats"
             v-for="formatVideoID in project?.otherFormats"
           >
             <ScriptYouTubePlayerWithPlayButton :video-id="formatVideoID" />
-          </GlowElement>
+          </div>
         </div>
       </div>
 
       <div v-if="project?.photos" class="mediaSection photos">
         <h2 class="h3">Galerie photo</h2>
 
-        <div class="galery">
-          <GlowElement
+        <div class="content galery">
+          <div
             class="photo"
             v-for="(photoPath, idx) in project?.photos"
             :key="photoPath || idx"
@@ -111,7 +103,7 @@ const onLightboxHide = () => {
               "
               class="photo-image"
             />
-          </GlowElement>
+          </div>
         </div>
 
         <!-- Lightbox (client-only) -->
@@ -128,18 +120,26 @@ const onLightboxHide = () => {
   </div>
 
   <div class="container">
-    <Button to="/nos-projets">Découvrir les autres projets →</Button>
+    <Button to="/nos-projets" title="Tous nos projets"
+      >Découvrir les autres projets</Button
+    >
   </div>
 </template>
 
 <style lang="scss" scoped>
+$breakpoint: 900;
 div.container {
   display: flex;
-  flex-wrap: wrap;
   margin-top: 150px;
-  gap: 30px;
+  gap: 100px 30px;
 
   padding-inline: clamp(20px, 1vw, 50px);
+
+  @include mediaquery($breakpoint) {
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+  }
 }
 section.description {
   flex: 1;
@@ -153,10 +153,14 @@ section.description {
   top: calc(10px + $header-height);
   height: fit-content;
 
+  @include mediaquery($breakpoint) {
+    position: static;
+  }
+
   .tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 35px;
+    gap: 15px 25px;
   }
 }
 
@@ -210,13 +214,16 @@ section.media {
   }
 }
 
-:deep(.mediaSection .glowElement) {
+:deep(.mediaSection .content) {
   width: 100%;
 }
-:deep(.mediaSection .glowElement.video) {
+:deep(.mediaSection .video) {
   max-width: 550px;
 }
-:deep(.mediaSection .glowElement.otherFormats) {
+:deep(.mediaSection .otherFormats) {
   max-width: 220px;
+  @include mediaquery($breakpoint) {
+    max-width: 100%;
+  }
 }
 </style>

@@ -54,12 +54,7 @@ let props = defineProps<{
   aspect-ratio: 16 / 9;
   border-radius: 20px;
   overflow: hidden;
-  filter: drop-shadow(0 0 25px rgba($primary-color-light, 0.5));
   transition: filter 0.3s ease;
-
-  &:hover {
-    filter: drop-shadow(0 0 25px $secondary-color-dark);
-  }
 
   :deep(iframe) {
     position: absolute;

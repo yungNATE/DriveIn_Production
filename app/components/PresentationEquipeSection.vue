@@ -6,7 +6,7 @@
         alt="DriveIn Production"
         :customClass="undefined"
       >
-        <h2>Par Sacha Stadtfeld</h2>
+        <h2>Sacha Stadtfeld</h2>
         <p>
           Je suis persuadé que la vidéo est le support de communication par
           excellence ! Dans un monde dominé par le web j'ai donc décidé de me
@@ -19,7 +19,33 @@
         alt="DriveIn Production"
         customClass="blue"
       >
-        <h2>Avec Arthur Roberdeau</h2>
+        <h2>Arthur Roberdeau</h2>
+        <p>
+          Arthur passionné par la photographie et la vidéo depuis tout petit.
+          Devenu photographe professionnel depuis de nombreuses années, je me
+          suis spécialisé dans les photographies événementielles, afin de vous
+          offrir un service unique et personnalisé.
+        </p>
+      </MembreEquipe>
+      <MembreEquipe
+        src="images/profil_pics/arthurProfilPic.png"
+        alt="DriveIn Production"
+        customClass="blue"
+      >
+        <h2>Arthur Roberdeau</h2>
+        <p>
+          Arthur passionné par la photographie et la vidéo depuis tout petit.
+          Devenu photographe professionnel depuis de nombreuses années, je me
+          suis spécialisé dans les photographies événementielles, afin de vous
+          offrir un service unique et personnalisé.
+        </p>
+      </MembreEquipe>
+      <MembreEquipe
+        src="images/profil_pics/arthurProfilPic.png"
+        alt="DriveIn Production"
+        customClass="blue"
+      >
+        <h2>Arthur Roberdeau</h2>
         <p>
           Arthur passionné par la photographie et la vidéo depuis tout petit.
           Devenu photographe professionnel depuis de nombreuses années, je me
@@ -34,7 +60,7 @@
 <style scoped lang="scss">
 section.presentation {
   position: relative;
-  margin-block: 200px;
+  margin-block: 150px;
 
   &:before,
   &:after {
@@ -67,7 +93,35 @@ section.presentation {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 30px;
+    gap: 40px;
+
+    & > * {
+      flex: 1 1 calc(25% - 40px);
+      min-width: 260px;
+    }
+
+    @include mediaquery(1600) {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 48px;
+      justify-items: center;
+
+      & > * {
+        min-width: 0;
+      }
+    }
+
+    @include mediaquery(850) {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      align-items: center;
+
+      & > * {
+        flex: 0 0 auto;
+        min-width: 0;
+      }
+    }
   }
 }
 </style>

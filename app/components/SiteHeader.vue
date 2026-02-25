@@ -32,7 +32,7 @@ watch(
   () => route.fullPath,
   () => {
     if (menuOpen.value) menuOpen.value = false;
-  }
+  },
 );
 
 useHTMLRootElementScroll(menuOpen);
@@ -60,12 +60,22 @@ useHTMLRootElementScroll(menuOpen);
       </button>
       <div class="menu-links" :class="{ open: menuOpen }">
         <ul class="special-links">
-          <li class="mobile-only"><SpecialLink to="/">Accueil</SpecialLink></li>
-          <li><SpecialLink to="/notre-agence">L'agence</SpecialLink></li>
-          <li><SpecialLink to="/nos-projets">Réalisations</SpecialLink></li>
+          <li class="mobile-only">
+            <SpecialLink to="/" :disable-arrow="true">Accueil</SpecialLink>
+          </li>
+          <li>
+            <SpecialLink to="/notre-agence" :disable-arrow="true"
+              >L'agence</SpecialLink
+            >
+          </li>
+          <li>
+            <SpecialLink to="/nos-projets" :disable-arrow="true"
+              >Réalisations</SpecialLink
+            >
+          </li>
         </ul>
-        <Button class="h4" to="/nous-contacter">Nous contacter →</Button>
-        <RSLinks></RSLinks>
+        <ContactButton class="h4" />
+        <Socials></Socials>
       </div>
     </nav>
   </header>
@@ -86,21 +96,6 @@ header {
     transform: translateY(-100%);
     opacity: 0;
     pointer-events: none;
-  }
-
-  &::after {
-    content: "";
-    display: block;
-    width: 100%;
-    height: 30px;
-    background: radial-gradient(
-      ellipse at 50% 0,
-      rgba($secondary-color-dark, 50%) 0%,
-      rgba(255, 255, 255, 0) 50%
-    );
-    opacity: 25%;
-    position: absolute;
-    top: 100%;
   }
 
   nav {
@@ -124,7 +119,7 @@ header {
   .special-links {
     list-style: none;
     display: flex;
-    gap: 1rem;
+    gap: 2rem;
     margin: 0;
     padding: 0;
   }

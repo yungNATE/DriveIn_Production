@@ -23,7 +23,7 @@ $primary-color-light: #ffda00;
 $secondary-color-light: #efb401;
 
 // Spécifiques
-$index-sectionHero-breakpoint: 1650;
+$index-sectionHero-breakpoint: 1364;
 
 // Container mixin
 @mixin container($max-width: 1700px) {
@@ -75,5 +75,25 @@ $index-sectionHero-breakpoint: 1650;
     }
   } @else {
     @warn "No valid breakpoints provided to mediaquery.";
+  }
+}
+
+// Generate section-specific mobile/desktop classes with a custom breakpoint.
+// Usage:
+// @include mobileDesktopClassGenerator("AD", 769px);
+// .mobile_AD { display: block; }
+// .desktop_AD { display: none; }
+@mixin mobileDesktopClassGenerator($suffix, $max-width) {
+  .mobile_#{$suffix} {
+    display: none;
+  }
+
+  @media (max-width: #{$max-width}) {
+    .mobile_#{$suffix} {
+      display: block;
+    }
+    .desktop_#{$suffix} {
+      display: none;
+    }
   }
 }

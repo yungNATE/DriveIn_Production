@@ -21,22 +21,22 @@ const {
       <div v-else-if="error" class="state error">Une erreur est survenue.</div>
 
       <div v-else-if="(advices?.length || 0) > 0" class="list">
-        <NuxtLink
+        <Button
           v-for="item in advices || []"
           :key="item.path || item._path"
           :to="item.path || '#'"
+          :title="`${item.question}`"
+          :disable-arrow="true"
           class="card-link"
         >
-          <GlowElement class="card">
-            <img
-              v-if="item.img"
-              :src="item.img"
-              :alt="item.question || 'Conseil'"
-              loading="lazy"
-            />
-            <h2 class="card-title">{{ item.question }}</h2>
-          </GlowElement>
-        </NuxtLink>
+          <img
+            v-if="item.img"
+            :src="item.img"
+            :alt="item.question || 'Conseil'"
+            loading="lazy"
+          />
+          <h2 class="card-title">{{ item.question }}</h2>
+        </Button>
       </div>
 
       <div v-else class="state">Aucun conseil pour le moment.</div>
@@ -80,14 +80,14 @@ const {
     width: fit-content;
   }
 
-  .card {
+  .card-link {
+    text-decoration: none;
+    color: inherit;
+
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 12px;
-    background: black;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
     padding: 14px;
     max-width: 450px;
 
@@ -98,11 +98,6 @@ const {
       display: block;
       border-radius: 8px;
     }
-  }
-
-  .card-link {
-    text-decoration: none;
-    color: inherit;
   }
 }
 

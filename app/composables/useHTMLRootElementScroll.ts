@@ -1,6 +1,8 @@
-import { watchEffect, unref, onBeforeUnmount } from "vue";
+import { watchEffect, unref, onBeforeUnmount, type Ref } from "vue";
 
-export function useHTMLRootElementScroll(source) {
+export function useHTMLRootElementScroll(
+  source: boolean | Ref<boolean> | null | undefined,
+) {
   if (typeof window === "undefined") return;
 
   const el = document.documentElement;

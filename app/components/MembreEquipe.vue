@@ -6,25 +6,24 @@ const props = defineProps<{
 }>();
 
 const route = useRoute();
-const isAboutPage = computed(() => route.path === "/notre-agence");
 </script>
 
 <template>
-  <div>
-    <BlocImgText :src="src" :alt="alt" :customClass="customClass">
-      <slot />
-      <SpecialLink to="/notre-agence" v-if="!isAboutPage"
-        >Découvrir l’agence →</SpecialLink
-      >
-    </BlocImgText>
-  </div>
+  <BlocImgText :src="src" :alt="alt" :customClass="customClass">
+    <slot />
+  </BlocImgText>
 </template>
 
 <style lang="scss" scoped>
-div {
-  margin: auto;
-}
-:deep(.bloc-img-text) {
-  max-width: 700px;
+.bloc-img-text {
+  max-width: 350px;
+  flex-direction: column;
+  width: fit-content;
+
+  :deep(img) {
+    width: 100%;
+    max-height: 200px;
+    aspect-ratio: 1/1;
+  }
 }
 </style>

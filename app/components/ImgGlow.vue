@@ -1,6 +1,6 @@
 <template>
   <GlowElement v-bind="$attrs">
-    <img :src="src" :alt="alt" class="img" />
+    <NuxtImg :src="src" :alt="alt" class="img" />
   </GlowElement>
 </template>
 
@@ -20,7 +20,6 @@ const { src, alt } = toRefs(props);
 
 <style scoped>
 .img {
-  border-radius: 20px;
   display: block; /* avoid inline-gap */
 }
 </style>

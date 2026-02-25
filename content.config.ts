@@ -19,7 +19,7 @@ export default defineContentConfig({
           tagIDs: z.array(z.string()),
           weight: z.number().int(),
         }),
-      })
+      }),
     ),
     partners: defineCollection({
       source: "partners/*.md",
@@ -46,10 +46,11 @@ export default defineContentConfig({
         type: "page",
         schema: z.object({
           question: z.string(),
+          displayHome: z.boolean().optional(),
           description: z.string().optional(),
           img: z.string().optional(),
         }),
-      })
+      }),
     ),
     googleComments: defineCollection({
       source: "googleComments/*.md",

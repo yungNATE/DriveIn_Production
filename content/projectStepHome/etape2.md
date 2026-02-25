@@ -1,5 +1,5 @@
 ---
-title: "Concept créatif"
-description: "Imaginons l’histoire et le style qui donneront vie à votre projet."
-img: "/images/icones/design.svg"
+title: "Tournage"
+description: "Capturons les images avec précision et créativité, en respectant vos contraintes."
+img: "/images/icones/camera.svg"
 ---

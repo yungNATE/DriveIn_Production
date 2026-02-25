@@ -1,5 +1,5 @@
 ---
-title: "Tournage"
-description: "Capturons les images avec précision et créativité, en respectant vos contraintes."
-img: "/images/icones/camera.svg"
+title: "Livraison"
+description: "Votre vidéo est prête à être partagée sur tous vos supports et réseaux."
+img: "/images/icones/share.svg"
 ---

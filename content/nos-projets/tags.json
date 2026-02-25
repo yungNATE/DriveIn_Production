@@ -27,7 +27,8 @@
     "id": "empty",
     "title": "Vide",
     "description": "Tag vide pour tests",
-    "type": "theme"
+    "type": "theme",
+    "hidden": true
   },
   {
     "id": "360",
@@ -40,13 +41,15 @@
     "title": "Les vidéos",
     "description": "Projets vidéo",
     "type": "format",
-    "associatedIcon": "/images/icones/icon-video.svg"
+    "associatedIcon": "/images/icones/icon-video.svg",
+    "hidden": true
   },
   {
     "id": "photo",
     "title": "Les photographies",
     "description": "Projets photo",
     "type": "format",
-    "associatedIcon": "/images/icones/icon-photo.svg"
+    "associatedIcon": "/images/icones/icon-photo.svg",
+    "hidden": true
   }
 ]

@@ -1,5 +1,5 @@
 ---
-title: "Brief & objectifs"
-description: "Définissons ensemble votre message, votre public et vos ambitions"
-img: "/images/icones/handshake.svg"
+title: "Préparation"
+description: "Organisons le tournage, les équipes et les lieux pour un déroulé sans accroc."
+img: "/images/icones/calendar.svg"
 ---

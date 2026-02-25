@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import ImgGlow from "~/components/ImgGlow.vue";
 import type { AccordionPanel } from "~/components/Accordion.vue";
 
 // Charger les panneaux d'historique via Nuxt Content et trier par date croissante
@@ -88,7 +87,7 @@ watch(
       workMethodOpenIndex.value = 0;
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 definePageMeta({ title: "À propos" });
@@ -147,7 +146,7 @@ const activeTestimonial = computed(() => {
 const activeVideoUrl = computed(() =>
   activeTestimonial.value
     ? normalizeVideoUrl(activeTestimonial.value.video)
-    : null
+    : null,
 );
 </script>
 
@@ -158,12 +157,12 @@ const activeVideoUrl = computed(() =>
       <div class="text">
         <div class="header">
           <p class="h1">L'agence</p>
-          <Button to="/nous-contacter">Nous contacter →</Button>
+          <ContactButton />
         </div>
         <p>
           DriveIn Production est une société de création vidéo sur mesure, au
           service de celles et ceux qui veulent raconter leur histoire, marquer
-          les esprits et toucher leur public.Nous accompagnons marques,
+          les esprits et toucher leur public. Nous accompagnons marques,
           institutions et créateurs de demain, en imaginant et réalisant des
           contenus engageants, actuels et parfaitement adaptés à vos besoins. De
           l’idée à l’écran, notre équipe met en œuvre toute son expertise et sa
@@ -174,16 +173,12 @@ const activeVideoUrl = computed(() =>
           d’événements… et bien plus encore.
         </p>
       </div>
-      <ImgGlow
+
+      <NuxtImg
         class="photo"
         src="/images/profil_pics/sashaProfilPic.png"
         alt="À propos de DriveIn Production !"
       />
-    </div>
-    <div class="scroll-down-wrapper">
-      <ScrollDown to="presentation"
-        >Découvrir <span class="gold">Drive-In</span></ScrollDown
-      >
     </div>
   </section>
 
@@ -195,7 +190,7 @@ const activeVideoUrl = computed(() =>
 
   <section class="history">
     <div class="video">
-      <ImgGlow
+      <NuxtImg
         class="photo"
         src="/images/profil_pics/sashaProfilPic.png"
         alt="À propos de DriveIn Production !"
@@ -244,10 +239,10 @@ const activeVideoUrl = computed(() =>
         </swiper-slide>
       </swiper-container>
       <div class="swiper-nav">
-        <button class="swiper-prev unstyled rotate-left" aria-label="Précédent">
+        <button class="swiper-prev unstyled miror" aria-label="Précédent">
           <ArrowGlow orientation="left"></ArrowGlow>
         </button>
-        <button class="swiper-next unstyled rotate-right" aria-label="Suivant">
+        <button class="swiper-next unstyled" aria-label="Suivant">
           <ArrowGlow orientation="right"></ArrowGlow>
         </button>
       </div>
@@ -274,7 +269,7 @@ const activeVideoUrl = computed(() =>
         ></iframe>
       </div>
       <div class="placeholder" v-else>
-        <ImgGlow
+        <NuxtImg
           class="photo revert"
           src="/images/profil_pics/sashaProfilPic.png"
           alt="Témoignage Drive-In Production"
@@ -305,9 +300,9 @@ section.hero {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  min-height: $heroBanner-fullHeight;
   height: 100%;
   padding: 50px;
+  margin-bottom: 150px;
 
   @include mediaquery("mobile") {
     padding: 0;
@@ -345,14 +340,17 @@ section.hero {
     }
 
     .photo {
-      :deep(img) {
-        max-width: 500px;
-        width: 100%;
-        aspect-ratio: 2/1.15;
-        object-fit: cover;
-      }
+      max-width: 500px;
+      width: 100%;
+      aspect-ratio: 2/1.15;
+      object-fit: cover;
+      border-radius: 20px;
     }
   }
+}
+
+section.comments {
+  margin-bottom: 150px;
 }
 
 section.history {
@@ -361,7 +359,7 @@ section.history {
   flex-wrap: wrap;
   justify-content: center;
   gap: 50px;
-  margin-block: 100px;
+  margin-bottom: 100px;
   margin-inline: 50px;
 
   .accordion {
@@ -398,12 +396,11 @@ section.history {
       top: calc($margin + $header-height);
       margin-bottom: $margin;
 
-      :deep(img) {
-        max-height: 600px;
-        width: 100%;
-        aspect-ratio: 1.15/2;
-        object-fit: cover;
-      }
+      max-height: 600px;
+      width: 100%;
+      aspect-ratio: 1.15/2;
+      object-fit: cover;
+      border-radius: 20px;
     }
   }
 }
@@ -413,6 +410,7 @@ section.workMethod {
   padding-block: 100px;
   position: relative;
   overflow: hidden;
+  margin-block: 200px;
 
   display: flex;
   flex-direction: column;
@@ -432,7 +430,7 @@ section.workMethod {
     top: 0;
     background: radial-gradient(
       ellipse at 50% 0%,
-      rgba($primary-color-light, 1) 0%,
+      rgba(white, 1) 0%,
       rgba(255, 255, 255, 0) 70%
     );
   }
@@ -440,7 +438,7 @@ section.workMethod {
     bottom: 0;
     background: radial-gradient(
       ellipse at 50% 100%,
-      rgba($secondary-color-dark, 1) 0%,
+      rgba(white, 1) 0%,
       rgba(255, 255, 255, 0) 70%
     );
   }
@@ -452,6 +450,7 @@ section.workMethod {
   .work-swiper {
     swiper-container {
       width: 100%;
+      height: 300px;
 
       swiper-slide {
         width: 350px;
@@ -518,6 +517,10 @@ section.theyChoseUs {
     max-width: 560px;
     width: 100%;
 
+    @include mediaquery(1155) {
+      position: static;
+    }
+
     .video-wrapper {
       width: 100%;
       aspect-ratio: 16/9;
@@ -535,10 +538,11 @@ section.theyChoseUs {
     }
     .placeholder {
       width: 100%;
-      :deep(img) {
+      img {
         width: 100%;
         aspect-ratio: 16/9;
         object-fit: cover;
+        border-radius: 20px;
       }
     }
     .person {

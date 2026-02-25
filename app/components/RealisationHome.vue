@@ -20,7 +20,7 @@ const props = defineProps<{
 
 // Tags here are only name, get tags from content/nos-projets/tags.json and replace theme with the full tag object
 const { data: allTags } = await useAsyncData<Tag[]>("tags", () =>
-  import("~~/content/nos-projets/tags.json").then((mod) => mod.default)
+  import("~~/content/nos-projets/tags.json").then((mod) => mod.default),
 );
 const tags = computed(() => {
   const tagIds = props.project.tagIDs;
@@ -39,7 +39,7 @@ const { data: partners } = await useAsyncData(
       .where("name", "LIKE", props.project.partner[0])
       .all();
     return flattenMeta(data);
-  }
+  },
 );
 
 const partnersList = computed(() => partners.value ?? []);
@@ -58,19 +58,13 @@ const partnersList = computed(() => partners.value ?? []);
           <span v-if="partnersList.length > 1">,</span>
         </h3>
         <p>{{ project.presentation }}</p>
-
-        <div class="tags">
-          <Tag
-            v-for="tag in tags"
-            class="inactive"
-            :tag="tag"
-            isInactive="true"
-          />
-        </div>
       </div>
 
-      <SpecialLink class="desktop" :to="project.path"
-        >Les coulisses du projet →</SpecialLink
+      <SpecialLink
+        class="desktop_RH"
+        :to="project.path"
+        :title="`Découvrir les coulisses du projet ${project.title}`"
+        >Les coulisses du projet</SpecialLink
       >
     </div>
     <div class="video-wrapper">
@@ -78,8 +72,11 @@ const partnersList = computed(() => partners.value ?? []);
         :video-id="project.video"
         color="white"
       />
-      <SpecialLink class="mobile" :to="project.path"
-        >Les coulisses du projet →</SpecialLink
+      <SpecialLink
+        class="mobile_RH"
+        :to="project.path"
+        :title="`Découvrir les coulisses du projet ${project.title}`"
+        >Les coulisses du projet</SpecialLink
       >
     </div>
   </div>
@@ -96,7 +93,6 @@ const partnersList = computed(() => partners.value ?? []);
   background: black;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 100%;
-  @include glow-discret($primary-color-light);
   text-align: left;
 
   display: flex;
@@ -110,16 +106,16 @@ const partnersList = computed(() => partners.value ?? []);
   }
 
   .special_link {
-    &.mobile {
+    &.mobile_RH {
       display: none;
       font-size: 1rem;
     }
 
     @include mediaquery($firstBreakpoint) {
-      &.mobile {
+      &.mobile_RH {
         display: block;
       }
-      &.desktop {
+      &.desktop_RH {
         display: none;
       }
     }

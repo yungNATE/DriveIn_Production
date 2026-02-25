@@ -4,7 +4,7 @@ const slug = route.params.slug as string;
 
 const collection = "conseils";
 const { data: doc } = await useAsyncData(route.path, () =>
-  queryCollection(collection).path(`/${collection}/${slug}`).first()
+  queryCollection(collection).path(`/${collection}/${slug}`).first(),
 );
 
 // Lightbox state for the right-side image
@@ -49,11 +49,11 @@ useHead(() => ({
           </div>
 
           <div class="right" v-if="doc.img">
-            <GlowElement class="thumb">
+            <div class="thumb">
               <button class="imgBtn" type="button" @click="openLightbox">
                 <img :src="doc.img" :alt="doc.question || 'Conseil'" />
               </button>
-            </GlowElement>
+            </div>
 
             <!-- Lightbox (client-only) -->
             <ClientOnly>
@@ -67,9 +67,9 @@ useHead(() => ({
           </div>
         </div>
 
-        <div>
-          <Button to="/conseils">Découvrir les autres conseils →</Button>
-        </div>
+        <Button to="/conseils" title="Tous nos conseils"
+          >Découvrir les autres conseils</Button
+        >
       </div>
 
       <div v-else class="state">Conseil introuvable.</div>

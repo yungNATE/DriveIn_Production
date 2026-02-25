@@ -11,7 +11,7 @@ type GsapTimeline = ReturnType<GsapCore["timeline"]>;
 
 const actions = [
   {
-    title: "Partenaires locaux et déplacements optimisés",
+    title: "Tissu local (à vérifier)",
     description:
       "Nous travaillons autant que possible avec des prestataires et talents locaux pour limiter les transports, et nous organisons nos tournages pour réduire les déplacements superflus.",
   },
@@ -33,7 +33,7 @@ const index = (i: number) => {
 
 const modules = import.meta.glob<string>(
   "../assets/icones/greenTag/greenTag*.png",
-  { eager: true, import: "default" }
+  { eager: true, import: "default" },
 );
 const images = Object.keys(modules)
   .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
@@ -114,7 +114,7 @@ const playIconAnimations = async () => {
       .fromTo(
         third,
         { rotate: 0 },
-        { rotate: 360, duration: 0.8, ease: "power2.out" }
+        { rotate: 360, duration: 0.8, ease: "power2.out" },
       )
       .set(third, { rotate: 0 });
   }
@@ -139,7 +139,7 @@ onMounted(async () => {
     },
     {
       threshold: 1,
-    }
+    },
   );
 
   observer.observe(sectionRef.value);
@@ -229,7 +229,7 @@ onBeforeUnmount(() => {
 
         .title {
           background-color: black;
-          @include glow-discret(#29c397);
+          border: 2px solid rgba(#177353, 50%);
           border-radius: 12px;
 
           display: flex;
@@ -237,7 +237,8 @@ onBeforeUnmount(() => {
           padding: 15px;
 
           h3 {
-            max-width: 225px;
+            display: flex;
+            align-items: center;
           }
 
           img {

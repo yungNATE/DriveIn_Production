@@ -8,7 +8,7 @@ const props = defineProps<{
 
 <template>
   <div class="bloc-img-text" :class="customClass">
-    <img :src="src" :alt="alt" />
+    <NuxtImg :src="src" :alt="alt" />
     <div class="text">
       <slot />
     </div>
@@ -22,24 +22,18 @@ const props = defineProps<{
   padding: 32px;
   gap: 50px;
   background-color: black;
-  @include glow-discret($primary-color-light);
   border-radius: 12px;
 
-  @include mediaquery(500) {
+  @include mediaquery(600) {
     flex-direction: column;
     align-items: center;
     gap: 20px;
 
     .text {
-      text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-  }
-
-  &.blue {
-    @include glow-discret($secondary-color-dark);
   }
 
   img {

@@ -12,19 +12,29 @@ export type ProjectTag = {
 
 /**
  * Load all tags from content/nos-projets/tags.json and ensure `hidden` exists.
- * Works in both server and client via dynamic import handled by Vite/Nuxt.
  */
 export async function getAllTags(): Promise<ProjectTag[]> {
   const mod: any = await import("~~/content/nos-projets/tags.json");
   const raw = (mod?.default ?? []) as any[];
-  return raw.map((t) => ({ hidden: false, ...t })) as ProjectTag[];
+  return raw.map((t) => ({
+    ...t,
+    hidden: t?.hidden ?? false,
+  })) as ProjectTag[];
+}
+
+/**
+ * Load all tags, excluding those explicitly marked as hidden.
+ */
+export async function getVisibleTags(): Promise<ProjectTag[]> {
+  const all = await getAllTags();
+  return all.filter((t) => !t.hidden);
 }
 
 /**
  * Build a fast lookup map of tags by id.
  */
 export function mapTagsById(
-  all: ProjectTag[] | undefined | null
+  all: ProjectTag[] | undefined | null,
 ): Record<string, ProjectTag> {
   const map: Record<string, ProjectTag> = {};
   for (const t of all || []) map[t.id] = t;
@@ -32,11 +42,11 @@ export function mapTagsById(
 }
 
 /**
- * Get full tag objects for a given content item using its tagIDs.
+ * Get full tag objects for a given project item using its tagIDs.
  */
 export function getTagsFor(
   item: { tagIDs?: string[] } | null | undefined,
-  tagsById: Record<string, ProjectTag>
+  tagsById: Record<string, ProjectTag>,
 ): ProjectTag[] {
   const ids: string[] = (item?.tagIDs as string[]) || [];
   return ids.map((id) => tagsById[id]).filter(Boolean) as ProjectTag[];

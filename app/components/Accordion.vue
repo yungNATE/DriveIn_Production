@@ -43,7 +43,7 @@ const props = withDefaults(
   }>(),
   {
     openFirstPanel: true,
-  }
+  },
 );
 
 const emit = defineEmits<{
@@ -60,7 +60,7 @@ const internalPanels = ref(
       isOpen:
         !!p.open || (!anyExplicitOpen && props.openFirstPanel && idx === 0),
     }));
-  })()
+  })(),
 );
 
 watch(
@@ -72,7 +72,7 @@ watch(
     // Keep current open states when possible by header match,
     // but honor explicit `open` values if they are provided by the parent
     const openStateByHeader = new Map(
-      internalPanels.value.map((p) => [p.header, p.isOpen])
+      internalPanels.value.map((p) => [p.header, p.isOpen]),
     );
     const anyExplicitOpen = newVal.some((p) => typeof p.open === "boolean");
 
@@ -96,7 +96,7 @@ watch(
       });
     });
   },
-  { deep: true }
+  { deep: true },
 );
 
 // If consumer toggles the prop on and no panels are open, open the first one
@@ -111,20 +111,20 @@ watch(
         isOpen: idx === 0,
       }));
     }
-  }
+  },
 );
 
 const openPanelsIndexes = computed(() =>
   internalPanels.value.reduce<number[]>((acc, p, idx) => {
     if (p.isOpen) acc.push(idx);
     return acc;
-  }, [])
+  }, []),
 );
 
 const resolvedMaxWidth = computed(() =>
   typeof props.maxWidth === "number"
     ? `${props.maxWidth}px`
-    : props.maxWidth || "100%"
+    : props.maxWidth || "100%",
 );
 
 watch(openPanelsIndexes, (val) => emit("update:openPanels", val));
@@ -148,7 +148,7 @@ function clearPreviousTransition(el: HTMLElement) {
 
 function setBodyWrapper(
   el: Element | ComponentPublicInstance | null,
-  index: number
+  index: number,
 ) {
   if (!el) return;
   // If it's a component instance, attempt to resolve its root element
@@ -163,6 +163,7 @@ function animateOpen(el: HTMLElement) {
   el.dataset.animating = "true";
   el.dataset.transitionKind = "open"; // mark kind to discriminate stale fallbacks
   el.style.overflow = "hidden";
+  el.style.pointerEvents = "none"; // prevent interaction during animation
 
   // Establish current height as start value (even if mid-transition)
   const computed = getComputedStyle(el);
@@ -185,6 +186,7 @@ function animateOpen(el: HTMLElement) {
       if (e.propertyName !== "height") return;
       el.style.height = "auto";
       el.style.overflow = "visible";
+      el.style.pointerEvents = "auto";
       el.dataset.animating = "false";
       delete el.dataset.transitionKind;
       el.removeEventListener("transitionend", handler);
@@ -201,7 +203,7 @@ function animateOpen(el: HTMLElement) {
         el.dataset.transitionKind === "open"
       ) {
         handler(
-          new TransitionEvent("transitionend", { propertyName: "height" })
+          new TransitionEvent("transitionend", { propertyName: "height" }),
         );
       }
     }, 650);
@@ -213,6 +215,8 @@ function animateClose(el: HTMLElement) {
   el.dataset.animating = "true";
   el.dataset.transitionKind = "close"; // mark kind for fallback discrimination
   el.style.overflow = "hidden";
+  el.style.pointerEvents = "none";
+
   const currentHeight = el.getBoundingClientRect().height || el.scrollHeight;
   el.style.transition = "none";
   el.style.height = currentHeight + "px"; // explicit height to allow transition to 0
@@ -240,7 +244,7 @@ function animateClose(el: HTMLElement) {
         el.dataset.transitionKind === "close"
       ) {
         handler(
-          new TransitionEvent("transitionend", { propertyName: "height" })
+          new TransitionEvent("transitionend", { propertyName: "height" }),
         );
       }
     }, 550);
@@ -279,10 +283,12 @@ onMounted(() => {
       el.style.height = "auto";
       el.style.opacity = "1";
       el.style.overflow = "visible";
+      el.style.pointerEvents = "auto";
     } else {
       el.style.height = "0px";
       el.style.opacity = "0";
       el.style.overflow = "hidden";
+      el.style.pointerEvents = "none";
     }
     // Force reflow then allow transitions
     void el.offsetHeight;
@@ -303,11 +309,13 @@ onMounted(() => {
       class="accordion-panel"
       :class="{ open: panel.isOpen }"
     >
-      <button
+      <Button
         class="accordion-header"
         type="button"
         :aria-expanded="panel.isOpen ? 'true' : 'false'"
         :aria-controls="'acc-panel-' + i"
+        :title="panel.header"
+        :disableArrow="true"
         @click="toggle(i)"
       >
         <span class="header-text">{{ panel.header }}</span>
@@ -330,7 +338,7 @@ onMounted(() => {
             </svg>
           </slot>
         </span>
-      </button>
+      </Button>
       <div
         class="accordion-body-wrapper"
         :ref="(el) => setBodyWrapper(el, i)"
@@ -361,7 +369,6 @@ onMounted(() => {
 }
 
 .accordion-panel {
-  @include glow-discret($primary-color-light);
   border-radius: 8px;
   background: black;
   backdrop-filter: blur(4px);
@@ -371,47 +378,30 @@ onMounted(() => {
     0.3s filter;
   position: relative;
 
-  // Subtle gradient sheen for hover (fading in)
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-      circle at 15% 15%,
-      rgba(255, 255, 255, 0.09),
-      rgba(255, 255, 255, 0) 70%
-    );
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    pointer-events: none;
-  }
-
-  &:hover::before {
-    opacity: 1;
-  }
-
   * &:hover:not(.open),
   &.open {
-    @include glow-discret($secondary-color-dark);
+    .header-text {
+      color: $primary-color-light;
+    }
   }
 }
 
 .accordion-header {
   width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem 1.25rem;
-  font: inherit;
-  font-weight: 600;
-  background: transparent;
-  border: none;
-  color: inherit;
-  cursor: pointer;
   text-align: left;
-  position: relative;
-  transition: color 0.35s ease;
+  padding: 1rem 1.25rem;
+
+  :deep(.header-text) {
+    width: auto;
+  }
+
+  :deep(.content) {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
 
   // Animated underline reveal
   &::after {
@@ -423,21 +413,16 @@ onMounted(() => {
     height: 2px;
     background: linear-gradient(
       90deg,
-      rgba($secondary-color-dark, 0.5) 0%,
+      rgba(white, 0.5) 0%,
       rgba(0, 0, 0, 0.2) 100%
     );
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform 0.45s cubic-bezier(0.65, 0.05, 0.36, 1);
+    width: 0;
+    transition: width 0.45s cubic-bezier(0.65, 0.05, 0.36, 1);
     pointer-events: none;
   }
 
   &:hover::after {
-    transform: scaleX(1);
-  }
-
-  &:hover {
-    color: #fff;
+    width: 80%;
   }
 
   &:focus-visible {

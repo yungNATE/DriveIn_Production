@@ -5,7 +5,7 @@ const { data: googleComments } = await useAsyncData(
   async () => {
     const data = await queryCollection("googleComments").all();
     return flattenMeta(data);
-  }
+  },
 );
 
 // Constante DRY pour la note maximale
@@ -13,7 +13,7 @@ const RATING_MAX = 5;
 // Breakpoints Swiper: < 750px => 1 slide, >= 750px => 3 slides
 const SWIPER_BREAKPOINTS = {
   0: { slidesPerView: 1 },
-  850: { slidesPerView: 3 },
+  1000: { slidesPerView: 3 },
 };
 
 // Moyenne des notes (brute)
@@ -22,7 +22,7 @@ const averageRating = computed(() => {
   if (!arr.length) return 0;
   const total = arr.reduce(
     (acc: number, c: any) => acc + Number(c.rating || 0),
-    0
+    0,
   );
   return total / arr.length;
 });
@@ -94,7 +94,7 @@ function collapseInactive() {
   const keepId = current.id;
   if (!expanded.value.has(keepId) || expanded.value.size > 1) {
     expanded.value = new Set(
-      keepId && expanded.value.has(keepId) ? [keepId] : []
+      keepId && expanded.value.has(keepId) ? [keepId] : [],
     );
   }
   if (expanded.value.size === 0) {
@@ -125,8 +125,6 @@ function resumeAutoplayIfNeeded() {
   }
 }
 
-import Stars from "./Stars.vue";
-
 // Référence swiper pour ajuster la configuration loop après init
 const swiperRoot = ref<HTMLElement | null>(null);
 
@@ -147,23 +145,37 @@ function rebuildLoop() {
   }
 }
 
-onMounted(() => {
+async function ensureSwiperInit() {
   const el: any = swiperRoot.value;
-  if (!el) return;
-  const attach = () => {
-    rebuildLoop();
-    // écouter les changements
-    el.swiper.on("slideChange", collapseInactive);
-    // collapse initial éventuel
-    collapseInactive();
-  };
-  if (el.swiper) attach();
-  else el.addEventListener("swiperinit", attach, { once: true });
+  if (!el || !sortedComments.value.length) return;
+  if (!customElements.get("swiper-container")) {
+    await customElements.whenDefined("swiper-container");
+  }
+  // Force props as element properties to avoid attribute string coercion in prod
+  el.breakpoints = SWIPER_BREAKPOINTS;
+  el.slidesPerView = 3;
+  if (!el.swiper && typeof el.initialize === "function") {
+    try {
+      el.initialize();
+    } catch {}
+  }
+  if (!el.swiper) return;
+  el.swiper.params.breakpoints = SWIPER_BREAKPOINTS;
+  el.swiper.params.slidesPerView = el.slidesPerView;
+  el.swiper.update();
+  rebuildLoop();
+  el.swiper.off("slideChange", collapseInactive);
+  el.swiper.on("slideChange", collapseInactive);
+  collapseInactive();
+}
+
+onMounted(() => {
+  nextTick().then(() => ensureSwiperInit());
 });
 
 watch(sortedComments, () => {
-  // Attendre le DOM puis reconstruire
-  nextTick().then(() => rebuildLoop());
+  // Attendre le DOM puis (re)initialiser le swiper
+  nextTick().then(() => ensureSwiperInit());
 });
 
 watch(expanded, () => {
@@ -176,22 +188,17 @@ watch(expanded, () => {
 <template>
   <div class="googleComments container">
     <div class="header">
-      <h2>Ce que nos clients en pensent</h2>
       <div class="brand">
-        <img
-          src="/assets/icones/googleLogo.svg"
-          alt="Logo Google"
-          class="googleLogo"
-        />
+        <h2>Avis Google</h2>
         <div
           class="rating noteMoyenne"
           v-if="googleComments && googleComments.length"
         >
-          <span class="value">{{ averageRatingDisplay }}</span>
-          <span class="separator">/ {{ RATING_MAX }}</span>
+          <span class="value sr-only">{{ averageRatingDisplay }}</span>
+          <span class="separator sr-only">/ {{ RATING_MAX }}</span>
           <Stars
             class="stars-primary"
-            :value="averageRating"
+            :value="Number(averageRating)"
             :max="RATING_MAX"
             :size="30"
             :duration="2000"
@@ -199,22 +206,32 @@ watch(expanded, () => {
           />
         </div>
       </div>
+      <div class="swiper-nav">
+        <button class="swiper-prev unstyled miror" aria-label="Précédent">
+          <ArrowGlow orientation="left" />
+        </button>
+        <button class="swiper-next unstyled" aria-label="Suivant">
+          <ArrowGlow orientation="right" />
+        </button>
+      </div>
     </div>
     <div class="slider">
       <swiper-container
         ref="swiperRoot"
+        :init="false"
+        :navigation="true"
         navigation-prev-el=".googleComments .swiper-prev"
         navigation-next-el=".googleComments .swiper-next"
-        slides-per-view="3"
+        :slides-per-view="3"
         :breakpoints="SWIPER_BREAKPOINTS"
-        loop="true"
-        autoplay-delay="5000"
-        autoplay-disable-on-interaction="false"
-        watch-slides-progress="true"
-        v-bind:looped-slides="sortedComments.length"
-        centered-slides="true"
-        speed="700"
-        allow-touch-move="false"
+        :loop="true"
+        :autoplay-delay="5000"
+        :autoplay-disable-on-interaction="false"
+        :watch-slides-progress="true"
+        :looped-slides="sortedComments.length"
+        :centered-slides="true"
+        :speed="700"
+        :allow-touch-move="false"
       >
         <swiper-slide
           v-for="comment in preparedComments"
@@ -230,7 +247,7 @@ watch(expanded, () => {
               >
                 <Stars
                   class="stars-primary"
-                  :value="comment.rating"
+                  :value="Number(comment.rating)"
                   :max="RATING_MAX"
                   :size="20"
                 />
@@ -255,14 +272,6 @@ watch(expanded, () => {
           </article>
         </swiper-slide>
       </swiper-container>
-      <div class="swiper-nav">
-        <button class="swiper-prev unstyled rotate-left" aria-label="Précédent">
-          <ArrowGlow orientation="left" />
-        </button>
-        <button class="swiper-next unstyled rotate-right" aria-label="Suivant">
-          <ArrowGlow orientation="right" />
-        </button>
-      </div>
     </div>
   </div>
 </template>
@@ -276,10 +285,10 @@ div.googleComments {
   .header {
     margin-bottom: 40px;
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 40px;
+    gap: 40px 150px;
     flex-wrap: wrap;
 
     .brand {
@@ -338,7 +347,8 @@ div.googleComments {
           border-radius: 18px;
           display: flex;
           flex-direction: column;
-          gap: 20px;
+          gap: 12px;
+          background-color: black;
           width: 100%;
           max-width: 520px;
 
@@ -346,6 +356,7 @@ div.googleComments {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
           }
           .text {
             line-height: 1.5;

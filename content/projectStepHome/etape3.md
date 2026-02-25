@@ -1,5 +1,5 @@
 ---
-title: "Préparation & planning"
-description: "Organisons le tournage, les équipes et les lieux pour un déroulé sans accroc."
-img: "/images/icones/calendar.svg"
+title: "Montage & validation"
+description: "Vous visualisez, vous commentez, nous ajustons jusqu’à satisfaction."
+img: "/images/icones/touchup.svg"
 ---

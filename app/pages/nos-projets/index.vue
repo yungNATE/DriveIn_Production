@@ -28,24 +28,15 @@ nosProjets.value?.sort((a, b) => (b.weight || 0) - (a.weight || 0));
 
 // Tags (shared util)
 const { data: allTags } = await useAsyncData<ProjectTag[]>("allTags", () =>
-  getAllTags()
+  getAllTags(),
 );
-const FORMAT_NAME = "format";
-const formatTags = computed(
-  () => allTags.value?.filter((t) => t.type === FORMAT_NAME) || []
-);
-const THEME_NAME = "theme";
-const themeTags = computed(
-  () => allTags.value?.filter((t) => t.type === THEME_NAME) || []
-);
-const TECHNIQUE_NAME = "technique";
-const techniqueTags = computed(
-  () => allTags.value?.filter((t) => t.type === TECHNIQUE_NAME) || []
+const visibleTags = computed(
+  () => allTags.value?.filter((t) => !t.hidden) || [],
 );
 
 // Fast lookup map for tags by id
 const tagsById = computed<Record<string, ProjectTag>>(() =>
-  mapTagsById(allTags.value)
+  mapTagsById(allTags.value),
 );
 
 // Local wrapper to use in template without passing the map every time
@@ -60,70 +51,34 @@ const preloadingCovers = new Set<string>(); // prevent duplicate preload work cl
 // ----------------------------
 // Filters state & logic
 // ----------------------------
-// Always exactly one format selected; default to "video"
-const selectedFormatId = ref<string>("video");
-const currentFormatTitle = computed(() => {
-  const tag = formatTags.value.find((t) => t.id === selectedFormatId.value);
-  return tag?.title || "Les vidéos";
-});
-const selectedFormatIcon = computed(() => {
-  const tag = formatTags.value.find((t) => t.id === selectedFormatId.value);
-  return tag?.associatedIcon || "";
-});
 
-// Multiple selections allowed; start empty
-const selectedThemeIds = ref<string[]>([]);
-const selectedTechniqueIds = ref<string[]>([]);
+// Single selection (XOR). Null means "Tous nos projets".
+const selectedTagId = ref<string | null>(null);
+const isAllSelected = computed(() => !selectedTagId.value);
 
-// Apply filtering (AND logic):
-// - project must include the selected format
-// - and include all selected themes (if any)
-// - and include all selected techniques (if any)
+// Apply filtering:
+// - if no filter selected, return all
+// - otherwise project must include at least one selected tag
 const filteredProjects = computed(() => {
   const items = nosProjets.value || [];
-  const formatId = selectedFormatId.value;
-  const themeIds = selectedThemeIds.value;
-  const techniqueIds = selectedTechniqueIds.value;
+  const activeTagId = selectedTagId.value;
 
   return items.filter((p: any) => {
     const tags: string[] = p?.tagIDs || [];
-    // Format must always match (exactly one selected)
-    if (!tags.includes(formatId)) return false;
-
-    // Union logic for theme/technique selections
-    const hasTheme = themeIds.length
-      ? themeIds.some((id) => tags.includes(id))
-      : false;
-    const hasTechnique = techniqueIds.length
-      ? techniqueIds.some((id) => tags.includes(id))
-      : false;
-
-    // If no theme/technique filter selected, accept all (for the format)
-    if (!themeIds.length && !techniqueIds.length) return true;
-
-    // Otherwise accept if it matches ANY selected tag across theme OR technique
-    return hasTheme || hasTechnique;
+    if (!activeTagId) return true;
+    return tags.includes(activeTagId);
   });
 });
 
 // Handlers
-function handleSelectFormat(tagId: string, _tagTitle?: string) {
-  // Enforce exactly one selected; ignore attempts to deselect
-  if (tagId && tagId !== selectedFormatId.value) {
-    selectedFormatId.value = tagId;
+function handleSelectTag(tagId: string) {
+  if (tagId && tagId !== selectedTagId.value) {
+    selectedTagId.value = tagId;
   }
 }
-function handleToggleTheme(tagId: string) {
-  const arr = selectedThemeIds.value;
-  const idx = arr.indexOf(tagId);
-  if (idx === -1) selectedThemeIds.value = [...arr, tagId];
-  else selectedThemeIds.value = arr.filter((id) => id !== tagId);
-}
-function handleToggleTechnique(tagId: string) {
-  const arr = selectedTechniqueIds.value;
-  const idx = arr.indexOf(tagId);
-  if (idx === -1) selectedTechniqueIds.value = [...arr, tagId];
-  else selectedTechniqueIds.value = arr.filter((id) => id !== tagId);
+
+function handleSelectAll() {
+  selectedTagId.value = null;
 }
 
 function updateCoverHeight(src: string, height?: number | null) {
@@ -169,6 +124,56 @@ function preloadCover(src: string) {
 
 const isCoverReady = (src: string) => Boolean(loadedCovers.value[src]);
 
+// ----------------------------
+// Project modal (lazy fetch)
+// ----------------------------
+const isModalOpen = ref(false);
+const modalLoading = ref(false);
+const modalError = ref<string | null>(null);
+const modalProject = ref<any>(null);
+
+const modalDescription = computed(() => {
+  const text = modalProject.value?.presentation || "";
+  if (!text) return "";
+  return text.length > 500 ? `${text.slice(0, 497)}...` : text;
+});
+
+const modalLink = computed(() => {
+  return modalProject.value?.path || modalProject.value?._path || "";
+});
+
+function closeProjectModal() {
+  isModalOpen.value = false;
+}
+
+async function openProjectModal(item: any) {
+  const itemPath = item?.path || item?._path;
+  if (!itemPath) return;
+
+  isModalOpen.value = true;
+  modalLoading.value = true;
+  modalError.value = null;
+  modalProject.value = null;
+
+  try {
+    const project = await queryCollection("nosProjets").path(itemPath).first();
+    if (!project) {
+      throw new Error("Project not found");
+    }
+    modalProject.value = project;
+  } catch (err) {
+    modalError.value = "Impossible de charger ce projet.";
+  } finally {
+    modalLoading.value = false;
+  }
+}
+
+const handleModalKeydown = (event: KeyboardEvent) => {
+  if (event.key === "Escape") {
+    closeProjectModal();
+  }
+};
+
 if (import.meta.client) {
   // Preload every cover from the filtered list before triggering the card animation
   watch(
@@ -176,9 +181,31 @@ if (import.meta.client) {
     (covers) => {
       covers.forEach((cover) => preloadCover(cover));
     },
-    { immediate: true }
+    { immediate: true },
   );
+
+  watch(isModalOpen, (open) => {
+    if (open) {
+      window.addEventListener("keydown", handleModalKeydown);
+      document.body.style.overflow = "hidden";
+    } else {
+      window.removeEventListener("keydown", handleModalKeydown);
+      document.body.style.overflow = "";
+    }
+  });
 }
+
+onBeforeUnmount(() => {
+  if (!import.meta.client) return;
+  window.removeEventListener("keydown", handleModalKeydown);
+  document.body.style.overflow = "";
+});
+
+onBeforeRouteLeave(() => {
+  if (isModalOpen.value) {
+    closeProjectModal();
+  }
+});
 
 function onImgLoad(src: string, e: Event) {
   const img = e.target as HTMLImageElement | null;
@@ -189,8 +216,6 @@ function onImgLoad(src: string, e: Event) {
   // Save natural image height; fall back handled in template
   markCoverReady(src, img.naturalHeight);
 }
-
-const switchFormat = ref(true);
 </script>
 
 <template>
@@ -199,95 +224,45 @@ const switchFormat = ref(true);
 
     <section class="header container">
       <h1>Nos réalisations</h1>
-      <Button to="/nous-contacter">Prendre rendez-vous →</Button>
+      <Button to="/nous-contacter" title="Notre page de contact"
+        >Prendre rendez-vous</Button
+      >
+    </section>
+
+    <section
+      class="filters"
+      role="region"
+      aria-controls="filteredProjects"
+      aria-labelledby="filtersTitle"
+    >
+      <h2 id="filtersTitle" class="sr-only">Filtres des projets</h2>
+
+      <div class="filterGroup container">
+        <span class="filterTitle h3 sr-only">Filtres</span>
+        <ul role="group" aria-label="Filtres du contenu" class="unstyled">
+          <li>
+            <Tag
+              id="all"
+              title="Tous nos projets"
+              class="filterable"
+              :class="{ selected: isAllSelected }"
+              :no-hashtag="true"
+              @select="handleSelectAll"
+            />
+          </li>
+          <li v-for="tag in visibleTags" :data-format="tag.type">
+            <Tag
+              :tag="tag"
+              class="filterable"
+              :class="{ selected: selectedTagId === tag.id }"
+              @select="handleSelectTag"
+            />
+          </li>
+        </ul>
+      </div>
     </section>
 
     <section class="nos-projets container">
-      <section
-        class="filters"
-        role="region"
-        aria-controls="filteredProjects"
-        aria-labelledby="filtersTitle"
-      >
-        <h2 id="filtersTitle" class="sr-only">Filtres des projets</h2>
-
-        <fieldset class="formatFilter">
-          <div class="filterContainer">
-            <legend class="sr-only">Format</legend>
-            <span class="filterTitle h3">{{ currentFormatTitle }} Drive-In</span>
-            <ul
-              role="group"
-              aria-label="Choix du format du contenu"
-              class="unstyled"
-            >
-              <li v-for="formatTag in formatTags" :data-format="FORMAT_NAME">
-                <Tag
-                  :tag="formatTag"
-                  class="filterable"
-                  :class="{ selected: selectedFormatId === formatTag.id }"
-                  @select="handleSelectFormat"
-                />
-              </li>
-            </ul>
-            <NuxtImg
-              v-if="selectedFormatIcon"
-              :src="selectedFormatIcon"
-              alt="Illustration représentant une vidéo"
-              width="200"
-              height="150"
-              class="formatIcon"
-            />
-          </div>
-        </fieldset>
-
-        <fieldset class="themeFilter">
-          <div class="filterContainer">
-            <legend class="sr-only">Thématique</legend>
-            <span class="filterTitle h3">Thématique</span>
-            <ul
-              role="group"
-              aria-label="Choix de la thématique du contenu"
-              class="unstyled"
-            >
-              <li v-for="themeTag in themeTags" :data-format="THEME_NAME">
-                <Tag
-                  :tag="themeTag"
-                  class="filterable"
-                  :class="{ selected: selectedThemeIds.includes(themeTag.id) }"
-                  @select="handleToggleTheme"
-                />
-              </li>
-            </ul>
-          </div>
-        </fieldset>
-
-        <fieldset class="techniqueFilter">
-          <div class="filterContainer">
-            <legend class="sr-only">Technique</legend>
-            <span class="filterTitle h3">Technique</span>
-            <ul
-              role="group"
-              aria-label="Choix de la technique utilisée pour réaliser le contenu"
-              class="unstyled"
-            >
-              <li
-                v-for="techniqueTag in techniqueTags"
-                :data-format="TECHNIQUE_NAME"
-              >
-                <Tag
-                  :tag="techniqueTag"
-                  class="filterable"
-                  :class="{
-                    selected: selectedTechniqueIds.includes(techniqueTag.id),
-                  }"
-                  @select="handleToggleTechnique"
-                />
-              </li>
-            </ul>
-          </div>
-        </fieldset>
-      </section>
-
       <section
         id="filteredProjects"
         aria-live="polite"
@@ -305,35 +280,36 @@ const switchFormat = ref(true);
           :max-columns="3"
         >
           <template #default="{ item, index }">
-            <GlowElement
+            <div
               :class="['card', { ready: isCoverReady(item.cover) }]"
               :style="{
                 height: `${coverHeights[item.cover] || MAX_COVER_HEIGHT}px`,
                 '--stagger': `${index * 500}ms`,
               }"
             >
-              <div class="top tags">
+              <!--<div class="top tags">
                 <Tag
                   v-for="tag in getTagsForItem(item)"
                   :key="tag.id"
                   :tag="tag"
                   class="inactive"
                 />
-              </div>
+              </div>-->
 
               <div class="middle">
                 <template
                   v-for="label in [`Découvrir le projet ${item.title}`]"
                   :key="label"
                 >
-                  <NuxtLink
-                    :to="item.path"
+                  <button
+                    type="button"
                     :title="label"
                     :aria-label="label"
                     class="read-more"
+                    @click="openProjectModal(item)"
                   >
                     {{ label }}
-                  </NuxtLink>
+                  </button>
                 </template>
                 <div class="imgWrapper">
                   <NuxtImg
@@ -349,7 +325,7 @@ const switchFormat = ref(true);
               <div class="bottom">
                 <p class="projectTitle h2">{{ item.title }}</p>
               </div>
-            </GlowElement>
+            </div>
           </template>
         </masonry-wall>
 
@@ -358,6 +334,37 @@ const switchFormat = ref(true);
     </section>
 
     <GoogleComments></GoogleComments>
+
+    <Modal
+      v-if="isModalOpen"
+      :title="modalProject?.title || 'Projet'"
+      @close="closeProjectModal"
+    >
+      <div v-if="modalLoading" class="modalState">Chargement...</div>
+      <div v-else-if="modalError" class="modalState">
+        {{ modalError }}
+      </div>
+      <div v-else class="modalBody">
+        <div class="modalVideo">
+          <div class="video">
+            <ScriptYouTubePlayerWithPlayButton
+              v-if="modalProject?.video"
+              :video-id="modalProject?.video"
+            />
+          </div>
+        </div>
+
+        <p class="modalDescription">{{ modalDescription }}</p>
+
+        <Button
+          v-if="modalLink"
+          :to="modalLink"
+          title="Voir le détail du projet"
+        >
+          Voir le projet
+        </Button>
+      </div>
+    </Modal>
   </div>
 </template>
 
@@ -411,10 +418,6 @@ section.header {
   }
 }
 
-section.formatFilterSection {
-  margin-bottom: 50px;
-}
-
 section.nos-projets {
   $breakpoint1: 1000;
   display: flex;
@@ -427,70 +430,42 @@ section.nos-projets {
   .filters {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 20px;
 
     @include mediaquery($breakpoint1) {
       flex-direction: row;
       flex-wrap: wrap;
+      gap: 25px 35px;
     }
   }
 }
 
-fieldset {
-  border: none;
-
-  > .filterContainer {
-    border-radius: 12px;
-    background-color: black;
-    padding: 32px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    position: relative;
-  }
-
-  &.formatFilter {
-    @include glow-discret(white);
-
-    .filterTitle {
-      color: white;
-    }
-
-    .formatIcon {
-      position: absolute;
-      right: 20px;
-      top: -10px;
-      opacity: 0.1;
-      pointer-events: none;
-      transform: rotate(-23deg);
-    }
-  }
-
-  &.themeFilter {
-    @include glow-discret($primary-color-light);
-    .filterTitle {
-      color: $primary-color-light;
-    }
-  }
-
-  &.techniqueFilter {
-    @include glow-discret($secondary-color-dark);
-    .filterTitle {
-      color: $secondary-color-dark;
-    }
-  }
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 
   ul {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
     gap: 15px;
+    margin-bottom: 5rem;
+
+    @include mediaquery(500) {
+      flex-direction: column;
+
+      li,
+      button {
+        width: 100%;
+      }
+    }
   }
 
   .filterTitle {
     display: block;
     font-weight: bold;
-    margin-bottom: 15px;
   }
 }
 
@@ -505,6 +480,16 @@ section#filteredProjects {
       transform: scale(1.03);
     }
     > div {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 25px;
+      transition:
+        transform 0.3s ease,
+        filter 200ms ease,
+        color 200ms ease;
+
       &.card {
         opacity: 0;
         transform: translateY(12px) scale(0.985);
@@ -517,20 +502,20 @@ section#filteredProjects {
         transform: none;
         animation: card-bounce-in 500ms ease both;
         animation-delay: var(--stagger, 0ms);
+
+        @include mediaquery(800) {
+          height: fit-content !important;
+          min-height: 200px;
+        }
       }
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 25px;
-      transition:
-        transform 0.3s ease,
-        filter 200ms ease,
-        color 200ms ease;
 
       > *:not(.middle) {
         position: relative;
         z-index: 2;
+      }
+
+      > .middle {
+        height: 0;
       }
 
       .projectTitle {
@@ -552,6 +537,7 @@ section#filteredProjects {
         flex-wrap: wrap;
         position: relative;
         align-content: baseline;
+        margin-bottom: 60px;
         top: -20px;
         opacity: 0;
         transition:
@@ -589,6 +575,11 @@ section#filteredProjects {
       .read-more {
         position: static;
         font-size: 0;
+        background: transparent;
+        border: none;
+        padding: 0;
+        color: inherit;
+        cursor: pointer;
 
         &::before {
           content: "";
@@ -602,6 +593,27 @@ section#filteredProjects {
       }
     }
   }
+}
+
+.modalState {
+  text-align: center;
+  padding: 40px 10px;
+}
+
+.modalBody {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.modalVideo :deep(.video) {
+  width: 100%;
+  max-width: 650px;
+  margin-inline: auto;
+}
+
+.modalDescription {
+  max-width: 800px;
 }
 
 @media (prefers-reduced-motion: reduce) {

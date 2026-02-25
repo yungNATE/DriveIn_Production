@@ -1,5 +1,5 @@
 <template>
-  <NuxtParticles :id="id" :options="options" @load="onLoad"> </NuxtParticles>
+  <NuxtParticles :id="id" :options="options"> </NuxtParticles>
 </template>
 
 <script setup lang="ts">
@@ -12,8 +12,7 @@ let props = defineProps<{
 // See tsParticles documentation for all available options
 const options = {
   fullScreen: {
-    enable: true,
-    zIndex: -2,
+    enable: false,
   },
   background: {
     color: {
@@ -40,11 +39,5 @@ const options = {
   },
   pauseOnOutsideViewport: true,
   fpsLimit: 60,
-};
-
-const onLoad = (container: Container) => {
-  // Do something with the container
-  container.pause();
-  setTimeout(() => container.play(), 2000);
 };
 </script>
