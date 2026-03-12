@@ -5,7 +5,7 @@
     <h1>Cette page n'existe pas... 😓</h1>
     <div class="subTitle">
       <p>Vous vous êtes perdus ?</p>
-      <Button to="/">Retour à l’accueil</Button>
+      <Button to="/" title="">Retour à l’accueil</Button>
     </div>
     <span class="deco">404</span>
   </section>

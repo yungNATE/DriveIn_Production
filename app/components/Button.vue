@@ -24,6 +24,7 @@ const props = withDefaults(
 
 <style lang="scss" scoped>
 .btn {
+  display: block;
   position: relative;
   color: rgba(255, 255, 255, 0.75);
   transition: 0.3s;
