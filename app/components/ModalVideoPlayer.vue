@@ -13,7 +13,7 @@ const props = withDefaults(
     isInvisible?: boolean;
   }>(),
   {
-    title: "Vidéo Vimeo",
+    title: "",
     isInvisible: false,
   },
 );
@@ -42,8 +42,14 @@ const { data: oEmbed, pending: thumbnailPending } = useAsyncData(
 const thumbnailUrl = computed(() => oEmbed.value?.thumbnail_url ?? "");
 const modalTitle = computed(() => props.title);
 
+const thumbnailAlt = computed(() =>
+  props.title && props.title.trim()
+    ? `Miniature de ${props.title}`
+    : "Miniature de la vidéo",
+);
+
 const triggerLabel = computed(() =>
-  props.title ? `Ouvrir la vidéo ${props.title}` : "Ouvrir la vidéo Vimeo",
+  props.title ? `Ouvrir la vidéo ${props.title}` : "Ouvrir la vidéo",
 );
 
 // Build a player iframe URL that ensures controls are visible.
@@ -123,13 +129,12 @@ onBeforeUnmount(() => {
 
       <template v-else>
         <div class="modalVideoPlayerPreview" aria-hidden="true">
-          <NuxtImg
+          <img
             v-if="thumbnailUrl"
             class="modalVideoPlayerThumbnail"
             :src="thumbnailUrl"
-            :alt="`Miniature de ${props.title}`"
+            :alt="thumbnailAlt"
             loading="eager"
-            fetchpriority="high"
           />
 
           <div
