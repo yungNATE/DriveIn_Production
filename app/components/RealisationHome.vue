@@ -68,10 +68,7 @@ const partnersList = computed(() => partners.value ?? []);
       >
     </div>
     <div class="video-wrapper">
-      <ScriptYouTubePlayerWithPlayButton
-        :video-id="project.video"
-        color="white"
-      />
+      <ModalVideoPlayer :id="project.video" />
       <SpecialLink
         class="mobile_RH"
         :to="project.path"

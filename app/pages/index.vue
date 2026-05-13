@@ -127,7 +127,7 @@ definePageMeta({
   <section class="hero invisible">
     <div class="top">
       <div class="video-player-wrapper">
-        <ScriptYouTubePlayerWithPlayButton video-id="U15KM30-ugY" />
+        <ModalVideoPlayer :id="`111081646`" />
       </div>
       <div class="text">
         <h1 class="sr-only">DriveIn Production</h1>

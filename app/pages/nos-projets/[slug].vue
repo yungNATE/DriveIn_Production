@@ -64,10 +64,7 @@ const onLightboxHide = () => {
         <h2 class="h3">Le film</h2>
 
         <div class="content video">
-          <ScriptYouTubePlayerWithPlayButton
-            v-if="project?.video"
-            :video-id="project?.video"
-          />
+          <ModalVideoPlayer v-if="project?.video" :id="project?.video" />
         </div>
       </div>
 
@@ -79,7 +76,7 @@ const onLightboxHide = () => {
             class="otherFormats"
             v-for="formatVideoID in project?.otherFormats"
           >
-            <ScriptYouTubePlayerWithPlayButton :video-id="formatVideoID" />
+            <ModalVideoPlayer :id="formatVideoID" />
           </div>
         </div>
       </div>

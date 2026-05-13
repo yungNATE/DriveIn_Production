@@ -124,56 +124,6 @@ function preloadCover(src: string) {
 
 const isCoverReady = (src: string) => Boolean(loadedCovers.value[src]);
 
-// ----------------------------
-// Project modal (lazy fetch)
-// ----------------------------
-const isModalOpen = ref(false);
-const modalLoading = ref(false);
-const modalError = ref<string | null>(null);
-const modalProject = ref<any>(null);
-
-const modalDescription = computed(() => {
-  const text = modalProject.value?.presentation || "";
-  if (!text) return "";
-  return text.length > 500 ? `${text.slice(0, 497)}...` : text;
-});
-
-const modalLink = computed(() => {
-  return modalProject.value?.path || modalProject.value?._path || "";
-});
-
-function closeProjectModal() {
-  isModalOpen.value = false;
-}
-
-async function openProjectModal(item: any) {
-  const itemPath = item?.path || item?._path;
-  if (!itemPath) return;
-
-  isModalOpen.value = true;
-  modalLoading.value = true;
-  modalError.value = null;
-  modalProject.value = null;
-
-  try {
-    const project = await queryCollection("nosProjets").path(itemPath).first();
-    if (!project) {
-      throw new Error("Project not found");
-    }
-    modalProject.value = project;
-  } catch (err) {
-    modalError.value = "Impossible de charger ce projet.";
-  } finally {
-    modalLoading.value = false;
-  }
-}
-
-const handleModalKeydown = (event: KeyboardEvent) => {
-  if (event.key === "Escape") {
-    closeProjectModal();
-  }
-};
-
 if (import.meta.client) {
   // Preload every cover from the filtered list before triggering the card animation
   watch(
@@ -183,28 +133,11 @@ if (import.meta.client) {
     },
     { immediate: true },
   );
-
-  watch(isModalOpen, (open) => {
-    if (open) {
-      window.addEventListener("keydown", handleModalKeydown);
-      document.body.style.overflow = "hidden";
-    } else {
-      window.removeEventListener("keydown", handleModalKeydown);
-      document.body.style.overflow = "";
-    }
-  });
 }
 
 onBeforeUnmount(() => {
   if (!import.meta.client) return;
-  window.removeEventListener("keydown", handleModalKeydown);
   document.body.style.overflow = "";
-});
-
-onBeforeRouteLeave(() => {
-  if (isModalOpen.value) {
-    closeProjectModal();
-  }
 });
 
 function onImgLoad(src: string, e: Event) {
@@ -280,37 +213,23 @@ function onImgLoad(src: string, e: Event) {
           :max-columns="3"
         >
           <template #default="{ item, index }">
-            <div
+            <ModalVideoPlayer
+              :id="item.video"
+              :title="item.title"
               :class="['card', { ready: isCoverReady(item.cover) }]"
               :style="{
                 height: `${coverHeights[item.cover] || MAX_COVER_HEIGHT}px`,
                 '--stagger': `${index * 500}ms`,
               }"
             >
-              <!--<div class="top tags">
-                <Tag
-                  v-for="tag in getTagsForItem(item)"
-                  :key="tag.id"
-                  :tag="tag"
-                  class="inactive"
-                />
-              </div>-->
-
               <div class="middle">
-                <template
-                  v-for="label in [`Découvrir le projet ${item.title}`]"
-                  :key="label"
+                <span
+                  class="read-more"
+                  :title="`Découvrir le projet ${item.title}`"
+                  :aria-label="`Découvrir le projet ${item.title}`"
                 >
-                  <button
-                    type="button"
-                    :title="label"
-                    :aria-label="label"
-                    class="read-more"
-                    @click="openProjectModal(item)"
-                  >
-                    {{ label }}
-                  </button>
-                </template>
+                  Découvrir le projet {{ item.title }}
+                </span>
                 <div class="imgWrapper">
                   <NuxtImg
                     :src="item.cover"
@@ -325,7 +244,18 @@ function onImgLoad(src: string, e: Event) {
               <div class="bottom">
                 <p class="projectTitle h2">{{ item.title }}</p>
               </div>
-            </div>
+              <template #custom>
+                <p class="modalDescription">{{ item.presentation }}</p>
+
+                <Button
+                  v-if="item.path"
+                  :to="item.path"
+                  title="Voir le détail du projet"
+                >
+                  Voir le projet
+                </Button>
+              </template>
+            </ModalVideoPlayer>
           </template>
         </masonry-wall>
 
@@ -334,37 +264,6 @@ function onImgLoad(src: string, e: Event) {
     </section>
 
     <GoogleComments></GoogleComments>
-
-    <Modal
-      v-if="isModalOpen"
-      :title="modalProject?.title || 'Projet'"
-      @close="closeProjectModal"
-    >
-      <div v-if="modalLoading" class="modalState">Chargement...</div>
-      <div v-else-if="modalError" class="modalState">
-        {{ modalError }}
-      </div>
-      <div v-else class="modalBody">
-        <div class="modalVideo">
-          <div class="video">
-            <ScriptYouTubePlayerWithPlayButton
-              v-if="modalProject?.video"
-              :video-id="modalProject?.video"
-            />
-          </div>
-        </div>
-
-        <p class="modalDescription">{{ modalDescription }}</p>
-
-        <Button
-          v-if="modalLink"
-          :to="modalLink"
-          title="Voir le détail du projet"
-        >
-          Voir le projet
-        </Button>
-      </div>
-    </Modal>
   </div>
 </template>
 
@@ -510,6 +409,7 @@ section#filteredProjects {
       }
 
       > *:not(.middle) {
+        height: 100%;
         position: relative;
         z-index: 2;
       }
@@ -593,23 +493,6 @@ section#filteredProjects {
       }
     }
   }
-}
-
-.modalState {
-  text-align: center;
-  padding: 40px 10px;
-}
-
-.modalBody {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.modalVideo :deep(.video) {
-  width: 100%;
-  max-width: 650px;
-  margin-inline: auto;
 }
 
 .modalDescription {

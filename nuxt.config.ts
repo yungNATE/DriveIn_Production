@@ -11,6 +11,10 @@ export default defineNuxtConfig({
     "@nuxt/content",
     "nuxt-marquee",
   ],
+  // Allow external image domains (Vimeo thumbnails)
+  image: {
+    domains: ["i.vimeocdn.com"],
+  },
   vue: {
     compilerOptions: {
       isCustomElement: (tag) => tag.startsWith("swiper-"),
