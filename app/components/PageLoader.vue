@@ -10,7 +10,6 @@
         playsinline
         loop
       ></video>
-      <span class="loader-title h2">{{ targetTitle }}</span>
     </div>
   </transition>
 </template>
@@ -20,7 +19,6 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 
 const show = ref(false);
-const targetTitle = ref("");
 const router = useRouter();
 
 let nextCallback; // fonction next() qu'on retient
@@ -34,7 +32,6 @@ router.beforeEach((to, from, next) => {
   }
   show.value = true;
   minDurationDone = false;
-  targetTitle.value = to.meta.title || "Chargement...";
 
   nextCallback = next; // retient next pour l'appeler plus tard
 
@@ -111,11 +108,5 @@ router.afterEach(() => {
   to {
     opacity: 1;
   }
-}
-
-/* Titre sous la vidéo */
-.loader-title {
-  margin-top: 1rem;
-  color: white;
 }
 </style>
