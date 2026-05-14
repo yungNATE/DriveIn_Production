@@ -10,9 +10,11 @@ const props = withDefaults(
 </script>
 
 <template>
-  <Button title="Play" :disableArrow="true"
+  <Button
+    title="Play"
+    :disableArrow="true"
+    :class="['playButton', { 'playButton--hovered': isHovered }]"
     ><svg
-      :class="['playButton', { 'playButton--hovered': isHovered }]"
       height="48"
       width="68"
       viewBox="0 0 68 48"
@@ -29,15 +31,20 @@ const props = withDefaults(
 </template>
 
 <style scoped lang="scss">
-.btn {
+.playButton {
+  display: block;
   border-radius: 999px;
   aspect-ratio: 1/1;
   padding: 0;
   opacity: 0.85;
-}
 
-.playButton {
-  display: block;
+  :deep(.content) {
+    display: flex;
+  }
+
+  &.playButton--hovered {
+    transform: rotate(-5deg) scale(0.9);
+  }
 }
 .playButton__background {
   display: none;
@@ -47,9 +54,11 @@ const props = withDefaults(
   transition: transform 0.2s ease;
   transform-origin: center;
   fill: rgba(255, 255, 255, 0.75);
+  transition: fill 0.2s ease;
 
   .playButton--hovered & {
-    fill: #fff;
+    fill: $secondary-color-light;
+    transform: scale(1.1);
   }
 }
 </style>

@@ -1,4 +1,0 @@
-. ajouter une vidéo / un gif sur le côté
-. accueil "voir toutes les réalisation" en dessous centré
-. titres des pages
-. favicon
