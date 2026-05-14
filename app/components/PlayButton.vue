@@ -43,7 +43,7 @@ const props = withDefaults(
   }
 
   &.playButton--hovered {
-    transform: rotate(-5deg) scale(0.9);
+    transform: scale(0.9);
   }
 }
 .playButton__background {
@@ -54,11 +54,13 @@ const props = withDefaults(
   transition: transform 0.2s ease;
   transform-origin: center;
   fill: rgba(255, 255, 255, 0.75);
-  transition: fill 0.2s ease;
+  transition:
+    fill 0.2s ease,
+    transform 0.2s ease;
 
   .playButton--hovered & {
     fill: $secondary-color-light;
-    transform: scale(1.1);
+    transform: scale(1.2);
   }
 }
 </style>
