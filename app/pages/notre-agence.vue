@@ -239,11 +239,11 @@ const activeVideoUrl = computed(() =>
         </swiper-slide>
       </swiper-container>
       <div class="swiper-nav">
-        <button class="swiper-prev unstyled miror" aria-label="Précédent">
-          <ArrowGlow orientation="left"></ArrowGlow>
+        <button class="swiper-prev unstyled" aria-label="Précédent">
+          <Arrow orientation="left"></Arrow>
         </button>
         <button class="swiper-next unstyled" aria-label="Suivant">
-          <ArrowGlow orientation="right"></ArrowGlow>
+          <Arrow orientation="right"></Arrow>
         </button>
       </div>
       <span class="bigNumber"> .{{ String(workMethodOpenIndex + 1) }} </span>

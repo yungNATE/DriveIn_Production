@@ -272,12 +272,18 @@ definePageMeta({
           </swiper-slide>
         </swiper-container>
         <div class="swiper-nav">
-          <button class="swiper-prev unstyled miror" aria-label="Précédent">
-            <ArrowGlow orientation="left"></ArrowGlow>
-          </button>
-          <button class="swiper-next unstyled" aria-label="Suivant">
-            <ArrowGlow orientation="right"></ArrowGlow>
-          </button>
+          <SwiperButton
+            class="swiper-prev unstyled"
+            aria-label="Précédent"
+            title="Précédent"
+            orientation="left"
+          />
+          <SwiperButton
+            class="swiper-next unstyled"
+            aria-label="Suivant"
+            title="Suivant"
+            orientation="right"
+          />
         </div>
       </div>
       <div class="textWrapper container">

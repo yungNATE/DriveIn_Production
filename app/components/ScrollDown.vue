@@ -37,7 +37,7 @@ function handleClick(event) {
     :href="anchor"
     @click="handleClick"
   >
-    <ArrowGlow class="rotate-left"></ArrowGlow>
+    <Arrow class="rotate-left"></Arrow>
 
     <p class="h3">
       <slot></slot>

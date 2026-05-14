@@ -207,11 +207,11 @@ watch(expanded, () => {
         </div>
       </div>
       <div class="swiper-nav">
-        <button class="swiper-prev unstyled miror" aria-label="Précédent">
-          <ArrowGlow orientation="left" />
+        <button class="swiper-prev unstyled" aria-label="Précédent">
+          <Arrow orientation="left" />
         </button>
         <button class="swiper-next unstyled" aria-label="Suivant">
-          <ArrowGlow orientation="right" />
+          <Arrow orientation="right" />
         </button>
       </div>
     </div>

@@ -2,6 +2,7 @@
 const props = withDefaults(
   defineProps<{
     isHovered?: boolean;
+    title: string;
   }>(),
   {
     isHovered: false,
@@ -10,44 +11,37 @@ const props = withDefaults(
 </script>
 
 <template>
-  <Button
-    title="Play"
-    :disableArrow="true"
+  <IconButton
+    noHover
     :class="['playButton', { 'playButton--hovered': isHovered }]"
-    ><svg
-      height="48"
-      width="68"
-      viewBox="0 0 68 48"
-      version="1.1"
-      aria-hidden="true"
+    :title="title"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      height="640"
+      width="640"
+      viewBox="0 0 640 640"
+      class="playButton__arrowContainer"
     >
       <path
-        class="playButton__background"
-        d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z"
+        class="playButton__arrow"
+        d="M187.2 100.9C174.8 94.1 159.8 94.4 147.6 101.6C135.4 108.8 128 121.9 128 136L128 504C128 518.1 135.5 531.2 147.6 538.4C159.7 545.6 174.8 545.9 187.2 539.1L523.2 355.1C536 348.1 544 334.6 544 320C544 305.4 536 291.9 523.2 284.9L187.2 100.9z"
       />
-      <path class="playButton__arrow" d="M 45,24 27,14 27,34" fill="#fff" />
     </svg>
-  </Button>
+  </IconButton>
 </template>
 
 <style scoped lang="scss">
 .playButton {
-  display: block;
-  border-radius: 999px;
-  aspect-ratio: 1/1;
-  padding: 0;
-  opacity: 0.85;
-
-  :deep(.content) {
-    display: flex;
-  }
-
   &.playButton--hovered {
     transform: scale(0.9);
   }
 }
-.playButton__background {
-  display: none;
+
+.playButton__arrowContainer {
+  $size: 30px;
+  width: $size;
+  height: $size;
 }
 
 .playButton__arrow {
@@ -59,8 +53,7 @@ const props = withDefaults(
     transform 0.2s ease;
 
   .playButton--hovered & {
-    fill: $secondary-color-light;
-    transform: scale(1.2);
+    transform: scale(1.3);
   }
 }
 </style>
