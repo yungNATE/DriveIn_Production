@@ -383,7 +383,6 @@ section#filteredProjects {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 25px;
       transition:
         transform 0.3s ease,
         filter 200ms ease,
@@ -403,8 +402,7 @@ section#filteredProjects {
         animation-delay: var(--stagger, 0ms);
 
         @include mediaquery(800) {
-          height: fit-content !important;
-          min-height: 200px;
+          max-height: 300px;
         }
       }
 

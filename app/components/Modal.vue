@@ -35,16 +35,17 @@ function emitClose() {
           v-show="isOpen"
         >
           <div class="projectModalContent">
-            <button
-              class="modalClose"
-              type="button"
-              aria-label="Fermer la modale"
-              @click="handleClose"
-            ></button>
-
-            <h3 :id="modalTitleId" class="h2">
-              {{ props.title }}
-            </h3>
+            <div class="header">
+              <button
+                class="modalClose"
+                type="button"
+                aria-label="Fermer la modale"
+                @click="handleClose"
+              ></button>
+              <h3 :id="modalTitleId" class="h2" v-if="props.title">
+                {{ props.title }}
+              </h3>
+            </div>
 
             <div class="modalBody">
               <slot />
@@ -67,6 +68,10 @@ function emitClose() {
   justify-content: center;
   z-index: 9999;
   padding: 20px;
+
+  @include mediaquery("mobile") {
+    padding: 10px;
+  }
 }
 
 .projectModalContent {
@@ -80,12 +85,21 @@ function emitClose() {
   display: flex;
   flex-direction: column;
   gap: 20px;
+
+  @include mediaquery("mobile") {
+    padding: 10px;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-direction: row-reverse;
+  padding-inline: 20px;
 }
 
 .modalClose {
-  position: absolute;
-  top: 12px;
-  right: 12px;
   width: 38px;
   height: 38px;
   border-radius: 50%;
@@ -96,24 +110,24 @@ function emitClose() {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-}
 
-.modalClose::before,
-.modalClose::after {
-  content: "";
-  position: absolute;
-  width: 20px;
-  height: 2px;
-  background: white;
-  border-radius: 2px;
-}
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background: white;
+    border-radius: 2px;
+  }
 
-.modalClose::before {
-  transform: rotate(45deg);
-}
+  &::before {
+    transform: rotate(45deg);
+  }
 
-.modalClose::after {
-  transform: rotate(-45deg);
+  &::after {
+    transform: rotate(-45deg);
+  }
 }
 
 .modalBody {

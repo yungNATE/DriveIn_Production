@@ -20,6 +20,7 @@ const props = withDefaults(
 
 const slots = useSlots();
 const isOpen = ref(false);
+const isPlayButtonHovered = ref(false);
 const hasDefaultSlot = computed(() => Boolean(slots.default));
 const hasCustomSlot = computed(() => Boolean(slots.custom));
 const playerFrame = ref<HTMLIFrameElement | null>(null);
@@ -124,6 +125,8 @@ onBeforeUnmount(() => {
       :aria-expanded="isOpen"
       @click="openModal"
       @keydown="handleTriggerKeydown"
+      @mouseenter="isPlayButtonHovered = true"
+      @mouseleave="isPlayButtonHovered = false"
     >
       <slot v-if="isInvisible || hasDefaultSlot" />
 
@@ -147,7 +150,7 @@ onBeforeUnmount(() => {
           </div>
 
           <div class="modalVideoPlayerPlayButton">
-            <PlayButton />
+            <PlayButton :is-hovered="isPlayButtonHovered" />
           </div>
         </div>
       </template>
@@ -248,36 +251,10 @@ onBeforeUnmount(() => {
   justify-content: center;
   background: rgba(0, 0, 0, 0.28);
   transition: background 0.2s ease;
-
-  :deep(.playButton path:first-of-type) {
-    fill: $secondary-color-light;
-    transition:
-      fill 0.2s ease,
-      transform 0.2s ease;
-    transform-origin: center;
-  }
-
-  :deep(.playButton path:nth-of-type(2)) {
-    transition: transform 0.2s ease;
-    transform-origin: center;
-  }
 }
 
 .modalVideoPlayerTrigger:hover .modalVideoPlayerPlayButton {
   background: rgba(0, 0, 0, 0.38);
-}
-
-.modalVideoPlayerTrigger:hover
-  .modalVideoPlayerPlayButton
-  :deep(.playButton path:first-of-type) {
-  fill: rgba($secondary-color-dark, 0.3);
-  transform: scale(0.9);
-}
-
-.modalVideoPlayerTrigger:hover
-  .modalVideoPlayerPlayButton
-  :deep(.playButton path:nth-of-type(2)) {
-  transform: scale(1.1);
 }
 
 .modalVideoPlayerTrigger--invisible {
