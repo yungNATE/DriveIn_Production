@@ -8,7 +8,8 @@
 <style lang="scss" scoped>
 .contactCTA {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  align-items: center;
   margin-bottom: 1rem;
   margin-block: 110px;
   flex-wrap: wrap;

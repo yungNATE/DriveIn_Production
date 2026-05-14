@@ -12,7 +12,6 @@ const props = defineProps<{
   isInactive?: boolean;
   hidden?: boolean;
   associatedIcon?: string;
-  noHashtag?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -38,10 +37,8 @@ const resolvedTitle = computed(() => resolvedTag.value.title || "nos projets");
     :disableArrow="true"
     :class="{ inactive: resolvedTag.isInactive }"
   >
-    <span class="title"
-      ><template v-if="!noHashtag">#</template>{{ resolvedTitle }}</span
-    >
-    <template v-if="!resolvedTag.isInactive">
+    <span class="title">{{ resolvedTitle }}</span>
+    <!-- <template v-if="!resolvedTag.isInactive">
       <svg
         width="10"
         height="10"
@@ -54,7 +51,7 @@ const resolvedTitle = computed(() => resolvedTag.value.title || "nos projets");
           fill="white"
         />
       </svg>
-    </template>
+    </template> -->
   </Button>
 </template>
 
@@ -71,9 +68,9 @@ const resolvedTitle = computed(() => resolvedTag.value.title || "nos projets");
   align-items: center;
   justify-content: center;
 
-  span.title {
-    margin-right: 7px;
-  }
+  border-radius: 999px;
+  padding: 1rem 2.5rem;
+  font-size: 1.4rem;
 
   svg {
     width: 10px;

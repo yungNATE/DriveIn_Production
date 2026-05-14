@@ -52,20 +52,25 @@ const preloadingCovers = new Set<string>(); // prevent duplicate preload work cl
 // Filters state & logic
 // ----------------------------
 
-// Single selection (XOR). Null means "Tous nos projets".
+// Single selection. Initialize with first visible tag
 const selectedTagId = ref<string | null>(null);
-const isAllSelected = computed(() => !selectedTagId.value);
 
-// Apply filtering:
-// - if no filter selected, return all
-// - otherwise project must include at least one selected tag
+const initializeSelectedTag = () => {
+  if (visibleTags.value?.length) {
+    selectedTagId.value = visibleTags.value[0].id;
+  }
+};
+
+// Initialize on mount or when tags load
+watch(visibleTags, initializeSelectedTag, { immediate: true });
+
+// Apply filtering: project must include the selected tag
 const filteredProjects = computed(() => {
   const items = nosProjets.value || [];
   const activeTagId = selectedTagId.value;
 
   return items.filter((p: any) => {
     const tags: string[] = p?.tagIDs || [];
-    if (!activeTagId) return true;
     return tags.includes(activeTagId);
   });
 });
@@ -75,10 +80,6 @@ function handleSelectTag(tagId: string) {
   if (tagId && tagId !== selectedTagId.value) {
     selectedTagId.value = tagId;
   }
-}
-
-function handleSelectAll() {
-  selectedTagId.value = null;
 }
 
 function updateCoverHeight(src: string, height?: number | null) {
@@ -173,16 +174,6 @@ function onImgLoad(src: string, e: Event) {
       <div class="filterGroup container">
         <span class="filterTitle h3 sr-only">Filtres</span>
         <ul role="group" aria-label="Filtres du contenu" class="unstyled">
-          <li>
-            <Tag
-              id="all"
-              title="Tous nos projets"
-              class="filterable"
-              :class="{ selected: isAllSelected }"
-              :no-hashtag="true"
-              @select="handleSelectAll"
-            />
-          </li>
           <li v-for="tag in visibleTags" :data-format="tag.type">
             <Tag
               :tag="tag"
