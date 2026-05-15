@@ -54,24 +54,6 @@ body {
 }
 
 h1,
-.h1 {
-  font-size: clamp(1.7rem, 6vw, 3rem);
-  font-weight: 1000;
-}
-h2,
-.h2 {
-  font-size: clamp(1.3rem, 6vw, 2rem);
-}
-h3,
-.h3 {
-  font-size: clamp(1rem, 3vw, 1.4rem);
-}
-h4,
-.h4 {
-  font-size: clamp(0.8rem, 2vw, 1.1rem);
-}
-
-h1,
 h2,
 h3,
 h4,
@@ -86,10 +68,32 @@ a,
 .h6,
 .a {
   font-family: Inter, sans-serif;
-  font-weight: $font-weight-black;
   text-decoration: none;
   color: white;
   margin: 0;
+}
+
+h1,
+.h1 {
+  font-size: clamp(1.7rem, 6vw, 3rem);
+  font-weight: $font-weight-black;
+  text-transform: uppercase;
+}
+h2,
+.h2 {
+  font-size: clamp(1.3rem, 6vw, 2.5rem);
+  font-weight: $font-weight-black;
+  text-transform: uppercase;
+}
+h3,
+.h3 {
+  font-size: clamp(1rem, 3vw, 1.4rem);
+  font-weight: $font-weight-bold;
+}
+h4,
+.h4 {
+  font-size: clamp(0.8rem, 2vw, 1.1rem);
+  font-weight: $font-weight-bold;
 }
 
 p,
