@@ -2,10 +2,11 @@
 const props = withDefaults(
   defineProps<{
     isHovered?: boolean;
-    title: string;
+    title?: string;
   }>(),
   {
     isHovered: false,
+    title: "Lire la vidéo",
   },
 );
 </script>
