@@ -389,8 +389,8 @@ section.hero {
     }
 
     .video-player-wrapper {
-      flex: 0 1 600px;
-      width: min(600px, 100%);
+      flex: 0 1 850px;
+      // width: min(600px, 100%);
       aspect-ratio: 16 / 9;
       display: block;
       border-radius: 20px;
