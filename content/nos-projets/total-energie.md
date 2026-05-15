@@ -1,6 +1,8 @@
 ---
 title: "Refonte site Total Énergie"
-presentation: >
+shortDescription: >
+  (résumé) Ce projet consiste à refondre le site web de Total énergie afin d'améliorer l'expérience utilisateur.
+description: >
   Ce projet consiste à refondre le site web de Total énergie afin d'améliorer l'expérience utilisateur.
 
 cover: "/images/nos-projets/aviva-assurance/cover.jpg"

@@ -158,9 +158,6 @@ function onImgLoad(src: string, e: Event) {
 
     <section class="header container">
       <h1>Nos réalisations</h1>
-      <Button to="/nous-contacter" title="Notre page de contact"
-        >Prendre rendez-vous</Button
-      >
     </section>
 
     <section
@@ -235,13 +232,14 @@ function onImgLoad(src: string, e: Event) {
               <div class="bottom">
                 <p class="projectTitle h2">{{ item.title }}</p>
               </div>
-              <template #custom>
-                <p class="modalDescription">{{ item.presentation }}</p>
+              <template #custom="{ close }">
+                <p class="modalDescription">{{ item.shortDescription }}</p>
 
                 <Button
                   v-if="item.path"
                   :to="item.path"
                   title="Voir le détail du projet"
+                  @click="close"
                 >
                   Voir le projet
                 </Button>
@@ -297,7 +295,7 @@ function onImgLoad(src: string, e: Event) {
 section.header {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-block: 3rem 5rem;
   gap: 30px;

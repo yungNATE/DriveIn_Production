@@ -9,7 +9,8 @@ export default defineContentConfig({
         type: "page",
         schema: z.object({
           title: z.string(),
-          presentation: z.string(),
+          shortDescription: z.string(),
+          description: z.string(),
           cover: z.string(),
           video: z.string(),
           otherFormats: z.array(z.string()).optional(),

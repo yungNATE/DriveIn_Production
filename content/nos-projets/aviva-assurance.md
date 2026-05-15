@@ -1,6 +1,8 @@
 ---
 title: "Refonte site Aviva assurance"
-presentation: >
+shortDescription: >
+  (résumé) Ce projet consiste à refondre le site web d'Aviva assurance afin d'améliorer l'expérience utilisateur.
+description: >
   Ce projet consiste à refondre le site web d'Aviva assurance afin d'améliorer l'expérience utilisateur.
 
 cover: "/images/nos-projets/aviva-assurance/cover.jpg"
