@@ -69,6 +69,10 @@ const props = withDefaults(
   }
 }
 
+.CTA {
+  font-size: clamp(14px, 4vw, 1.5rem);
+}
+
 :deep(span) {
   position: relative;
   width: 100%;

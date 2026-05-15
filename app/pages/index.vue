@@ -143,7 +143,7 @@ definePageMeta({
 
         <Button
           to="/nous-contacter"
-          class="header-cta"
+          class="CTA"
           title="Nous contacter pour discuter de votre projet vidéo"
           >Prendre rendez-vous</Button
         >
@@ -189,7 +189,10 @@ definePageMeta({
       </div>
     </div>
 
-    <Button to="/notre-agence" title="Découvrez nos différents projets"
+    <Button
+      to="/notre-agence"
+      title="Découvrez nos différents projets"
+      class="CTA"
       >Voir toutes nos réalisations</Button
     >
   </section>
@@ -223,7 +226,7 @@ definePageMeta({
         </p>
       </div>
       <Button
-        class="desktop_AD"
+        class="desktop_AD CTA"
         to="/conseils"
         title="Notre page de conseils pour réussir votre projet vidéo"
         >Découvrir tous nos autres conseils</Button
@@ -303,7 +306,7 @@ definePageMeta({
           </BlocImgText>
         </Transition>
         <Button
-          class="mobile_AD"
+          class="mobile_AD CTA"
           to="/conseils"
           title="Notre page de conseils pour réussir votre projet vidéo"
           >Découvrir tous nos autres conseils</Button
@@ -382,10 +385,6 @@ section.hero {
 
       .subHook {
         font-size: clamp(1rem, 2vw, 1.2rem);
-      }
-
-      .header-cta {
-        font-size: clamp(14px, 4vw, 1.5rem);
       }
     }
 
