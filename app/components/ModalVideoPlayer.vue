@@ -170,7 +170,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div v-if="hasCustomSlot" class="modalVideoPlayerCustom">
-        <slot name="custom" />
+        <slot name="custom" :close="closeModal" />
       </div>
     </Modal>
   </div>

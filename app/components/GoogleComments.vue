@@ -207,12 +207,18 @@ watch(expanded, () => {
         </div>
       </div>
       <div class="swiper-nav">
-        <button class="swiper-prev unstyled" aria-label="Précédent">
-          <Arrow orientation="left" />
-        </button>
-        <button class="swiper-next unstyled" aria-label="Suivant">
-          <Arrow orientation="right" />
-        </button>
+        <SwiperButton
+          class="swiper-prev unstyled"
+          aria-label="Précédent"
+          title="Précédent"
+          orientation="left"
+        />
+        <SwiperButton
+          class="swiper-next unstyled"
+          aria-label="Suivant"
+          title="Suivant"
+          orientation="right"
+        />
       </div>
     </div>
     <div class="slider">
