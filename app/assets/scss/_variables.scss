@@ -13,7 +13,7 @@ $font-sanchez-niu: "Sanchez Niu", serif;
 
 // Définitions des poids par défaut
 $font-weight-normal: 400;
-$font-weight-bold: 700;
+$font-weight-bold: 600;
 $font-weight-black: 900;
 
 // Définitions des couleurs
@@ -23,7 +23,6 @@ $primary-color-light: #ffda00;
 $secondary-color-light: #efb401;
 
 // Spécifiques
-$index-sectionHero-breakpoint: 1364;
 
 // Container mixin
 @mixin container($max-width: 1700px) {

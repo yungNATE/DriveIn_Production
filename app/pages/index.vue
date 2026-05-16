@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from "vue";
 import { getVisibleTags, type ProjectTag } from "~~/lib/tags";
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 // Swiper
 const swiperRef = ref<HTMLElement | null>(null);
@@ -56,6 +57,38 @@ onMounted(async () => {
   });
   tl.eventCallback("onComplete", () => {
     window.dispatchEvent(new Event("resize"));
+  });
+
+  // Enregistrer ScrollTrigger
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Animation des étapes du projet
+  const etapes = document.querySelectorAll(".etape");
+  etapes.forEach((etape, index) => {
+    gsap.to(etape, {
+      opacity: 1,
+      transform: "scale(1)",
+      duration: 0.6,
+      ease: "power.out",
+      scrollTrigger: {
+        trigger: ".etapes",
+        endTrigger: "section.etapesProjet",
+        start: "top bottom",
+        end: "top top",
+        scrub: true, // Lier l'animation au scroll
+        markers: false,
+        onUpdate: (self) => {
+          // Décaler l'apparition de chaque étape progressivement à partir
+          const progress = self.progress;
+          const etapesCount = etapes.length;
+          const etapeProgress = (progress * etapesCount - index) * 1.2;
+          gsap.set(etape, {
+            opacity: Math.max(0, Math.min(1, etapeProgress)),
+            transform: `scale(${Math.max(0, Math.min(1, 0.8 + etapeProgress * 0.2))})`,
+          });
+        },
+      },
+    });
   });
 });
 
@@ -198,7 +231,13 @@ definePageMeta({
   </section>
 
   <section class="etapesProjet">
-    <h2 class="h1">Créons ensemble votre vidéo</h2>
+    <div class="header container">
+      <h2 class="h1">Créons ensemble votre vidéo</h2>
+      <p class="h3">
+        De l’idée à la livraison, nous vous accompagnons à chaque étape de votre
+        projet.
+      </p>
+    </div>
     <HomeProjectStepParticles id="tsparticles"> </HomeProjectStepParticles>
     <div class="etapes container">
       <div
@@ -207,7 +246,7 @@ definePageMeta({
         class="etape"
         :class="`etape-${i}`"
       >
-        <h3 class="h2">{{ etape.title }}</h3>
+        <h3>{{ etape.title }}</h3>
         <div class="description">
           <img :src="etape.img" alt="" />
           <p class="h3">{{ etape.description }}</p>
@@ -322,6 +361,7 @@ definePageMeta({
 
 <style lang="scss" scoped>
 @use "sass:color";
+$sectionHero-breakpoint: 1898;
 
 section.hero {
   padding-bottom: 150px;
@@ -332,7 +372,7 @@ section.hero {
   gap: 100px 135px;
   min-height: $heroBanner-fullHeight;
 
-  @include mediaquery($index-sectionHero-breakpoint) {
+  @include mediaquery($sectionHero-breakpoint) {
     padding-bottom: 50px;
   }
 
@@ -356,7 +396,7 @@ section.hero {
       min-height: 0;
     }
 
-    @include mediaquery($index-sectionHero-breakpoint) {
+    @include mediaquery($sectionHero-breakpoint) {
       gap: 75px;
     }
 
@@ -366,7 +406,7 @@ section.hero {
       justify-content: space-between;
       gap: 50px;
 
-      @include mediaquery($index-sectionHero-breakpoint) {
+      @include mediaquery($sectionHero-breakpoint) {
         align-items: center;
         text-align: center;
         width: 100%;
@@ -439,7 +479,8 @@ section.realisations {
     .controles {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
+      flex-direction: column;
       width: 100%;
       gap: 20px 50px;
 
@@ -463,7 +504,7 @@ section.realisations {
       }
 
       .title {
-        max-width: 350px;
+        text-align: center;
       }
 
       .tagWrapper {
@@ -477,6 +518,7 @@ section.realisations {
         display: flex;
         gap: 10px;
         flex-wrap: wrap;
+        justify-content: center;
       }
     }
   }
@@ -489,13 +531,15 @@ section.etapesProjet {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding-block: 220px 100px;
+  padding-block: 150px;
   position: relative;
   margin-block: 250px;
   overflow: visible;
+  gap: 100px;
 
   @include mediaquery(900) {
     margin-block: 150px;
+    padding-block: 100px;
   }
 
   &::after {
@@ -530,18 +574,17 @@ section.etapesProjet {
     );
   }
 
-  h2 {
-    position: absolute;
-    top: 100px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
+  .header {
     text-align: center;
     z-index: 9;
   }
 
   h3 {
     position: relative;
+  }
+
+  p {
+    font-weight: 500;
   }
 
   #tsparticles {
@@ -559,6 +602,7 @@ section.etapesProjet {
     gap: 50px;
     justify-content: center;
     align-items: stretch;
+    margin: auto;
 
     .etape {
       display: flex;
@@ -568,6 +612,11 @@ section.etapesProjet {
       flex: 1 1 340px;
       max-width: 650px;
       gap: 30px 100px;
+      opacity: 0;
+
+      &:first-child {
+        opacity: 1;
+      }
 
       .description {
         overflow: hidden;
