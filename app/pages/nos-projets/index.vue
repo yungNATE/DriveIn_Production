@@ -227,6 +227,9 @@ function onImgLoad(src: string, e: Event) {
                     @load="onImgLoad(item.cover, $event)"
                   />
                 </div>
+                <div class="projectPlayButton" aria-hidden="true">
+                  <PlayButton />
+                </div>
               </div>
 
               <div class="bottom">
@@ -457,6 +460,26 @@ section#filteredProjects {
             transform 0.5s ease;
         }
       }
+
+      .projectPlayButton {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        opacity: 0;
+        transform: scale(0.88);
+        transition:
+          opacity 0.3s ease,
+          transform 0.3s ease;
+      }
+
+      &:hover .projectPlayButton {
+        opacity: 1;
+        transform: scale(1);
+      }
       // Other hover transitions handled by mixin
 
       .read-more {
@@ -502,6 +525,11 @@ section#filteredProjects {
     :deep(.masonry-item) {
       > div {
         @include card-hover-state;
+
+        .projectPlayButton {
+          opacity: 1;
+          transform: scale(1);
+        }
       }
     }
   }
