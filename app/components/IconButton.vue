@@ -46,5 +46,10 @@ const isHovered = ref(false);
   &:hover {
     transform: scale(0.9);
   }
+
+  &.swiper-button-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 </style>

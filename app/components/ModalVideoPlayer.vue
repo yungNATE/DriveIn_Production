@@ -214,6 +214,7 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  align-items: center;
 }
 
 .modalVideoPlayerThumbnail {

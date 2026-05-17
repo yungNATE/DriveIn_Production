@@ -420,6 +420,10 @@ section.workMethod {
   overflow: hidden;
   margin-block: 200px;
 
+  @include mediaquery("mobile") {
+    margin-block: 100px;
+  }
+
   display: flex;
   flex-direction: column;
   gap: 75px;
@@ -461,8 +465,7 @@ section.workMethod {
       height: 300px;
 
       swiper-slide {
-        width: 350px;
-        padding: 20px;
+        max-width: 350px;
       }
     }
 

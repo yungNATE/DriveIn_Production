@@ -507,6 +507,7 @@ section#filteredProjects {
 
 .modalDescription {
   max-width: 800px;
+  padding-inline: 20px;
 }
 
 @media (prefers-reduced-motion: reduce) {

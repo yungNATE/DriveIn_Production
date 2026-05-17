@@ -42,7 +42,7 @@ function emitClose() {
                 aria-label="Fermer la modale"
                 @click="handleClose"
               ></button>
-              <h3 :id="modalTitleId" class="h2" v-if="props.title">
+              <h3 :id="modalTitleId" v-if="props.title">
                 {{ props.title }}
               </h3>
             </div>

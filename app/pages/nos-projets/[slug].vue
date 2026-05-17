@@ -56,7 +56,7 @@ const onLightboxHide = () => {
   <div class="content container">
     <section class="description">
       <h1>{{ project?.title }}</h1>
-      <p class="h3">{{ project?.description }}</p>
+      <p class="h4">{{ project?.description }}</p>
     </section>
 
     <section class="media">
@@ -139,7 +139,7 @@ div.container {
   }
 }
 section.description {
-  flex: 1;
+  flex: 3;
 
   display: flex;
   flex-direction: column;

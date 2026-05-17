@@ -684,5 +684,10 @@ section.advices {
 section.comments {
   padding-top: 200px;
   padding-bottom: 175px;
+
+  @include mediaquery("mobile") {
+    padding-top: 100px;
+    padding-bottom: 100px;
+  }
 }
 </style>
