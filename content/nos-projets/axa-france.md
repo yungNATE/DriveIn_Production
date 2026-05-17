@@ -1,5 +1,5 @@
 ---
-title: "Refonte site AXA"
+title: "Shooting photo"
 shortDescription: >
   (résumé) Ce projet consiste à refondre le site web d'AXA France afin d'améliorer l'expérience utilisateur.
 description: >

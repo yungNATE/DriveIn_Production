@@ -1,9 +1,9 @@
 ---
-title: "Refonte site Total Énergie"
+title: "Création d'une vidéo de présentation"
 shortDescription: >
-  (résumé) Ce projet consiste à refondre le site web de Total énergie afin d'améliorer l'expérience utilisateur.
+  (résumé) Ce projet consiste créer une vidéo de présentation pour la FFH afin de mettre en avant les valeurs sportives et de dépassement de soi.
 description: >
-  Ce projet consiste à refondre le site web de Total énergie afin d'améliorer l'expérience utilisateur.
+  Ce projet consiste créer une vidéo de présentation pour la FFH afin de mettre en avant les valeurs sportives et de dépassement de soi.
 
 cover: "/images/nos-projets/aviva-assurance/cover.jpg"
 video: "1071968720"
@@ -16,7 +16,7 @@ photos:
   - "/images/nos-projets/aviva-assurance/cover.jpg"
 
 partner:
-  - Axa France
+  - Fédération Française de handball
 
 highlighted: "UX"
 

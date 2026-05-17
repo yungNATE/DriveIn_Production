@@ -94,7 +94,7 @@ function emitClose() {
 
 .header {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   flex-direction: row-reverse;
   padding-inline: 20px;

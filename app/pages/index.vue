@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, nextTick, watch } from "vue";
 import type { AccordionPanel } from "~/components/Accordion.vue";
 import { getVisibleTags, type ProjectTag } from "~~/lib/tags";
 import { gsap } from "gsap";
@@ -109,6 +109,20 @@ const currentHighlightedProject = computed(() => {
 
 const selectedTag = ref<ProjectTag | null>(allTags.value?.[0] ?? null);
 
+const realisationHomeWrapper = ref<HTMLElement | null>(null);
+const highlightedProjectMinHeight = ref<string>();
+
+watch(
+  currentHighlightedProject,
+  async () => {
+    await nextTick();
+
+    const height = realisationHomeWrapper.value?.offsetHeight ?? 0;
+    highlightedProjectMinHeight.value = height > 0 ? `${height}px` : undefined;
+  },
+  { immediate: true },
+);
+
 function handleTagSelect(tagId: string) {
   if (!allTags.value) return;
   selectedTag.value = allTags.value.find((tag) => tag.id === tagId) ?? null;
@@ -204,12 +218,16 @@ definePageMeta({
         </div>-->
       </div>
 
-      <div class="realisationHomeWrapper">
-        <Transition name="fade" mode="out-in">
+      <div
+        ref="realisationHomeWrapper"
+        class="realisationHomeWrapper"
+        :style="highlightedProjectMinHeight ? { minHeight: highlightedProjectMinHeight } : undefined"
+      >
+        <Transition name="highlighted-project" mode="out-in" appear>
           <RealisationHome
             v-if="currentHighlightedProject"
             :project="currentHighlightedProject"
-            :key="currentHighlightedProject.id"
+            :key="currentHighlightedProject.path"
           />
         </Transition>
       </div>
@@ -412,6 +430,35 @@ section.realisations {
     align-items: center;
     gap: 50px;
     width: 100%;
+
+    .realisationHomeWrapper {
+      width: 100%;
+      position: relative;
+      transition: min-height 220ms ease;
+    }
+
+    :deep(.highlighted-project-enter-active),
+    :deep(.highlighted-project-leave-active) {
+      transition:
+        opacity 220ms ease,
+        transform 220ms ease,
+        filter 220ms ease;
+      will-change: opacity, transform, filter;
+    }
+
+    :deep(.highlighted-project-enter-from),
+    :deep(.highlighted-project-leave-to) {
+      opacity: 0;
+      transform: translateY(12px) scale(0.985);
+      filter: blur(2px);
+    }
+
+    :deep(.highlighted-project-enter-to),
+    :deep(.highlighted-project-leave-from) {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
 
     .controles {
       display: flex;

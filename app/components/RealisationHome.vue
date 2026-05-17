@@ -11,7 +11,7 @@ const props = defineProps<{
     slug: string;
     title: string;
     presentation: string;
-    partner: string;
+    partner: string[];
     path: string;
     video: string;
     tagIDs: string[]; // ← important : ce sont des strings
@@ -32,15 +32,17 @@ const tags = computed(() => {
 });
 
 // Get partners description from partners content
-const { data: partners } = await useAsyncData(
-  "partners-realisation",
-  async () => {
-    const data = await queryCollection("partners")
-      .where("name", "LIKE", props.project.partner[0])
-      .all();
-    return flattenMeta(data);
-  },
+const partnersKey = computed(
+  () => `partners-realisation-${props.project.path}`,
 );
+
+const { data: partners } = await useAsyncData(partnersKey, async () => {
+  const partnerName = props.project.partner?.[0] ?? "";
+  const data = await queryCollection("partners")
+    .where("name", "LIKE", partnerName)
+    .all();
+  return flattenMeta(data);
+});
 
 const partnersList = computed(() => partners.value ?? []);
 </script>
@@ -51,7 +53,7 @@ const partnersList = computed(() => partners.value ?? []);
       <div class="presentation">
         <h3>
           {{ project.title }}
-          Pour
+          pour
           <i style="color: white" v-for="partner in partnersList">
             {{ partner.name }}
           </i>
@@ -60,21 +62,23 @@ const partnersList = computed(() => partners.value ?? []);
         <p>{{ project.presentation }}</p>
       </div>
 
-      <SpecialLink
+      <Button
         class="desktop_RH"
         :to="project.path"
         :title="`Découvrir les coulisses du projet ${project.title}`"
-        >Les coulisses du projet</SpecialLink
       >
+        Les coulisses du projet
+      </Button>
     </div>
     <div class="video-wrapper">
       <ModalVideoPlayer :id="project.video" />
-      <SpecialLink
+      <Button
         class="mobile_RH"
         :to="project.path"
         :title="`Découvrir les coulisses du projet ${project.title}`"
-        >Les coulisses du projet</SpecialLink
       >
+        Les coulisses du projet
+      </Button>
     </div>
   </div>
 </template>
@@ -93,6 +97,7 @@ const partnersList = computed(() => partners.value ?? []);
   text-align: left;
 
   display: flex;
+  flex-direction: column;
   gap: 50px;
 
   $firstBreakpoint: 1490px;
@@ -102,7 +107,7 @@ const partnersList = computed(() => partners.value ?? []);
     padding-bottom: 50px;
   }
 
-  .special_link {
+  .btn {
     &.mobile_RH {
       display: none;
       font-size: 1rem;
@@ -120,10 +125,8 @@ const partnersList = computed(() => partners.value ?? []);
 
   .text {
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
     gap: 50px;
-    max-width: 350px;
 
     @include mediaquery($firstBreakpoint) {
       max-width: 100%;
