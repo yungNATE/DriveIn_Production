@@ -1,20 +1,11 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
+import type { AccordionPanel } from "~/components/Accordion.vue";
 import { getVisibleTags, type ProjectTag } from "~~/lib/tags";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-// Swiper
-const swiperRef = ref<HTMLElement | null>(null);
-
 onMounted(async () => {
-  const swiperEl = swiperRef.value;
-  if (swiperEl) {
-    const { injectSwiperPaginationCurrentStyle } =
-      await import("@/utils/inject-swiper-style.js");
-    injectSwiperPaginationCurrentStyle(swiperEl);
-  }
-
   // Animation d'entrée de la section hero
   const hero = document.querySelector(".hero");
   // retirer la classe invisible juste avant de lancer la timeline
@@ -143,12 +134,14 @@ const { data: advices } = await useAsyncData("conseils", async () => {
 type TruncateFn = (input: unknown, limit?: number, ellipsis?: string) => string;
 const truncate = useNuxtApp().$truncate as TruncateFn;
 
-const currentAdvice = ref(advices.value ? advices.value[0] : null); // defaults to first advice
+const advicePanels = computed<AccordionPanel[]>(() => {
+  const items = (advices.value as any[]) || [];
 
-function handleAdviceSelect(advice: any) {
-  // change current advice to the selected advice
-  currentAdvice.value = advice;
-}
+  return items.map((advice) => ({
+    header: advice.question,
+    content: truncate(advice.description, 250, "..."),
+  }));
+});
 
 // Meta
 definePageMeta({
@@ -272,85 +265,29 @@ definePageMeta({
       >
     </div>
     <div class="content">
-      <div class="swiper">
-        <swiper-container
-          ref="swiperRef"
-          class="swiper-container"
-          navigation-next-el="section.advices .swiper-next"
-          navigation-prev-el="section.advices .swiper-prev"
-          pagination-type="fraction"
-          watch-overflow="true"
-          slides-per-view="1"
-          slides-per-group="1"
-          space-between="20"
-          :breakpoints="{
-            '0': { slidesPerView: 1, slidesPerGroup: 1, spaceBetween: 16 },
-            '768': {
-              slidesPerView: 'auto',
-              slidesPerGroup: 1,
-              spaceBetween: 20,
-            },
-          }"
-        >
-          <swiper-slide
-            v-for="advice in advices"
-            :key="advice._id"
-            :class="[
-              'swiper-slide',
-              { 'swiper-slide-current': currentAdvice?.id === advice.id },
-            ]"
+      <Accordion
+        class="adviceAccordion"
+        :accordionPanels="advicePanels"
+        :onlyOneOpenAtTheTime="true"
+        maxWidth="min(100%, 920px)"
+      >
+        <template #panel="{ index }">
+          <Button
+            v-if="advices?.[index]?.path"
+            class="advice-link"
+            :to="advices[index].path"
+            :title="`Lire le conseil : ${advices[index].question}`"
           >
-            <div class="question">
-              <Button
-                class="h3"
-                :id="advice.id"
-                :disableArrow="true"
-                :title="`Lire le conseil : ${advice.question}`"
-                @click="() => handleAdviceSelect(advice)"
-              >
-                {{ advice.question }}
-              </Button>
-            </div>
-          </swiper-slide>
-        </swiper-container>
-        <div class="swiper-nav">
-          <SwiperButton
-            class="swiper-prev unstyled"
-            aria-label="Précédent"
-            title="Précédent"
-            orientation="left"
-          />
-          <SwiperButton
-            class="swiper-next unstyled"
-            aria-label="Suivant"
-            title="Suivant"
-            orientation="right"
-          />
-        </div>
-      </div>
-      <div class="textWrapper container">
-        <Transition name="fade" mode="out-in">
-          <BlocImgText
-            :key="currentAdvice?.id"
-            :src="currentAdvice?.img"
-            :alt="currentAdvice?.question || ''"
-            customClass="adviceText "
-          >
-            <p>
-              {{ truncate(currentAdvice?.description, 250, "...") }}
-              <SpecialLink :to="currentAdvice?.path" class="gold"
-                >En savoir plus</SpecialLink
-              >
-            </p>
-          </BlocImgText>
-        </Transition>
-        <Button
-          class="mobile_AD CTA"
-          to="/conseils"
-          title="Notre page de conseils pour réussir votre projet vidéo"
-          >Découvrir tous nos autres conseils</Button
-        >
-      </div>
+            En savoir plus
+          </Button>
+        </template>
+      </Accordion>
+      <Button
+        class="mobile_AD CTA"
+        to="/conseils"
+        title="Notre page de conseils pour réussir votre projet vidéo"
+        >Découvrir tous nos autres conseils</Button
+      >
     </div>
   </section>
 
@@ -690,92 +627,20 @@ section.advices {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 100px;
+    gap: 50px;
 
-    .textWrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      row-gap: 50px;
-
-      :deep(.adviceText) {
-        max-width: 700px;
-      }
-      :deep(.adviceText .text > p) {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-      }
+    .adviceAccordion {
+      width: 100%;
     }
 
-    .swiper {
-      $swiper-advice-breakpoint: 769px;
+    :deep(.accordion-body) {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
 
-      @include mediaquery(1000) {
-        width: 100%;
-      }
-
-      swiper-container {
-        width: 100%;
-
-        .swiper-slide {
-          width: 100%;
-          max-width: none;
-
-          @media (min-width: $swiper-advice-breakpoint) {
-            width: auto;
-            max-width: 300px;
-            height: auto;
-          }
-
-          .question,
-          button {
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          }
-
-          button {
-            padding: 20px;
-            margin: 5px;
-            border-radius: 12px;
-          }
-
-          &.swiper-slide-current button {
-            color: $primary-color-light;
-          }
-        }
-
-        &::part(container) {
-          padding-bottom: 30px;
-        }
-        &::part(pagination) {
-          position: absolute;
-          top: 100%;
-          right: 10px;
-          width: -moz-fit-content;
-          width: fit-content;
-          left: unset;
-          height: fit-content;
-          transform: translateY(-100%);
-
-          @media (min-width: $swiper-advice-breakpoint) {
-            display: none;
-          }
-        }
-        &::part(pagination-current) {
-          color: $primary-color-light;
-        }
-      }
-
-      .swiper-nav {
-        margin-left: 60px;
-      }
-
-      .swiper-button-lock {
-        display: none;
-      }
+    :deep(.accordion-body .advice-link) {
+      width: fit-content;
     }
   }
 }
