@@ -16,27 +16,6 @@ const SWIPER_BREAKPOINTS = {
   1000: { slidesPerView: 3 },
 };
 
-// Moyenne des notes (brute)
-const averageRating = computed(() => {
-  const arr = googleComments.value || [];
-  if (!arr.length) return 0;
-  const total = arr.reduce(
-    (acc: number, c: any) => acc + Number(c.rating || 0),
-    0,
-  );
-  return total / arr.length;
-});
-// (ancienne déclaration averageRatingDisplay supprimée pour éviter doublon)
-
-// (fractions maintenant gérées par composant Stars)
-// Version formatée sur 2 décimales puis suppression des zéros finaux inutiles (ex: 4.70 -> 4.7, 5.00 -> 5)
-const averageRatingDisplay = computed(() => {
-  const fixed = averageRating.value.toFixed(2); // toujours 2 décimales
-  return fixed.replace(/\.0+$/, "").replace(/(\.\d*[1-9])0$/, "$1");
-});
-// Pour les étoiles (arrondi entier classique)
-const roundedAverageRating = computed(() => Math.round(averageRating.value));
-
 // Tri naturel par numéro dans le nom de fichier (comment1, comment2, ... comment10)
 const sortedComments = computed(() => {
   if (!googleComments.value) return [];
@@ -188,38 +167,8 @@ watch(expanded, () => {
 <template>
   <div class="googleComments container">
     <div class="header">
-      <div class="brand">
-        <h2>Avis Google</h2>
-        <div
-          class="rating noteMoyenne"
-          v-if="googleComments && googleComments.length"
-        >
-          <span class="value sr-only">{{ averageRatingDisplay }}</span>
-          <span class="separator sr-only">/ {{ RATING_MAX }}</span>
-          <Stars
-            class="stars-primary"
-            :value="Number(averageRating)"
-            :max="RATING_MAX"
-            :size="30"
-            :duration="2000"
-            animated
-          />
-        </div>
-      </div>
-      <div class="swiper-nav">
-        <SwiperButton
-          class="swiper-prev unstyled"
-          aria-label="Précédent"
-          title="Précédent"
-          orientation="left"
-        />
-        <SwiperButton
-          class="swiper-next unstyled"
-          aria-label="Suivant"
-          title="Suivant"
-          orientation="right"
-        />
-      </div>
+      <h2>Des clients satisfaits</h2>
+      <p>et ça se voit !</p>
     </div>
     <div class="slider">
       <swiper-container
@@ -278,6 +227,21 @@ watch(expanded, () => {
           </article>
         </swiper-slide>
       </swiper-container>
+
+      <div class="swiper-nav">
+        <SwiperButton
+          class="swiper-prev unstyled"
+          aria-label="Précédent"
+          title="Précédent"
+          orientation="left"
+        />
+        <SwiperButton
+          class="swiper-next unstyled"
+          aria-label="Suivant"
+          title="Suivant"
+          orientation="right"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -291,34 +255,11 @@ div.googleComments {
   .header {
     margin-bottom: 40px;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 40px 150px;
     flex-wrap: wrap;
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-
-      .googleLogo {
-        width: 60px;
-        height: auto;
-      }
-
-      .noteMoyenne {
-        align-items: center;
-        gap: 10px;
-        font-size: 1.1rem;
-
-        .value {
-          font-size: 2rem;
-          font-weight: 700;
-          color: $primary-color-light;
-        }
-      }
-    }
+    text-align: center;
   }
 
   .slider {
@@ -336,6 +277,7 @@ div.googleComments {
         opacity: 0.15;
         transform: scale(0.6);
         pointer-events: none; // désactive interactions pour les slides non actives
+        margin-block: auto;
 
         &.swiper-slide-prev,
         &.swiper-slide-next {
@@ -390,7 +332,7 @@ div.googleComments {
       margin-top: 30px;
       display: flex;
       justify-content: center;
-      gap: 60px;
+      gap: 40px;
     }
   }
 

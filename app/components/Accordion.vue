@@ -455,7 +455,7 @@ onMounted(() => {
 }
 
 .accordion-body {
-  padding: 0 1.25rem 1.2rem 1.25rem;
+  padding: 1rem 1.25rem 1.2rem 1.25rem;
   font-size: 0.95rem;
   line-height: 1.55;
   color: inherit;

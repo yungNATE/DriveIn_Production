@@ -221,7 +221,11 @@ definePageMeta({
       <div
         ref="realisationHomeWrapper"
         class="realisationHomeWrapper"
-        :style="highlightedProjectMinHeight ? { minHeight: highlightedProjectMinHeight } : undefined"
+        :style="
+          highlightedProjectMinHeight
+            ? { minHeight: highlightedProjectMinHeight }
+            : undefined
+        "
       >
         <Transition name="highlighted-project" mode="out-in" appear>
           <RealisationHome
@@ -266,8 +270,8 @@ definePageMeta({
     </div>
   </section>
 
-  <section class="advices" id="nos-conseils">
-    <div class="header container">
+  <section class="advices container" id="nos-conseils">
+    <div class="header">
       <div class="text">
         <h2>Des questions avant de lancer votre projet ?</h2>
         <p>
@@ -275,18 +279,13 @@ definePageMeta({
           plus sereinement possible.
         </p>
       </div>
-      <Button
-        class="desktop_AD CTA"
-        to="/conseils"
-        title="Notre page de conseils pour réussir votre projet vidéo"
-        >Découvrir tous nos autres conseils</Button
-      >
     </div>
     <div class="content">
       <Accordion
         class="adviceAccordion"
         :accordionPanels="advicePanels"
         :onlyOneOpenAtTheTime="true"
+        :openFirstPanel="false"
         maxWidth="min(100%, 920px)"
       >
         <template #panel="{ index }">
@@ -301,10 +300,10 @@ definePageMeta({
         </template>
       </Accordion>
       <Button
-        class="mobile_AD CTA"
+        class="CTA"
         to="/conseils"
         title="Notre page de conseils pour réussir votre projet vidéo"
-        >Découvrir tous nos autres conseils</Button
+        >Nos autres conseils</Button
       >
     </div>
   </section>
@@ -374,8 +373,12 @@ section.hero {
       }
 
       .hook {
-        white-space: nowrap;
         margin-top: -20px;
+
+        .gold,
+        .blue {
+          white-space: nowrap;
+        }
       }
 
       .subHook {
@@ -639,18 +642,6 @@ section.advices {
   align-items: center;
   gap: 50px;
 
-  .mobile_AD {
-    display: none;
-  }
-  @include mediaquery(769) {
-    .mobile_AD {
-      display: block;
-    }
-    .desktop_AD {
-      display: none;
-    }
-  }
-
   .header {
     flex: 1;
     min-width: 300px;
@@ -660,12 +651,10 @@ section.advices {
     justify-content: center;
     flex-wrap: wrap;
     gap: 20px 100px;
+    text-align: center;
 
     h2 {
       margin-bottom: 20px;
-    }
-    p {
-      max-width: 600px;
     }
   }
 
