@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import Player from "@vimeo/player";
-
 type VimeoOEmbedResponse = {
   thumbnail_url?: string;
   title?: string;
@@ -23,10 +21,7 @@ const isOpen = ref(false);
 const isPlayButtonHovered = ref(false);
 const hasDefaultSlot = computed(() => Boolean(slots.default));
 const hasCustomSlot = computed(() => Boolean(slots.custom));
-const playerFrame = ref<HTMLIFrameElement | null>(null);
-const vimeoPlayer = shallowRef<Player | null>(null);
 
-const videoId = computed(() => Number.parseInt(props.id, 10));
 const oEmbedUrl = computed(
   () => `https://vimeo.com/api/oembed.json?url=https://vimeo.com/${props.id}`,
 );
@@ -53,19 +48,9 @@ const triggerLabel = computed(() =>
   props.title ? `Ouvrir la vidéo ${props.title}` : "Ouvrir la vidéo",
 );
 
-// Build a player iframe URL that ensures controls are visible.
-const embedUrl = computed(() => {
-  const params = new URLSearchParams({
-    autoplay: "1",
-    muted: "0",
-    controls: "1",
-    playsinline: "1",
-    title: "0",
-    byline: "0",
-    portrait: "0",
-  });
-  return `https://player.vimeo.com/video/${props.id}?${params.toString()}`;
-});
+const playerAriaTitle = computed(() =>
+  props.title ? `Lecteur vidéo : ${props.title}` : "Lecteur vidéo Vimeo",
+);
 
 function openModal() {
   isOpen.value = true;
@@ -75,42 +60,12 @@ function closeModal() {
   isOpen.value = false;
 }
 
-async function initializePlayerVolume() {
-  if (!playerFrame.value) return;
-
-  vimeoPlayer.value?.destroy().catch(() => {});
-  vimeoPlayer.value = new Player(playerFrame.value);
-
-  try {
-    await vimeoPlayer.value.ready();
-    await vimeoPlayer.value.setVolume(0.3);
-  } catch {
-    // Ignore volume init failures; the player still works.
-  }
-}
-
 function handleTriggerKeydown(event: KeyboardEvent) {
   if (event.key === "Enter" || event.key === " ") {
     event.preventDefault();
     openModal();
   }
 }
-
-watch(isOpen, async (open) => {
-  if (!open) {
-    vimeoPlayer.value?.destroy().catch(() => {});
-    vimeoPlayer.value = null;
-    return;
-  }
-
-  await nextTick();
-  await initializePlayerVolume();
-});
-
-onBeforeUnmount(() => {
-  vimeoPlayer.value?.destroy().catch(() => {});
-  vimeoPlayer.value = null;
-});
 </script>
 
 <template>
@@ -158,15 +113,18 @@ onBeforeUnmount(() => {
 
     <Modal v-if="isOpen" :title="modalTitle" @close="closeModal">
       <div class="modalVideoPlayerPlayer">
-        <iframe
-          v-if="videoId"
-          ref="playerFrame"
-          :src="embedUrl"
-          frameborder="0"
-          allow="autoplay; fullscreen; picture-in-picture"
-          allowfullscreen
-          title="Vimeo player"
-        ></iframe>
+        <VimeoPlayer
+          :id="id"
+          :autoplay="true"
+          :muted="false"
+          :controls="true"
+          :playsinline="true"
+          :show-title="false"
+          :byline="false"
+          :portrait="false"
+          :volume="0.3"
+          :aria-title="playerAriaTitle"
+        />
       </div>
 
       <div v-if="hasCustomSlot" class="modalVideoPlayerCustom">
@@ -269,12 +227,5 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.667);
-}
-
-:deep(iframe) {
-  position: absolute;
-  inset: 0;
-  width: 100% !important;
-  height: 100% !important;
 }
 </style>
