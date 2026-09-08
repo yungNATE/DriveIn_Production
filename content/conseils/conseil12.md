@@ -1,5 +1,7 @@
 ---
-question: "Comment réussir un tournage en extérieur ?"
+question: "Comment choisir votre société de production ?"
 img: "/images/advice/conseil12.png"
-description: "Anticipez la météo, prévoyez les autorisations nécessaires et adaptez votre matériel aux conditions de tournage. Un bon repérage et une organisation rigoureuse sont la clé d’un tournage extérieur réussi."
+description: >
+  Une bonne société de production doit comprendre votre activité, vos enjeux et le public que vous souhaitez toucher. Son rôle ne se limite pas au tournage : elle doit aussi vous conseiller, organiser le projet et garantir une cohérence entre le fond et la forme.
+  Découvrez nos réalisations et échangeons sur les besoins de votre entreprise.
 ---

@@ -5,6 +5,10 @@
 
 // Page{ min-height: 100vh }
 
+html {
+  zoom: 0.8;
+}
+
 *,
 html {
   scroll-behavior: smooth !important;

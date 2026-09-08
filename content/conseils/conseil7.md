@@ -1,5 +1,5 @@
 ---
-question: "Faut-il sous-titrer ses vidéos ?"
+question: "Je ne suis pas à l’aise à l’oral ou face caméra, que faire ?"
 img: "/images/advice/conseil7.png"
-description: "Le sous-titrage améliore l’accessibilité de vos vidéos et permet de toucher un public plus large, notamment sur les réseaux sociaux où le son est souvent coupé par défaut. C’est un atout à ne pas négliger pour maximiser la portée de vos contenus."
+description: "C’est très courant, et on sait y faire ! On vous met à l’aise, on prépare des questions naturelles, on peut tourner plusieurs prises, et surtout on monte les meilleures parties. Résultat : une vidéo fluide, authentique et pro, sans stress ni fausse note."
 ---

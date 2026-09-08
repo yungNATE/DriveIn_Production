@@ -1,5 +1,7 @@
 ---
-question: "Pourquoi faire appel à un professionnel pour le motion design ?"
+question: "Quel délai prévoir pour une production ?"
 img: "/images/advice/conseil15.png"
-description: "Le motion design permet de vulgariser des messages complexes et d’apporter une touche moderne à votre communication. Un professionnel saura créer des animations sur-mesure, adaptées à votre identité visuelle et à vos objectifs."
+description: >
+  Une production vidéo comprend plusieurs étapes : définition du besoin, écriture, préparation, tournage, montage et validation. Selon la complexité du projet, il est conseillé de prévoir plusieurs semaines afin de travailler sereinement et d’anticiper les éventuels retours.
+  Contactez-nous suffisamment en amont pour organiser votre prochaine production.
 ---

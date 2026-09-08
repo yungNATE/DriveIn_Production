@@ -1,6 +1,6 @@
 ---
-question: "Pourquoi confier votre vidéo à des professionnels ?"
+question: "Quel est le budget à prévoir pour une vidéo professionnelle ?"
 displayHome: true
 img: "/images/advice/conseil1.png"
-description: "2 Faire une vidéo, ce n’est pas seulement appuyer sur “record”. C’est raconter une histoire, capturer une émotion, mettre en valeur un message. En passant par une société de production, vous bénéficiez d’un regard expert, d’un accompagnement sur-mesure et d’un rendu pro qui fera toute la différence. Chez DriveInProduction, on s’occupe de tout : conception, tournage, montage et livraison clé en main."
+description: "Tout dépend de votre projet, mais pour vous donner un ordre d’idée : une vidéo simple commence autour de 900€, et un projet plus complet peut monter selon les besoins (nombre de jours de tournage, motion design, voix-off, etc.). On vous prépare toujours un devis sur-mesure, sans surprise."
 ---

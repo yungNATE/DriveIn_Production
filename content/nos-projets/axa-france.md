@@ -18,13 +18,10 @@ photos:
 partner:
   - Axa France
 
-highlighted: "communication"
+highlighted: "reportages"
 
 tagIDs:
-  - communication
-  - UX
-  - interview
-  - video
+  - reportages
 
 weight: 3
 ---

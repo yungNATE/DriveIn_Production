@@ -164,10 +164,17 @@ definePageMeta({
 </script>
 
 <template>
+  <ToTopButton />
+
   <section class="hero invisible">
     <div class="top">
       <div class="video-player-wrapper">
-        <ModalVideoPlayer :id="`111081646`" />
+        <VimeoPlayer
+          :id="`913267684`"
+          :autoplay="true"
+          :muted="false"
+          :loop="true"
+        />
       </div>
       <div class="text">
         <h1 class="sr-only">DriveIn Production</h1>

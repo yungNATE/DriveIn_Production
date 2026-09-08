@@ -1,5 +1,7 @@
 ---
-question: "Comment choisir le bon lieu de tournage ?"
+question: "Comment mesurer les résultats d’une vidéo ?"
 img: "/images/advice/conseil16.png"
-description: "Le choix du lieu influence l’ambiance et la crédibilité de votre vidéo. Privilégiez des décors en accord avec votre message et anticipez les contraintes techniques (lumière, bruit, autorisations). Un bon repérage est essentiel !"
+description: >
+  Le nombre de vues ne suffit pas toujours à mesurer l’efficacité d’une vidéo. Selon votre objectif, vous pouvez également analyser la durée de visionnage, le taux d’engagement, les clics, les partages ou les demandes de contact générées.
+  Définissons ensemble une vidéo adaptée à vos objectifs et à votre audience.
 ---

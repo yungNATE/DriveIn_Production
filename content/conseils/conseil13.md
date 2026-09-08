@@ -1,5 +1,7 @@
 ---
-question: "Pourquoi intégrer des témoignages clients dans vos vidéos ?"
+question: "Comment réussir une interview vidéo ?"
 img: "/images/advice/conseil13.png"
-description: "Les témoignages clients apportent de la crédibilité et de l’authenticité à votre communication. Ils rassurent vos prospects et valorisent votre savoir-faire à travers des retours d’expérience concrets."
+description: >
+  Une interview réussie repose sur une préparation claire, des questions pertinentes et un environnement dans lequel l’intervenant se sent à l’aise. Le cadrage, la lumière, le son et le montage permettent ensuite de rendre son discours plus naturel, fluide et convaincant.
+  Confiez-nous la préparation et la réalisation de vos prochaines interviews.
 ---

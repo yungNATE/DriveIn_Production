@@ -1,5 +1,5 @@
 ---
-question: "Pourquoi privilégier la qualité à la quantité ?"
+question: "Est-ce que vous faites des vidéos pour les réseaux sociaux ?"
 img: "/images/advice/conseil9.png"
-description: "Mieux vaut une vidéo courte et percutante qu’une longue séquence peu dynamique. La qualité du contenu, du montage et de la réalisation prime sur la durée. Soyez concis et impactant !"
+description: "C’est notre quotidien ! Formats courts, sous-titrés, dynamiques, adaptés à LinkedIn, Instagram, TikTok ou YouTube. On vous aide à créer des contenus impactants, adaptés à votre cible et vos objectifs. On peut même vous conseiller sur la diffusion."
 ---

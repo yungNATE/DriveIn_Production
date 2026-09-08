@@ -1,6 +1,6 @@
 ---
-question: "Comment bien préparer le brief de votre projet vidéo ?"
+question: "Combien de temps faut-il pour réaliser une vidéo de A à Z ?"
 displayHome: true
 img: "/images/advice/conseil3.png"
-description: "Un brief clair et précis est la première étape d’un projet vidéo réussi. Définissez vos objectifs, votre cible, le message à transmettre et les contraintes éventuelles. Plus votre brief est détaillé, plus la production pourra répondre à vos attentes et vous proposer des solutions créatives adaptées."
+description: "En général, il faut compter entre 1 et 4 semaines entre le brief initial et la livraison finale. Cela dépend de la complexité du tournage, des allers-retours de validation et des demandes spécifiques (animations, musique sur-mesure…). Mais on sait aussi s’adapter aux deadlines serrées quand c’est nécessaire."
 ---

@@ -1,5 +1,5 @@
 ---
-question: "Comment optimiser la diffusion de votre vidéo ?"
+question: "Je ne sais pas par où commencer, vous pouvez m’aider ?"
 img: "/images/advice/conseil10.png"
-description: "Adaptez votre vidéo aux différents canaux de diffusion (site web, réseaux sociaux, emailing…). Pensez aux formats verticaux pour Instagram ou TikTok, et à la durée idéale selon la plateforme. Une bonne stratégie de diffusion maximise la visibilité de votre production."
+description: "C’est justement notre rôle. On commence par un échange (gratuit et sans engagement) pour comprendre vos besoins, vos envies, vos objectifs. Ensuite, on vous guide vers la solution la plus adaptée, qu’il s’agisse d’un tournage simple, d’une série de capsules, ou d’un projet plus ambitieux."
 ---

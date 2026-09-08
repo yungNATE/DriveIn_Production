@@ -1,6 +1,6 @@
 ---
-question: "Quel format vidéo choisir pour votre communication ?"
+question: "Est-ce que vous pouvez aussi faire les photos de l’événement ?"
 displayHome: true
 img: "/images/advice/conseil4.png"
-description: "Clip promotionnel, interview, reportage, animation motion design… Le choix du format dépend de votre message, de votre audience et du canal de diffusion. Une société de production saura vous orienter vers le format le plus pertinent pour maximiser l’impact de votre vidéo."
+description: "Oui, bien sûr ! On propose des prestations photo en complément ou en solo. Que ce soit pour couvrir un événement, faire des portraits d’équipe ou des packshots produits, on travaille avec des photographes pros qui ont l’œil. Vous pouvez aussi commander un duo photo + vidéo pour plus de cohérence."
 ---

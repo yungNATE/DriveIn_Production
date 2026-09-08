@@ -16,16 +16,12 @@ photos:
   - "/images/nos-projets/aviva-assurance/cover.jpg"
 
 partner:
-  - Axa France
+  - Aviva Assurance
 
-highlighted: "video"
+highlighted: "filmsDeMarque"
 
 tagIDs:
-  - communication
-  - UX
-  - institutionnelle
-  - interview
-  - video
+  - filmsDeMarque
 
 weight: 2
 ---

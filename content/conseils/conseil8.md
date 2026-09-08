@@ -1,5 +1,5 @@
 ---
-question: "Comment choisir la musique de sa vidéo ?"
+question: "Peut-on ajouter des sous-titres, de la musique ou des animations ?"
 img: "/images/advice/conseil8.png"
-description: "La musique donne le ton et rythme votre vidéo. Privilégiez des morceaux libres de droits ou faites appel à un compositeur pour une création originale. Une bonne bande-son renforce l’émotion et l’impact de votre message."
+description: "Oui, et c’est même conseillé ! On peut intégrer des sous-titres (en français ou en anglais), ajouter une musique libre de droits, et faire des animations en motion design pour dynamiser vos contenus. C’est aussi parfait pour vos réseaux sociaux."
 ---

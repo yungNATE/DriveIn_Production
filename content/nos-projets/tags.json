@@ -1,55 +1,33 @@
 [
   {
-    "id": "UX",
-    "title": "UX Design",
-    "description": "S'interesse à l'expérience utilisateur vécue",
+    "id": "filmsDeMarque",
+    "title": "Films de marque",
+    "description": "Des films pensés pour révéler l'identité et les valeurs de votre entreprise, et créer une connexion durable avec votre audience.",
     "type": "theme"
   },
   {
-    "id": "communication",
-    "title": "Communication",
-    "description": "Tout ce qui touche à la communication visuelle",
+    "id": "interviews",
+    "title": "Interviews",
+    "description": "Donnez la parole à vos experts, clients ou collaborateurs dans un cadre soigné, pour des témoignages authentiques et impactants.",
     "type": "theme"
   },
   {
-    "id": "interview",
-    "title": "Interview",
-    "description": "Projets d'interviews et de témoignages",
+    "id": "animation",
+    "title": "Animation",
+    "description": "Des contenus animés pour simplifier vos messages complexes et donner vie à vos idées avec créativité.",
     "type": "theme"
   },
   {
-    "id": "institutionnelle",
-    "title": "Institutionnelle",
-    "description": "Projets institutionnels et corporatifs",
+    "id": "reportages",
+    "title": "Reportages",
+    "description": "Immersion sur le terrain pour capter l'authenticité de vos événements, projets et métiers en action.",
     "type": "theme"
   },
   {
-    "id": "empty",
-    "title": "Vide",
-    "description": "Tag vide pour tests",
+    "id": "socialMedia",
+    "title": "Social media",
+    "description": "Des formats courts et percutants, pensés pour capter l'attention et faire vivre votre marque sur les réseaux.",
     "type": "theme",
-    "hidden": true
-  },
-  {
-    "id": "360",
-    "title": "360°",
-    "description": "Les vidéos en 360° permettent une immersion totale dans l'environnement filmé",
-    "type": "technique"
-  },
-  {
-    "id": "video",
-    "title": "Les vidéos",
-    "description": "Projets vidéo",
-    "type": "format",
-    "associatedIcon": "/images/icones/icon-video.svg",
-    "hidden": true
-  },
-  {
-    "id": "photo",
-    "title": "Les photographies",
-    "description": "Projets photo",
-    "type": "format",
-    "associatedIcon": "/images/icones/icon-photo.svg",
     "hidden": true
   }
 ]
