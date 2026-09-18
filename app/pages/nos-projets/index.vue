@@ -158,6 +158,10 @@ function onImgLoad(src: string, e: Event) {
 
     <section class="header container">
       <h1>Nos réalisations</h1>
+      <div class="social">
+        <span>Découvrez le fruit de nos collaborations !</span>
+        <SocialProof />
+      </div>
     </section>
 
     <section
@@ -251,7 +255,7 @@ function onImgLoad(src: string, e: Event) {
           </template>
         </masonry-wall>
 
-        <div v-else>Aucun projet ne correspond aux filtres sélectionnés.</div>
+        <div v-else>Aucun projet ne correspond au filtre sélectionné.</div>
       </section>
     </section>
 
@@ -297,15 +301,23 @@ function onImgLoad(src: string, e: Event) {
 
 section.header {
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  margin-block: 3rem 5rem;
+  margin-block: $page-top-space 5rem;
   gap: 30px;
+  width: fit-content;
 
   @include mediaquery("mobile") {
-    flex-direction: column;
-    align-items: center;
+    margin-top: $page-top-space-mobile;
+  }
+
+  .social {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: 100%;
   }
 }
 

@@ -54,7 +54,7 @@ const viewBox = direction == "horizontal" ? horizontalViewBox : verticalViewBox;
   </svg>
 </template>
 
-<style scope lang="scss">
+<style scoped lang="scss">
 $offset: 5px;
 .left {
   margin-right: $offset;

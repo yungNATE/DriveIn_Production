@@ -11,7 +11,7 @@ type GsapTimeline = ReturnType<GsapCore["timeline"]>;
 
 const actions = [
   {
-    title: "Tissu local (à vérifier)",
+    title: "Tissu local",
     description:
       "Nous travaillons autant que possible avec des prestataires et talents locaux pour limiter les transports, et nous organisons nos tournages pour réduire les déplacements superflus.",
   },
@@ -220,10 +220,15 @@ onBeforeUnmount(() => {
 
     .action {
       display: flex;
-      max-width: 500px;
+      flex: 0 1 500px;
       gap: 15px;
 
+      > .h1 {
+        flex: 0 0 60px;
+      }
+
       .content {
+        flex: 1;
         display: flex;
         flex-direction: column;
 
@@ -233,8 +238,11 @@ onBeforeUnmount(() => {
           border-radius: 12px;
 
           display: flex;
+          align-items: center;
           gap: 35px;
           padding: 15px;
+          min-height: 100px;
+          box-sizing: border-box;
 
           h3 {
             display: flex;

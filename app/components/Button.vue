@@ -34,7 +34,7 @@ const props = withDefaults(
   height: fit-content;
   width: fit-content;
   border: none;
-  border: 1px solid #ffffff5c;
+  border: 2px solid rgb(44, 44, 44);
   overflow: hidden;
   background: transparent;
 
@@ -71,6 +71,7 @@ const props = withDefaults(
 
 .CTA {
   font-size: clamp(14px, 4vw, 1.5rem);
+  font-weight: bold;
 }
 
 :deep(span) {

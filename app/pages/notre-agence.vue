@@ -157,7 +157,7 @@ const activeVideoUrl = computed(() =>
       <div class="text">
         <div class="header">
           <p class="h1">L'agence</p>
-          <ContactButton />
+          <ContactButton text="Prenons contact" />
         </div>
         <p>
           DriveIn Production est une société de création vidéo sur mesure, au
@@ -189,30 +189,32 @@ const activeVideoUrl = computed(() =>
   </section>
 
   <section class="history">
-    <div class="video">
-      <NuxtImg
-        class="photo"
-        src="/images/profil_pics/sashaProfilPic.png"
-        alt="À propos de DriveIn Production !"
-      />
-    </div>
-    <div class="accordion">
-      <h2 class="gold">L'histoire de l'agence</h2>
-      <p>
-        Drive-In Production, c’est l’histoire d’une envie de liberté, d’un goût
-        pour la créativité et d’une vision plus humaine de la vidéo
-        professionnelle. Voici notre parcours en quelques étapes.
-      </p>
-      <Accordion
-        :accordionPanels="accordionPanels"
-        :onlyOneOpenAtTheTime="true"
-      />
+    <div class="container">
+      <div class="video">
+        <NuxtImg
+          class="photo"
+          src="/images/profil_pics/sashaProfilPic.png"
+          alt="À propos de DriveIn Production !"
+        />
+      </div>
+      <div class="accordion">
+        <h2 class="gold">L'histoire de l'agence</h2>
+        <p>
+          Drive-In Production, c’est l’histoire d’une envie de liberté, d’un
+          goût pour la créativité et d’une vision plus humaine de la vidéo
+          professionnelle. Voici notre parcours en quelques étapes.
+        </p>
+        <Accordion
+          :accordionPanels="accordionPanels"
+          :onlyOneOpenAtTheTime="true"
+        />
+      </div>
     </div>
   </section>
 
   <section class="workMethod" id="processus-creatif">
     <h2>Une méthode de travail bien rôdée</h2>
-    <div class="work-swiper container">
+    <div class="work-swiper">
       <swiper-container
         ref="workMethodSwiperEl"
         navigation-next-el="section.workMethod .swiper-next"
@@ -309,8 +311,8 @@ section.hero {
   align-items: center;
   justify-content: space-between;
   height: 100%;
-  padding: 50px;
-  margin-bottom: 150px;
+  padding: 0 0 50px;
+  margin-bottom: $space-section-md;
 
   @include mediaquery("mobile") {
     padding: 0;
@@ -326,19 +328,29 @@ section.hero {
     justify-content: space-around;
     align-items: center;
     gap: 50px;
-    margin-bottom: 40px;
+    margin-top: $page-top-space;
+
+    @include mediaquery("mobile") {
+      margin-top: $page-top-space-mobile;
+    }
 
     .text {
-      max-width: 750px;
-      text-align: justify;
+      max-width: 650px;
+      text-align: left;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
 
       .header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-block: 3rem 5rem;
         flex-wrap: wrap;
         gap: 30px;
+        width: 100%;
 
         @include mediaquery(500) {
           flex-direction: column;
@@ -358,20 +370,22 @@ section.hero {
 }
 
 section.comments {
-  margin-bottom: 150px;
+  margin-bottom: $space-section-md;
 }
 
 section.history {
-  display: flex;
-  flex-direction: row-reverse;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 50px;
-  margin-bottom: 100px;
-  margin-inline: 50px;
+  margin-bottom: $space-section-sm;
+
+  .container {
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 50px;
+  }
 
   .accordion {
-    max-width: 350px;
+    max-width: 800px;
 
     h2 {
       text-align: center;
@@ -389,6 +403,9 @@ section.history {
         top: 15px;
         writing-mode: vertical-rl;
         text-orientation: upright;
+        letter-spacing: 0.15em;
+        font-size: 1.05rem;
+        font-weight: $font-weight-bold;
 
         .ellipsis {
           writing-mode: horizontal-tb;
@@ -418,10 +435,10 @@ section.workMethod {
   padding-block: 100px;
   position: relative;
   overflow: hidden;
-  margin-block: 200px;
+  margin-block: $space-section-lg;
 
   @include mediaquery("mobile") {
-    margin-block: 100px;
+    margin-block: $space-section-sm;
   }
 
   display: flex;
@@ -460,6 +477,8 @@ section.workMethod {
   }
 
   .work-swiper {
+    @include container(1800px);
+
     swiper-container {
       width: 100%;
       height: 300px;
@@ -515,8 +534,8 @@ section.theyChoseUs {
   align-items: flex-start;
   justify-content: center;
   gap: 60px;
-  margin-block: 120px;
-  margin-inline: 50px;
+  @include container();
+  margin-block: $space-section-sm;
 
   .testimonial-visual {
     display: flex;

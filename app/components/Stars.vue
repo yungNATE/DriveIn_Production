@@ -82,7 +82,7 @@ function buildTimeline() {
           transformOrigin: "50% 50%",
           ease: "power1.out",
         },
-        ">-0.05" // léger chevauchement après la fin du fill
+        ">-0.05", // léger chevauchement après la fin du fill
       ).to(targetSvg, {
         duration: beatInSec,
         scale: 1,
@@ -118,7 +118,7 @@ onMounted(() => {
             }
           });
         },
-        { threshold: [0], rootMargin: "0px 0px -20% 0px" }
+        { threshold: [0], rootMargin: "0px 0px -20% 0px" },
       );
       if (rootEl.value) observer.observe(rootEl.value);
 
@@ -220,6 +220,8 @@ watch(fractions, () => {
 .stars {
   display: flex;
   gap: 4px;
+  color: #ffda00;
+
   .star {
     width: var(--star-size);
     height: var(--star-size);

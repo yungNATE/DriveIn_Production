@@ -310,7 +310,7 @@ onMounted(() => {
       :class="{ open: panel.isOpen }"
     >
       <Button
-        class="accordion-header"
+        class="accordion-header h3"
         type="button"
         :aria-expanded="panel.isOpen ? 'true' : 'false'"
         :aria-controls="'acc-panel-' + i"

@@ -140,12 +140,3 @@ defineExpose({
     :title="ariaTitle"
   ></iframe>
 </template>
-
-<style scoped lang="scss">
-.vimeoPlayer {
-  position: absolute;
-  inset: 0;
-  width: 100% !important;
-  height: 100% !important;
-}
-</style>

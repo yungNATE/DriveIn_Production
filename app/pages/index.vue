@@ -166,7 +166,7 @@ definePageMeta({
 <template>
   <ToTopButton />
 
-  <section class="hero invisible">
+  <section class="hero container invisible">
     <div class="top">
       <div class="video-player-wrapper">
         <VimeoPlayer
@@ -177,23 +177,29 @@ definePageMeta({
         />
       </div>
       <div class="text">
-        <h1 class="sr-only">DriveIn Production</h1>
-        <p class="h1 hook">
-          Capturons
-          <span class="gold">votre histoire</span>, <br />
-          Captons
-          <span class="blue">vos émotions</span>.
-        </p>
-        <p class="subHook">
-          Drive-in, l'agence qui vous accompagne réellement.
-        </p>
+        <div class="h1Wrapper">
+          <h1 class="sr-only">DriveIn Production</h1>
+          <p class="h1 hook">
+            Capturons
+            <span class="gold">votre histoire</span>, <br />
+            Captons
+            <span class="blue">vos émotions</span>.
+          </p>
 
-        <Button
-          to="/nous-contacter"
-          class="CTA"
-          title="Nous contacter pour discuter de votre projet vidéo"
-          >Prendre rendez-vous</Button
-        >
+          <p class="subHook">
+            Drive-in, l'agence qui vous accompagne réellement.
+          </p>
+        </div>
+
+        <div class="buttonWrapper">
+          <Button
+            to="/nous-contacter"
+            class="CTA"
+            title="Nous contacter pour discuter de votre projet vidéo"
+            >Prendre rendez-vous</Button
+          >
+          <SocialProof />
+        </div>
       </div>
     </div>
     <div class="marqueeWrapper">
@@ -209,6 +215,9 @@ definePageMeta({
           <p>
             Découvrez le résultat de quelques de nos précédentes collaborations.
           </p>
+          <Button to="/notre-agence" title="Découvrez nos différents projets"
+            >Voir toutes nos réalisations</Button
+          >
         </div>
         <div class="tags">
           <Tag
@@ -243,17 +252,10 @@ definePageMeta({
         </Transition>
       </div>
     </div>
-
-    <Button
-      to="/notre-agence"
-      title="Découvrez nos différents projets"
-      class="CTA"
-      >Voir toutes nos réalisations</Button
-    >
   </section>
 
   <section class="etapesProjet">
-    <div class="header container">
+    <div class="header etapesProjetContainer">
       <h2 class="h1">Créons ensemble votre vidéo</h2>
       <p class="h3">
         De l’idée à la livraison, nous vous accompagnons à chaque étape de votre
@@ -261,7 +263,7 @@ definePageMeta({
       </p>
     </div>
     <HomeProjectStepParticles id="tsparticles"> </HomeProjectStepParticles>
-    <div class="etapes container">
+    <div class="etapes etapesProjetContainer">
       <div
         v-for="(etape, i) in projectStepHome"
         :key="i"
@@ -342,23 +344,35 @@ section.hero {
     content: "";
   }
 
+  .buttonWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .btn.CTA {
+      font-weight: bold;
+    }
+  }
+
   .top {
     display: flex;
-    justify-content: center;
-    gap: 150px;
+    justify-content: space-between;
+    gap: 50px;
     flex-wrap: wrap;
     width: 100%;
     align-items: center;
     height: 100%;
-    padding-inline: clamp(20px, 1vw, 50px);
+
+    @include mediaquery($container-max-width) {
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
 
     > * {
       min-width: 0;
       min-height: 0;
-    }
-
-    @include mediaquery($sectionHero-breakpoint) {
-      gap: 75px;
     }
 
     .text {
@@ -366,12 +380,6 @@ section.hero {
       flex-direction: column;
       justify-content: space-between;
       gap: 50px;
-
-      @include mediaquery($sectionHero-breakpoint) {
-        align-items: center;
-        text-align: center;
-        width: 100%;
-      }
 
       .site-logo {
         max-width: 450px;
@@ -381,6 +389,9 @@ section.hero {
 
       .hook {
         margin-top: -20px;
+        @include mediaquery($container-max-width) {
+          margin-top: 0;
+        }
 
         .gold,
         .blue {
@@ -390,15 +401,17 @@ section.hero {
 
       .subHook {
         font-size: clamp(1rem, 2vw, 1.2rem);
+        display: block;
       }
     }
-
     .video-player-wrapper {
-      flex: 0 1 850px;
-      // width: min(600px, 100%);
-      aspect-ratio: 16 / 9;
-      display: block;
-      border-radius: 20px;
+      > .vimeoPlayer {
+        min-height: 500px;
+
+        @include mediaquery(550px) {
+          min-height: 300px;
+        }
+      }
     }
   }
 
@@ -476,7 +489,7 @@ section.realisations {
       justify-content: center;
       flex-direction: column;
       width: 100%;
-      gap: 20px 50px;
+      gap: 70px 50px;
 
       @include mediaquery(1033) {
         flex-direction: column;
@@ -499,6 +512,13 @@ section.realisations {
 
       .title {
         text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        > .btn {
+          margin-top: 40px;
+        }
       }
 
       .tagWrapper {
@@ -527,9 +547,13 @@ section.etapesProjet {
   min-height: 100vh;
   padding-block: 150px;
   position: relative;
-  margin-block: 250px;
+  margin-block: $space-section-lg;
   overflow: visible;
   gap: 100px;
+
+  > .etapesProjetContainer {
+    @include container(1850px);
+  }
 
   @include mediaquery(900) {
     margin-block: 150px;
@@ -616,7 +640,7 @@ section.etapesProjet {
         overflow: hidden;
         position: relative;
 
-        border: 1px solid white;
+        border: 2px solid rgb(44, 44, 44);
         border-radius: 12px;
         padding: 15px 30px;
         padding-right: 65px;
@@ -689,8 +713,7 @@ section.advices {
 }
 
 section.comments {
-  padding-top: 200px;
-  padding-bottom: 175px;
+  padding-block: $space-section-md;
 
   @include mediaquery("mobile") {
     padding-top: 100px;

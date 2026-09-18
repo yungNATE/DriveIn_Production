@@ -59,7 +59,7 @@ const partnersList = computed(() => partners.value ?? []);
           </i>
           <span v-if="partnersList.length > 1">,</span>
         </h3>
-        <p>{{ project.presentation }}</p>
+        <p v-if="project.presentation">{{ project.presentation }}</p>
       </div>
 
       <Button
@@ -80,32 +80,27 @@ const partnersList = computed(() => partners.value ?? []);
         Les coulisses du projet
       </Button>
     </div>
+    <!-- <div class="realisationAccueilContentContainer">
+    </div> -->
   </div>
 </template>
 
 <style lang="scss">
-.realisationHomeWrapper {
-  width: 100%;
-}
-
 .realisationAccueil {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+
+  @include container();
+
   padding: 30px;
   border-radius: 8px;
   background: black;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 100%;
   text-align: left;
-
-  display: flex;
-  flex-direction: column;
-  gap: 50px;
-
-  $firstBreakpoint: 1490px;
-
-  @include mediaquery($firstBreakpoint) {
-    flex-direction: column;
-    padding-bottom: 50px;
-  }
+  align-items: center;
 
   .btn {
     &.mobile_RH {
@@ -113,7 +108,7 @@ const partnersList = computed(() => partners.value ?? []);
       font-size: 1rem;
     }
 
-    @include mediaquery($firstBreakpoint) {
+    @include mediaquery($container-max-width) {
       &.mobile_RH {
         display: block;
       }
@@ -126,11 +121,8 @@ const partnersList = computed(() => partners.value ?? []);
   .text {
     display: flex;
     justify-content: space-between;
+    width: 100%;
     gap: 50px;
-
-    @include mediaquery($firstBreakpoint) {
-      max-width: 100%;
-    }
 
     .tags {
       display: flex;
@@ -145,6 +137,8 @@ const partnersList = computed(() => partners.value ?? []);
     align-items: center;
     gap: 50px;
     flex: 1;
+    // max-width: 1000px;
+    width: 100%;
 
     .video-player {
       width: 100%;

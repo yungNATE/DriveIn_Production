@@ -6,7 +6,7 @@
         alt="DriveIn Production"
         :customClass="undefined"
       >
-        <h2>Sacha Stadtfeld</h2>
+        <h2 class="h3">Sacha Stadtfeld</h2>
         <p>
           Je suis persuadé que la vidéo est le support de communication par
           excellence ! Dans un monde dominé par le web j'ai donc décidé de me
@@ -19,7 +19,7 @@
         alt="DriveIn Production"
         customClass="blue"
       >
-        <h2>Arthur Roberdeau</h2>
+        <h2 class="h3">Arthur Roberdeau</h2>
         <p>
           Arthur passionné par la photographie et la vidéo depuis tout petit.
           Devenu photographe professionnel depuis de nombreuses années, je me
@@ -32,7 +32,7 @@
         alt="DriveIn Production"
         customClass="blue"
       >
-        <h2>Arthur Roberdeau</h2>
+        <h2 class="h3">Arthur Roberdeau</h2>
         <p>
           Arthur passionné par la photographie et la vidéo depuis tout petit.
           Devenu photographe professionnel depuis de nombreuses années, je me
@@ -45,7 +45,7 @@
         alt="DriveIn Production"
         customClass="blue"
       >
-        <h2>Arthur Roberdeau</h2>
+        <h2 class="h3">Arthur Roberdeau</h2>
         <p>
           Arthur passionné par la photographie et la vidéo depuis tout petit.
           Devenu photographe professionnel depuis de nombreuses années, je me
@@ -60,7 +60,7 @@
 <style scoped lang="scss">
 section.presentation {
   position: relative;
-  margin-block: 150px;
+  margin-block: $space-section-md;
 
   &:before,
   &:after {
@@ -102,7 +102,8 @@ section.presentation {
 
     @include mediaquery(1600) {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 350px));
+      justify-content: center;
       gap: 48px;
       justify-items: center;
 

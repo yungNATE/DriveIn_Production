@@ -85,7 +85,7 @@ h1,
 }
 h2,
 .h2 {
-  font-size: clamp(1.3rem, 6vw, 3rem);
+  font-size: clamp(1.3rem, 6vw, 2.5rem);
   font-weight: $font-weight-black;
   text-transform: uppercase;
 }
@@ -103,6 +103,15 @@ h4,
 p,
 .p {
   color: rgba(255, 255, 255, 0.75);
+  margin: 0;
+
+  &.subTitle,
+  h1 + &,
+  h2 + &,
+  h3 + &,
+  h4 + & {
+    margin-top: 5px;
+  }
 }
 
 swiper-container {

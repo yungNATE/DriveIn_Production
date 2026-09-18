@@ -24,8 +24,18 @@ $secondary-color-light: #efb401;
 
 // Spécifiques
 
+// Vertical rhythm between sections
+$space-section-sm: 100px;
+$space-section-md: 150px;
+$space-section-lg: 200px;
+
+// Space between the fixed header and the page H1
+$page-top-space: $space-section-sm;
+$page-top-space-mobile: 4rem;
+
 // Container mixin
-@mixin container($max-width: 1700px) {
+$container-max-width: 1310px;
+@mixin container($max-width: $container-max-width) {
   max-width: $max-width;
   width: 100%;
   margin-inline: auto;
