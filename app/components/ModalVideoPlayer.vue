@@ -9,10 +9,12 @@ const props = withDefaults(
     id: string;
     title?: string;
     isInvisible?: boolean;
+    cover?: string;
   }>(),
   {
     title: "",
     isInvisible: false,
+    cover: "",
   },
 );
 
@@ -28,14 +30,22 @@ const oEmbedUrl = computed(
 
 const { data: oEmbed, pending: thumbnailPending } = useAsyncData(
   () => `vimeo-oembed-${props.id}`,
-  () => $fetch<VimeoOEmbedResponse>(oEmbedUrl.value),
+  () => $fetch<VimeoOEmbedResponse>(oEmbedUrl.value).catch(() => null),
   {
-    immediate: !props.isInvisible,
+    immediate: !props.isInvisible && !props.cover,
     watch: [() => props.id, () => props.isInvisible],
   },
 );
 
-const thumbnailUrl = computed(() => oEmbed.value?.thumbnail_url ?? "");
+// Repli si l'API oEmbed de Vimeo est bloquée / limitée (429)
+const thumbnailUrl = computed(
+  () =>
+    props.cover ||
+    oEmbed.value?.thumbnail_url ||
+    (thumbnailPending.value || !props.id
+      ? ""
+      : `https://vumbnail.com/${props.id}.jpg`),
+);
 const modalTitle = computed(() => props.title);
 
 const thumbnailAlt = computed(() =>
@@ -166,6 +176,11 @@ function handleTriggerKeydown(event: KeyboardEvent) {
   aspect-ratio: 16 / 9;
   border-radius: 20px;
   overflow: hidden;
+
+  > iframe {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .modalVideoPlayerCustom {

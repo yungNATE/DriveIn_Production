@@ -68,7 +68,7 @@ function emitClose() {
   justify-content: center;
   z-index: 9999;
   padding: 20px;
-  width: 100vw;
+  width: 100%;
 
   @include mediaquery("mobile") {
     padding: 10px;

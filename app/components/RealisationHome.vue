@@ -14,6 +14,7 @@ const props = defineProps<{
     partner: string[];
     path: string;
     video: string;
+    cover?: string;
     tagIDs: string[]; // ← important : ce sont des strings
   };
 }>();
@@ -57,6 +58,9 @@ const partnersList = computed(() => partners.value ?? []);
           <i style="color: white" v-for="partner in partnersList">
             {{ partner.name }}
           </i>
+          <i v-if="partnersList.length == 0">
+            {{ project.partner[0] }}
+          </i>
           <span v-if="partnersList.length > 1">,</span>
         </h3>
         <p v-if="project.presentation">{{ project.presentation }}</p>
@@ -71,7 +75,7 @@ const partnersList = computed(() => partners.value ?? []);
       </Button>
     </div>
     <div class="video-wrapper">
-      <ModalVideoPlayer :id="project.video" />
+      <ModalVideoPlayer :id="project.video" :cover="project.cover" />
       <Button
         class="mobile_RH"
         :to="project.path"

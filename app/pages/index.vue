@@ -282,7 +282,7 @@ definePageMeta({
   <section class="advices container" id="nos-conseils">
     <div class="header">
       <div class="text">
-        <h2>Des questions avant de lancer votre projet ?</h2>
+        <h2>Des questions avant de vous lancer ?</h2>
         <p>
           Voici quelques points clés à connaître afin d’entamer vos démarches le
           plus sereinement possible.
