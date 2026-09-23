@@ -11,10 +11,10 @@ photos: []
 partner:
   - ACCOR
 
-highlighted: "filmsDeMarque"
+highlighted: "evenementiel"
 
 tagIDs:
-  - filmsDeMarque
+  - evenementiel
 
 weight:
 ---

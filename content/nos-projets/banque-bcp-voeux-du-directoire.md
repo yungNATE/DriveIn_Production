@@ -11,11 +11,10 @@ photos: []
 partner:
   - Banque BCP
 
-highlighted: "reportages"
+highlighted: ""
 
 tagIDs:
   - filmsDeMarque
-  - reportages
 
 weight:
 ---

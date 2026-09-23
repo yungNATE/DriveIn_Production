@@ -10,11 +10,10 @@ photos: []
 
 partner: BNP-Paribas
 
-highlighted: "socialMedia"
+highlighted: ""
 
 tagIDs:
-  - filmsDeMarque
-  -
+  - socialMedia
 
 weight:
 ---

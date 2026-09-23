@@ -11,11 +11,10 @@ photos: []
 partner:
   - AXA Assurance
 
-highlighted: "animation"
+highlighted: ""
 
 tagIDs:
-  - filmsDeMarque
-  - animation
+  - evenementiel
 
 weight:
 ---

@@ -2,32 +2,37 @@
   {
     "id": "filmsDeMarque",
     "title": "Films de marque",
-    "description": "Des films pensés pour révéler l'identité et les valeurs de votre entreprise, et créer une connexion durable avec votre audience.",
+    "description": "Le film de marque met en valeur votre entreprise, vos produits ou vos services à travers une réalisation soignée, esthétique et pensée pour votre image.\n\nPrésentation d’entreprise, publicité, lancement de produit, savoir-faire ou mise en situation réelle : chaque film est conçu pour transmettre votre message tout en créant un univers qui vous ressemble.\n\n✓ Un film sur mesure pour valoriser votre marque et marquer les esprits",
     "type": "theme"
   },
   {
     "id": "interviews",
     "title": "Interviews",
-    "description": "Donnez la parole à vos experts, clients ou collaborateurs dans un cadre soigné, pour des témoignages authentiques et impactants.",
+    "description": "L’interview donne la parole à celles et ceux qui font vivre votre entreprise : collaborateurs, dirigeants, experts, partenaires ou clients.\n\nTémoignage, podcast, prise de parole ou discussion à plusieurs, nous créons un cadre naturel et professionnel pour mettre en valeur les personnes et leurs messages.\n\n✓ Des prises de parole authentiques, soignées et engageantes",
+    "type": "theme"
+  },
+  {
+    "id": "evenementiel",
+    "title": "Événementiel",
+    "description": "L’événementiel permet de conserver et de partager les temps forts de vos événements tout en retranscrivant leur énergie et leur ambiance.\n\nSéminaire, salon, conférence, soirée, inauguration ou événement privé : nous capturons les moments essentiels pour créer un contenu dynamique et immersif.\n\n✓ Faites vivre votre événement bien au-delà du jour J",
+    "type": "theme"
+  },
+  {
+    "id": "reportages",
+    "title": "Reportage",
+    "description": "Le reportage raconte une histoire au plus près du terrain, des personnes et de leur quotidien.\n\nImmersion, portrait, métier, association, institution ou projet particulier : nous mêlons interviews et images de situation pour créer un récit vivant, humain et authentique.\n\n✓ Une approche immersive pour raconter votre histoire avec justesse",
     "type": "theme"
   },
   {
     "id": "animation",
     "title": "Animation",
-    "description": "Des contenus animés pour simplifier vos messages complexes et donner vie à vos idées avec créativité.",
-    "type": "theme"
-  },
-  {
-    "id": "reportages",
-    "title": "Reportages",
-    "description": "Immersion sur le terrain pour capter l'authenticité de vos événements, projets et métiers en action.",
+    "description": "L’animation permet de rendre simples, visuels et attractifs des messages parfois complexes à expliquer avec des images traditionnelles.\n\nMotion design, film animé, tutoriel, infographie ou présentation de produit : nous imaginons un univers graphique adapté à votre identité et à votre message.\n\n✓ Donnez du mouvement à vos idées et rendez vos messages plus accessibles",
     "type": "theme"
   },
   {
     "id": "socialMedia",
-    "title": "Social media",
-    "description": "Des formats courts et percutants, pensés pour capter l'attention et faire vivre votre marque sur les réseaux.",
-    "type": "theme",
-    "hidden": true
+    "title": "Social",
+    "description": "Les réseaux sociaux demandent des contenus rapides, directs et pensés pour capter l’attention dès les premières secondes.\n\nFormats courts, vidéos verticales, Reels, Shorts, teasers ou capsules : nous adaptons la réalisation et le montage aux codes de chaque plateforme.\n\n✓ Des contenus pensés pour capter l’attention et générer de l’engagement",
+    "type": "theme"
   }
 ]

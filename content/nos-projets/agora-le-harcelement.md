@@ -11,10 +11,9 @@ photos: []
 partner:
   - AGORA
 
-highlighted: "interviews"
+highlighted: ""
 
 tagIDs:
-  - filmsDeMarque
   - interviews
 
 weight:

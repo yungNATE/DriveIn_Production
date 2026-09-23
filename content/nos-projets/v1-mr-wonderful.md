@@ -8,12 +8,14 @@ video: "1044723027"
 otherFormats: []
 photos: []
 
-partner: []
+partner:
+  - BHV
 
 highlighted: ""
 
 tagIDs:
   - filmsDeMarque
+  - social
 
 weight:
 ---
