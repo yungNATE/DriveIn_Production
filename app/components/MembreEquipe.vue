@@ -24,6 +24,13 @@ const route = useRoute();
     width: 100%;
     max-height: 200px;
     aspect-ratio: 1/1;
+    object-position: 50% 15%;
+  }
+
+  :deep(.role) {
+    margin-top: -8px;
+    color: $primary-color-light;
+    font-weight: 600;
   }
 }
 </style>

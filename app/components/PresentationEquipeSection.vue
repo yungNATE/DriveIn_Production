@@ -1,57 +1,24 @@
+<script setup lang="ts">
+// Récupération des membres de l'équipe via Nuxt Content, triés par poids
+const { data: equipe } = await useAsyncData("equipe", async () => {
+  const data = await queryCollection("equipe").order("weight", "ASC").all();
+  return flattenMeta(data);
+});
+</script>
+
 <template>
   <section class="presentation" id="presentation">
     <div class="container content">
       <MembreEquipe
-        src="images/profil_pics/sashaProfilPic.png"
-        alt="DriveIn Production"
-        :customClass="undefined"
+        v-for="(membre, index) in equipe"
+        :key="membre.name"
+        :src="membre.img"
+        :alt="`${membre.name}, ${membre.role} chez DriveIn Production`"
+        :customClass="index % 2 ? 'blue' : undefined"
       >
-        <h2 class="h3">Sacha Stadtfeld</h2>
-        <p>
-          Je suis persuadé que la vidéo est le support de communication par
-          excellence ! Dans un monde dominé par le web j'ai donc décidé de me
-          former aux métiers du digital et de l'audiovisuel pour devenir
-          réalisateur vidéo.
-        </p>
-      </MembreEquipe>
-      <MembreEquipe
-        src="images/profil_pics/arthurProfilPic.png"
-        alt="DriveIn Production"
-        customClass="blue"
-      >
-        <h2 class="h3">Arthur Roberdeau</h2>
-        <p>
-          Arthur passionné par la photographie et la vidéo depuis tout petit.
-          Devenu photographe professionnel depuis de nombreuses années, je me
-          suis spécialisé dans les photographies événementielles, afin de vous
-          offrir un service unique et personnalisé.
-        </p>
-      </MembreEquipe>
-      <MembreEquipe
-        src="images/profil_pics/arthurProfilPic.png"
-        alt="DriveIn Production"
-        customClass="blue"
-      >
-        <h2 class="h3">Arthur Roberdeau</h2>
-        <p>
-          Arthur passionné par la photographie et la vidéo depuis tout petit.
-          Devenu photographe professionnel depuis de nombreuses années, je me
-          suis spécialisé dans les photographies événementielles, afin de vous
-          offrir un service unique et personnalisé.
-        </p>
-      </MembreEquipe>
-      <MembreEquipe
-        src="images/profil_pics/arthurProfilPic.png"
-        alt="DriveIn Production"
-        customClass="blue"
-      >
-        <h2 class="h3">Arthur Roberdeau</h2>
-        <p>
-          Arthur passionné par la photographie et la vidéo depuis tout petit.
-          Devenu photographe professionnel depuis de nombreuses années, je me
-          suis spécialisé dans les photographies événementielles, afin de vous
-          offrir un service unique et personnalisé.
-        </p>
+        <h2 class="h3">{{ membre.name }}</h2>
+        <p class="role">{{ membre.role }}</p>
+        <p>{{ membre.description }}</p>
       </MembreEquipe>
     </div>
   </section>

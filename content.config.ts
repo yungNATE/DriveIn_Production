@@ -82,6 +82,17 @@ export default defineContentConfig({
         img: z.string(),
       }),
     }),
+    equipe: defineCollection({
+      source: "equipe/*.md",
+      type: "data",
+      schema: z.object({
+        name: z.string(),
+        role: z.string(),
+        description: z.string(),
+        img: z.string(),
+        weight: z.number().int(),
+      }),
+    }),
     theyChoseUs: defineCollection({
       source: "theyChoseUs/*.md",
       type: "data",
