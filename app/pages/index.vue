@@ -109,6 +109,14 @@ const currentHighlightedProject = computed(() => {
 
 const selectedTag = ref<ProjectTag | null>(allTags.value?.[0] ?? null);
 
+// Tag descriptions are stored with blank lines between paragraphs
+const selectedTagParagraphs = computed(() =>
+  (selectedTag.value?.description ?? "")
+    .split(/\n\s*\n/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean),
+);
+
 const realisationHomeWrapper = ref<HTMLElement | null>(null);
 const highlightedProjectMinHeight = ref<string>();
 
@@ -229,9 +237,20 @@ definePageMeta({
             @select="handleTagSelect"
           />
         </div>
-        <!--<div class="tagWrapper">
-          <p class="tagDescription">{{ selectedTag?.description }}</p>
-        </div>-->
+        <Transition name="tag-description" mode="out-in">
+          <div
+            v-if="selectedTagParagraphs.length"
+            class="tagDescription"
+            :key="selectedTag?.id"
+          >
+            <p
+              v-for="paragraph in selectedTagParagraphs"
+              :class="{ benefit: paragraph.startsWith('✓') }"
+            >
+              {{ paragraph }}
+            </p>
+          </div>
+        </Transition>
       </div>
 
       <div
@@ -483,6 +502,44 @@ section.realisations {
       filter: blur(0);
     }
 
+    :deep(.tag-description-enter-active),
+    :deep(.tag-description-leave-active) {
+      will-change: opacity, transform, filter;
+    }
+
+    :deep(.tag-description-enter-active) {
+      transition:
+        opacity 220ms ease,
+        transform 380ms cubic-bezier(0.34, 1.56, 0.64, 1),
+        filter 220ms ease;
+    }
+
+    :deep(.tag-description-leave-active) {
+      transition:
+        opacity 220ms ease,
+        transform 220ms ease-in,
+        filter 220ms ease;
+    }
+
+    :deep(.tag-description-enter-from) {
+      opacity: 0;
+      transform: translateY(-12px) scale(0.985);
+      filter: blur(2px);
+    }
+
+    :deep(.tag-description-leave-to) {
+      opacity: 0;
+      transform: translateY(-12px) scale(0.985);
+      filter: blur(2px);
+    }
+
+    :deep(.tag-description-enter-to),
+    :deep(.tag-description-leave-from) {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+
     .controles {
       display: flex;
       align-items: center;
@@ -521,16 +578,25 @@ section.realisations {
         }
       }
 
-      .tagWrapper {
+      .tagDescription {
         display: flex;
         flex-direction: column;
-        gap: 10px;
-        margin-right: 28px;
+        gap: 15px;
+        font-weight: bold;
+
+        background-color: black;
+        border-radius: 8px;
+        padding: 30px;
+
+        .benefit {
+          color: $primary-color-light;
+          font-weight: $font-weight-bold;
+        }
       }
 
       .tags {
         display: flex;
-        gap: 10px;
+        gap: 8px;
         flex-wrap: wrap;
         justify-content: center;
       }

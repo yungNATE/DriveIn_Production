@@ -45,7 +45,9 @@ const { data: partners } = await useAsyncData(partnersKey, async () => {
   return flattenMeta(data);
 });
 
-const partnersList = computed(() => partners.value ?? []);
+const partnersList = computed(
+  () => partners.value ?? [props.project.partner[0]],
+);
 </script>
 
 <template>
@@ -54,12 +56,10 @@ const partnersList = computed(() => partners.value ?? []);
       <div class="presentation">
         <h3>
           {{ project.title }}
-          pour
+
+          <template v-if="partnersList.length">pour</template>
           <i style="color: white" v-for="partner in partnersList">
             {{ partner.name }}
-          </i>
-          <i v-if="partnersList.length == 0">
-            {{ project.partner[0] }}
           </i>
           <span v-if="partnersList.length > 1">,</span>
         </h3>
