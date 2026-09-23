@@ -296,6 +296,7 @@ const activeVideoUrl = computed(() =>
       <h2 class="blue">Ils nous ont choisis</h2>
       <Accordion
         :accordionPanels="theyChoseUsPanels"
+        customColor="var(--secondary-color-dark)"
         :onlyOneOpenAtTheTime="true"
         :openFirstPanel="true"
         @toggle="(index, isOpen) => onTheyChoseUsToggle(index, isOpen)"

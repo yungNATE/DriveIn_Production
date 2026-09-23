@@ -5,6 +5,14 @@
 
 // Page{ min-height: 100vh }
 
+// Palette exposée en CSS custom properties (utilisable dans les templates / props)
+:root {
+  --primary-color-dark: #{$primary-color-dark};
+  --secondary-color-dark: #{$secondary-color-dark};
+  --primary-color-light: #{$primary-color-light};
+  --secondary-color-light: #{$secondary-color-light};
+}
+
 html {
   zoom: 0.8;
 }

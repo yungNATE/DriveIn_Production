@@ -5,6 +5,7 @@
  *  - accordionPanels: Array of panels { header: string; content?: string; customHtml?: string; open?: boolean }
  *  - onlyOneOpenAtTheTime: boolean (if true, only one panel can be open at a time)
  *  - openFirstPanel: boolean (default true). If no panel has explicit `open: true`, the first panel starts open.
+ *  - customColor: string (optional). CSS color of the header on hover / when open.
  *
  * Emits:
  *  - update:openPanels (number[]) => indices of panels currently open (potential future v-model extension)
@@ -40,6 +41,11 @@ const props = withDefaults(
      * If true, opens the first panel by default (unless an explicit `open: true` exists on any panel).
      */
     openFirstPanel?: boolean;
+    /**
+     * Color of the panel header on hover / when open. Accepts any CSS color value.
+     * Defaults to the primary light color ($primary-color-light).
+     */
+    customColor?: string;
   }>(),
   {
     openFirstPanel: true,
@@ -301,7 +307,11 @@ onMounted(() => {
   <div
     class="accordion"
     :class="{ 'single-open': onlyOneOpenAtTheTime }"
-    :style="{ maxWidth: resolvedMaxWidth, width: '100%' }"
+    :style="{
+      maxWidth: resolvedMaxWidth,
+      width: '100%',
+      ...(customColor ? { '--accordion-accent-color': customColor } : {}),
+    }"
   >
     <div
       v-for="(panel, i) in internalPanels"
@@ -381,7 +391,7 @@ onMounted(() => {
   * &:hover:not(.open),
   &.open {
     .header-text {
-      color: $primary-color-light;
+      color: var(--accordion-accent-color, $primary-color-light);
     }
   }
 }
