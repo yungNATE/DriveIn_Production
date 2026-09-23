@@ -1,5 +1,5 @@
 ---
-title: "Inmac Wstore - Sensibiliser, former et guider ses collaborateurs - Inmac Wstore"
+title: "Sensibiliser, former et guider ses collaborateurs"
 shortDescription: ""
 description: ""
 
@@ -8,7 +8,8 @@ video: "1012017492"
 otherFormats: []
 photos: []
 
-partner: []
+partner:
+  - Inmac Wstore
 
 highlighted: "animation"
 

@@ -1,5 +1,5 @@
 ---
-title: "Nina Metayer - Utilisation de la tablette EpackPro"
+title: "Utilisation de la tablette EpackPro"
 shortDescription: ""
 description: ""
 
@@ -8,7 +8,8 @@ video: "1096624903"
 otherFormats: []
 photos: []
 
-partner: []
+partner:
+  - Nina Metayer
 
 highlighted: "filmsDeMarque"
 
